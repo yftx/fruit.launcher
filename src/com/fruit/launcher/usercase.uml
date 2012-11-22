@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_XVz6YO26EeGmAPjUSfH2aA"
+    name="usercase"
+    xmi:version="2.1" >
+
+    <elementImport xmi:id="_XWaXiu26EeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <elementImport xmi:id="_XWaXi-26EeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <elementImport xmi:id="_XWaXjO26EeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <elementImport xmi:id="_XWaXje26EeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <packagedElement
+        xmi:id="_buP6QO26EeGmAPjUSfH2aA"
+        name="Actor"
+        xmi:type="uml:Actor" >
+
+        <generalization
+            xmi:id="_wDIIsO26EeGmAPjUSfH2aA"
+            general="_dHp9MO26EeGmAPjUSfH2aA" />
+
+        <generalization
+            xmi:id="_zPuAgO26EeGmAPjUSfH2aA"
+            general="_jNxm4O26EeGmAPjUSfH2aA" />
+
+        <generalization
+            xmi:id="_0AmD0O26EeGmAPjUSfH2aA"
+            general="_syp2cO26EeGmAPjUSfH2aA" />
+    </packagedElement>
+
+    <packagedElement
+        xmi:id="_dHp9MO26EeGmAPjUSfH2aA"
+        name="Long click dockbutton"
+        xmi:type="uml:UseCase" />
+
+    <packagedElement
+        xmi:id="_jNxm4O26EeGmAPjUSfH2aA"
+        name="Long click cell icon"
+        xmi:type="uml:UseCase" />
+
+    <packagedElement
+        xmi:id="_syp2cO26EeGmAPjUSfH2aA"
+        name="Long click icon in folder "
+        xmi:type="uml:UseCase" />
+
+</uml:Package>

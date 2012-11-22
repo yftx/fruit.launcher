@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+    xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML"
+    xmi:id="_bxBQwe0SEeGmAPjUSfH2aA"
+    name="default"
+    xmi:version="2.1" >
+
+    <elementImport xmi:id="_bzsxUO0SEeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <elementImport xmi:id="_bz2iUO0SEeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <elementImport xmi:id="_bz2iUe0SEeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <elementImport xmi:id="_bz2iUu0SEeGmAPjUSfH2aA" >
+
+        <importedElement
+            href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"
+            xmi:type="uml:PrimitiveType" />
+    </elementImport>
+
+    <packagedElement
+        xmi:id="_pVdGIO0SEeGmAPjUSfH2aA"
+        name="FrameLayout"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_rmJWYO0SEeGmAPjUSfH2aA"
+        name="DragLayer"
+        xmi:type="uml:Class" >
+
+        <generalization
+            xmi:id="_vr0LQO0SEeGmAPjUSfH2aA"
+            general="_pVdGIO0SEeGmAPjUSfH2aA" />
+
+        <ownedAttribute
+            xmi:id="_Ga7mEO2YEeGmAPjUSfH2aA"
+            name="DragController"
+            aggregation="composite" />
+
+        <ownedOperation
+            xmi:id="_UgYFsO23EeGmAPjUSfH2aA"
+            name="operation" />
+    </packagedElement>
+
+    <packagedElement
+        xmi:id="_ogD_sO2VEeGmAPjUSfH2aA"
+        name="DragSource"
+        xmi:type="uml:Interface" />
+
+    <packagedElement
+        xmi:id="_qbvpQO2VEeGmAPjUSfH2aA"
+        name="DropTarget"
+        xmi:type="uml:Interface" />
+
+    <packagedElement
+        xmi:id="_bzmMwO2YEeGmAPjUSfH2aA"
+        name="DragController"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_ff77oO2YEeGmAPjUSfH2aA"
+        name="workspace"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_gbF8UO2YEeGmAPjUSfH2aA"
+        name="CellLayout"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_huihMO2YEeGmAPjUSfH2aA"
+        name="DeleteZone"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_ipZm8O2YEeGmAPjUSfH2aA"
+        name="Launcher"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_j53JQO2YEeGmAPjUSfH2aA"
+        name="Dockbar"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_lZ-RIO2YEeGmAPjUSfH2aA"
+        name="DockButton"
+        xmi:type="uml:Class" />
+
+    <packagedElement
+        xmi:id="_4XUkkO2bEeGmAPjUSfH2aA"
+        name="dependency"
+        xmi:type="uml:Dependency" />
+
+</uml:Package>

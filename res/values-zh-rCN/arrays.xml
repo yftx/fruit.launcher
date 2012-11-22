@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings_screen_switcheffects_entries">
+        <item>默认</item>
+        <item>旋转</item>
+        <item>淡入淡出</item>
+        <item>层叠</item>
+        <item>风车</item>
+        <item>立方体</item>
+        <item>龙卷风</item>
+    </string-array>
+
+</resources>

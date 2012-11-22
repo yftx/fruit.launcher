@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_folder_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/folder_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10.0dip"
+        android:layout_marginTop="10.0dip"
+        android:gravity="center"
+        android:text="@string/new_folder_title"
+        android:textColor="@color/folder_text_color"
+        android:textSize="24.0sp" />
+
+    <EditText
+        android:id="@+id/folder_dialog_name"
+        style="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/dialog_folder_input_bg"
+        android:padding="10.0dip"
+        android:singleLine="true"
+        android:text="@string/new_folder_name" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/folder_button_top_padding" >
+
+        <Button
+            android:id="@+id/btnYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="30.0dip"
+            android:background="@drawable/btn_bg"
+            android:text="@string/finish"
+            android:textColor="@color/folder_text_color"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="30.0dip"
+            android:background="@drawable/btn_bg"
+            android:text="@string/cancel"
+            android:textColor="@color/folder_text_color"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</LinearLayout>

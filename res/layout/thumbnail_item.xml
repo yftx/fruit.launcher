@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100.0dip"
+    android:layout_height="140.0dip"
+    android:padding="2.0dip" >
+
+    <ImageView
+        android:id="@+id/thumbnail_imageview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/thumbnail_bg_selector"
+        android:padding="6.0dip"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/thumbnail_delete_screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:padding="4.0dip"
+        android:src="@drawable/thumbnail_delete_selector" />
+
+    <ImageView
+        android:id="@+id/thumbnail_home_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="5.0dip"
+        android:src="@drawable/ic_homescreen_none" />
+
+</RelativeLayout>

@@ -1,0 +1,24 @@
+<resources>
+
+    <integer name="config_allAppsFadeInTime">700</integer>
+    <integer name="config_allAppsFadeOutTime">700</integer>
+    <integer name="config_allAppsBatchLoadDelay">0</integer>
+    <integer name="config_allAppsBatchSize">0</integer>
+
+    <bool name="config_drawerLabels">true</bool>
+    <bool name="config_fadeDrawerLabels">false</bool>
+
+    <integer name="config_shortAxisCells">4</integer>
+    <integer name="config_longAxisCells">4</integer>
+    <integer name="config_slideNumRows">4</integer>
+    <integer name="config_slideNumCloums">4</integer>
+
+    <bool name="config_idleIconShadow">false</bool>
+    <bool name="config_systemIcon_unuseTheme">false</bool>
+    <bool name="config_lock_apps">false</bool>
+
+    <integer name="config_lock_apps_num">0</integer>
+
+    <string name="config_defalt_theme">com.fruit.launcher.theme.fruit</string>
+
+</resources>

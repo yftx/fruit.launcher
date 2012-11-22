@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+
+    <!-- height of the delete bar -->
+    <dimen name="delete_bar_height">60dip</dimen>
+
+    <!-- height of the screen indicator -->
+    <dimen name="screen_indicator_height">2dip</dimen>
+
+    <!-- height of the dock bar -->
+    <dimen name="dock_bar_height">92dip</dimen>
+    <!-- height of the free play area in the dock bar -->
+    <dimen name="dock_bar_top_padding">4.0dip</dimen>
+    <dimen name="dock_bar_bottom_padding">4.0dip</dimen>
+
+    <!-- Area of workspace -->
+    <!-- height of top padding -->
+    <dimen name="workspace_cell_top_padding">4.0dip</dimen>
+    <!-- height of ScreenIndicator + Dock bar -->
+    <dimen name="workspace_cell_bottom_padding">102.0dip</dimen>
+    <!--
+         width of left padding, if it is not zero, the space of icon
+    	between two page is different with two line space
+    -->
+    <dimen name="workspace_cell_left_padding">4.0dip</dimen>
+    <!-- width of right padding -->
+    <dimen name="workspace_cell_right_padding">4.0dip</dimen>
+
+    <!-- Area of all application -->
+    <!-- height of top padding -->
+    <dimen name="allapp_top_padding">10.0dip</dimen>
+    <!-- height of ScreenIndicator + Dock bar -->
+    <dimen name="allapp_bottom_padding">82.0dip</dimen>
+    <!-- width of page margins of left or right -->
+    <dimen name="allapp_horizontal_margin">8.0dip</dimen>
+    <!-- width of left padding -->
+    <dimen name="allapp_left_padding">0.0dip</dimen>
+    <!-- right of right padding -->
+    <dimen name="allapp_right_padding">0.0dip</dimen>
+
+    <!--
+         roughly a status bar (for vertically centering the all apps
+         home icon in landscape)
+    -->
+    <dimen name="status_bar_height">25dip</dimen>
+    <dimen name="title_texture_width">120px</dimen>
+
+    <!--
+         roughly half a status bar (for vertically centering the right-hand
+         button cluster in landscape)
+    -->
+    <dimen name="half_status_bar_height">12dip</dimen>
+
+    <!-- height & width of the drop rectangle for the trash icon -->
+    <dimen name="delete_zone_size">70dip</dimen>
+
+    <!-- delete_zone_size_full - button_bar_height_portrait -->
+    <dimen name="delete_zone_padding">14dip</dimen>
+
+    <!-- thumbnail padding -->
+    <dimen name="thumbnail_width_padding_start">4.0dip</dimen>
+    <dimen name="thumbnail_width_padding_end">4.0dip</dimen>
+    <dimen name="thumbnail_height_padding_start">12.0dip</dimen>
+    <dimen name="thumbnail_height_padding_end">11.0dip</dimen>
+
+    <!-- top padding of buttons in new folder dialog -->
+    <dimen name="folder_button_top_padding">8.0dip</dimen>
+
+</resources>

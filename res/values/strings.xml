@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Manifest configuration. -->
+    <skip />
+    <!-- Do not translate. android:sharedUserId of this application. -->
+    <string name="sharedUserId" translate="false">fruit.uid.shared<xliff:g id="x"></xliff:g></string>
+    <!-- Do not translate. android:process of this application. -->
+    <string name="process" translate="false"><xliff:g id="x"></xliff:g></string>
+
+    <!-- General -->
+    <skip />
+    <!-- Application name -->
+    <string name="application_name">Fruit Launcher</string>
+    <!-- Name for all applications running as this uid. -->
+    <string name="uid_name">Android Core Apps</string>
+    <!-- Default folder name -->
+    <string name="folder_name">Folder</string>
+    <!-- Title of dialog that appears after user selects Wallpaper from menu -->
+    <string name="chooser_wallpaper">Select wallpaper from</string>
+    <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
+    <string name="wallpaper_instructions">Set wallpaper</string>
+    <!-- Option in "Select wallpaper from" dialog box -->
+    <string name="pick_wallpaper">Wallpapers</string>
+    <!-- Displayed when user selects a shortcut for an app that was uninstalled -->
+    <string name="activity_not_found">Application is not installed on your phone.</string>
+    <!-- List item for configuring the current wallpaper -->
+    <string name="configure_wallpaper">Configure...</string>
+
+    <!-- Folders -->
+    <skip />
+    <!-- Label of Folder name field in Rename folder dialog box -->
+    <string name="rename_folder_label">Folder name</string>
+    <!-- Title of dialog box -->
+    <string name="rename_folder_title">Rename folder</string>
+    <!-- Buttons in Rename folder dialog box -->
+    <string name="rename_action">OK</string>
+    <!-- Buttons in Rename folder dialog box -->
+    <string name="cancel_action">Cancel</string>
+
+    <!-- Shortcuts -->
+    <skip />
+    <!-- Title of dialog box -->
+    <string name="menu_item_add_item">Add to Home screen</string>
+    <string name="menu_item_add_item_to_dock">Add to Dock bar</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all apps -->
+    <string name="group_applications">Applications</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all shortcuts -->
+    <string name="group_shortcuts">Shortcuts</string>
+    <!-- Options in "Add to Home" dialog box; Title of the folder gadget -->
+    <string name="group_folder">New folder</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all live folders -->
+    <string name="group_live_folders">Folders</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
+    <string name="group_widgets">Widgets</string>
+    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper -->
+    <string name="group_wallpapers">Wallpapers</string>
+    <!-- Options in "Add to Home" dialog box; Name of the Folder widget -->
+    <string name="add_folder">Folder</string>
+    <!-- Options in "Add to Home" dialog box; Name of the Clock widget -->
+    <string name="add_clock">Clock</string>
+    <!-- Options in "Add to Home" dialog box; Name of the Picture frame widget -->
+    <string name="add_photo_frame">Picture frame</string>
+    <!-- Error message when user has filled a home screen, possibly not used -->
+    <string name="out_of_space">No more room on this Home screen.</string>
+    <!-- Message displayed when a shortcut is created by an external application -->
+    <string name="shortcut_installed">Shortcut \"<xliff:g id="name" example="Browser">%s</xliff:g>\" created.</string>
+    <!-- Message displayed when a shortcut is uninstalled by an external application -->
+    <string name="shortcut_uninstalled">Shortcut \"<xliff:g id="name" example="Browser">%s</xliff:g>\" was removed.</string>
+    <!-- Message displayed when an external application attemps to create a shortcut that already exists -->
+    <string name="shortcut_duplicate">Shortcut \"<xliff:g id="name" example="Browser">%s</xliff:g>\" already exists.</string>
+
+    <!-- Title of dialog when user is selecting shortcut to add to homescreen -->
+    <string name="title_select_shortcut">Select shortcut</string>
+    <!-- Title of dialog when user is selecting live folder to add to homescreen -->
+    <string name="title_select_live_folder">Select folder</string>
+
+    <!-- All applications label for accessibilty (spoken when the button gets focus). -->
+    <string name="all_apps_button_label">All applications</string>
+    <!--
+         Label for button in all applications label to go back home (to the workspace / desktop)
+         for accessibilty (spoken when the button gets focus).
+    -->
+    <string name="all_apps_home_button_label">Home</string>
+
+    <!-- Menus items: -->
+    <skip />
+    <!-- Verb, menu item used to add an item on the desktop -->
+    <string name="menu_add">Add</string>
+    <!-- Noun, menu item used to set the desktop's wallpaper -->
+    <string name="menu_wallpaper">Wallpaper</string>
+    <!-- Verb, menu item used to initiate global search -->
+    <string name="menu_search">Search</string>
+    <!-- Noun, menu item used to bring down the notifications shade -->
+    <string name="menu_thumbnail">Thumbnail</string>
+    <!-- Noun, menu item used to show the gestures settings -->
+    <string name="menu_gestures">Gestures</string>
+    <!-- Noun, menu item used to show the launcher settings -->
+    <string name="menu_desktop">Preferences</string>
+    <!-- Noun, menu item used to show the system settings -->
+    <string name="menu_settings">Settings</string>
+
+    <!-- Permissions: -->
+    <skip />
+    <!-- Permission short label -->
+    <string name="permlab_install_shortcut">install shortcuts</string>
+    <!-- Permission description -->
+    <string name="permdesc_install_shortcut">Allows an application to add
+        shortcuts without user intervention.</string>
+    <!-- Permission short label -->
+    <string name="permlab_uninstall_shortcut">uninstall shortcuts</string>
+    <!-- Permission description -->
+    <string name="permdesc_uninstall_shortcut">Allows an application to remove
+        shortcuts without user intervention.</string>
+    <!-- Permission short label -->
+    <string name="permlab_read_settings">read Home settings and shortcuts</string>
+    <!-- Permission description -->
+    <string name="permdesc_read_settings">Allows an application to read the settings and
+        shortcuts in Home.</string>
+    <!-- Permission short label -->
+    <string name="permlab_write_settings">write Home settings and shortcuts</string>
+    <!-- Permission description -->
+    <string name="permdesc_write_settings">Allows an application to change the settings and
+        shortcuts in Home.</string>
+
+    <!-- Widgets: -->
+    <skip />
+
+    <!-- Text to show user in place of a gadget when we can't display it properly -->
+    <string name="gadget_error_text">Problem loading widget</string>
+
+    <!--
+         URL to use when detecting the current default browser. 
+         Attempts to mimic homepage_base in Browser; {CID} should be replaced
+         by the client-id, e.g. "android-google".
+    -->
+    <string name="default_browser_url" translatable="false">        http://www.google.com/m?client=ms-{CID}&amp;source=android-home-hotseat</string>
+    <string name="launcher_settings">Desktop Preferences</string>
+    <string name="settings_desktop_transition">Transition effect</string>
+    <string name="settings_high_quality">High quality drawing</string>
+    <string name="settings_high_quality_summary">enable high quality drawing may reduce performance</string>
+    <string name="settings_theme">Desktop Theme</string>
+    <string name="settings_multiscreenwallpaper">"Multiscreen Wallpaper"</string>
+    <string name="settings_lockscreen">Lock Screen</string>
+    <string name="settings_lockscreen_summary">Use Mango Lock Screen</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_about">About</string>
+    <string name="current_desk_version">"Current version: "</string>
+    <string name="settings_desk_version">"Version information"</string>
+    <string name="settings_exit">Exit Mango Launcher</string>
+    <string name="widget_lock_screen">Lock Screen</string>
+    <string name="widget_lock_screen_tips">Allow the application with admin permissions to enable screen lock at first run.</string>
+    <string name="widget_clean_memory">Clean Memory</string>
+    <string name="widget_clean_memory_report"><xliff:g id="format">%dM Memory Freed</xliff:g></string>
+    <string name="widget_task_manager">Task Manager</string>
+    <string name="widget_kill_task">Are you sure to kill all background applications to free memory?</string>
+    <string name="task_manager_title">Running </string>
+    <string name="task_manager_meminfo"><xliff:g id="format">Free/Total memory : %1$dM/%2$dM</xliff:g></string>
+    <string name="delete_screen_error_one">Launcher must have at least one screen</string>
+    <string name="delete_screen_error_home">You can not delete a default home screen</string>
+    <string name="delete_screen_confirm_title">Warning</string>
+    <string name="delete_screen_confirm_msg">The screen contains icon.Continue to delete?</string>
+    <string name="menuitem_createfolder">New folder</string>
+    <string name="app_fun_new_folder_name">Folder name :</string>
+    <string name="app_fun_new_folder_app_title">Select the applications to be added in folder</string>
+    <string name="finish">Finish</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_folder">Edit folder</string>
+    <string name="new_folder">Create new folder</string>
+    <string name="new_folder_title">New folder</string>
+    <string name="new_folder_name">Folder</string>
+    <string name="folder_name_is_empty">Please input folder name.</string>
+    <string name="folder_name_is_full">Folder name reached max length.</string>
+    <string name="folder_is_empty">Folder is null</string>
+    <string name="folder_is_full">Folder is full</string>
+    <string name="folder_contain_item">The icon already exists in the folder.</string>
+    <string name="delete_error_system_app">Can not remove system application</string>
+    <string name="move_to_desktop">Move to desktop</string>
+    <string name="title_select_application">Select application</string>
+    <string name="duplicate_shortcut">  Duplicate Shortcut!</string>
+    <string name="folder_is_not_empty">  Cannot delete non-empty folder.</string>
+
+    <!-- wangmeihua add -->
+    <string name="lenovo_set">Configure</string>
+    <string name="lenovo_del">Delete</string>
+    <string name="widget_clean_memory_alert">Not clean,Users in the best condition</string>
+
+</resources>

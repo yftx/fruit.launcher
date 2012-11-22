@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2010 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<!-- Sapphire gets 2D all apps view -->
+<com.fruit.launcher.AllApps2D_Slide xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/all_apps_view_slide"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/transparent_background" >
+
+    <com.fruit.launcher.SlidingView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:launcher="http://schemas.android.com/apk/res/com.fruit.launcher"
+        android:id="@+id/all_apps_2d_grid"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="@dimen/allapp_bottom_padding"
+        android:layout_marginTop="@dimen/allapp_top_padding"
+        android:drawSelectorOnTop="false"
+        android:paddingLeft="@dimen/allapp_left_padding"
+        android:paddingRight="@dimen/allapp_right_padding"
+        android:scrollbarStyle="insideInset"
+        android:tag="all_apps_2d_grid"
+        launcher:listSelector="@drawable/grid_selector"
+        launcher:pager_hormargin="@dimen/allapp_horizontal_margin" />
+
+    <com.fruit.launcher.ScreenIndicator
+        android:id="@+id/screenIndicatorInAllApp"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/screen_indicator_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dock_bar_height"
+        android:visibility="invisible" />
+
+    <com.fruit.launcher.AllAppsHomeBar
+        android:id="@+id/all_apps_home_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/dock_bar_height"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_back_home"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:shadowColor="#ff000000"
+            android:shadowDy="1.0"
+            android:shadowRadius="1.0"
+            android:text="@string/move_to_desktop"
+            android:textColor="#ffffffff"
+            android:textSize="18.0sp" />
+    </com.fruit.launcher.AllAppsHomeBar>
+
+</com.fruit.launcher.AllApps2D_Slide>

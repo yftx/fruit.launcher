@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/launcher_settings" >
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/settings_screen_switcheffects_entries"
+        android:entryValues="@array/settings_screen_switcheffects_values"
+        android:key="settings_key_screen_switcheffects"
+        android:title="@string/settings_desktop_transition" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="settings_key_high_quality"
+        android:summary="@string/settings_high_quality_summary"
+        android:title="@string/settings_high_quality" />
+"
+    <Preference
+        android:key="settings_theme"
+        android:title="@string/settings_theme" />
+    <Preference
+        android:key="settings_multiscreenwallpaper"
+        android:title="@string/settings_multiscreenwallpaper" />
+
+    <!--
+        <CheckBoxPreference
+		android:title="@string/settings_lockscreen"
+		android:key="settings_key_lockscreen"
+		android:defaultValue="false"
+		android:summary="@string/settings_lockscreen_summary" />
+    -->
+"
+    <Preference
+        android:key="settings_key_about"
+        android:summary="@string/current_desk_version"
+        android:title="@string/settings_desk_version" />
+
+    <!-- <Preference -->
+    <!-- android:title="@string/settings_help" -->
+    <!-- android:key="settings_key_help" /> -->
+    <!--  -->
+    <!-- <Preference -->
+    <!-- android:title="@string/settings_exit" -->
+    <!-- android:key="settings_key_exit" /> -->
+
+</PreferenceScreen>

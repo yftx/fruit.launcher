@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="2.0dip"
+    android:paddingRight="2.0dip" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5.0dip" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:editable="false"
+            android:text="@string/app_fun_new_folder_name" />
+
+        <EditText
+            android:id="@+id/folder_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:editable="true"
+            android:maxLines="1"
+            android:text="@string/folder_name" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:editable="false"
+        android:padding="5.0dip"
+        android:text="@string/app_fun_new_folder_app_title" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:drawSelectorOnTop="false" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5.0dip"
+        android:paddingRight="5.0dip" >
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="150.0dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:text="@string/finish" />
+
+        <Button
+            android:id="@+id/cancle"
+            android:layout_width="150.0dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="@string/cancel" />
+    </RelativeLayout>
+
+</LinearLayout>
