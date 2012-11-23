@@ -745,7 +745,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             mNextScreen = INVALID_SCREEN;
             mWallpaperIndex = INVALID_SCREEN;
             mTouchDirection = TOUCH_STATE_REST;
-            sendBroadcast4Widget();
+            sendBroadcast4Widget(next);
             clearChildrenCache();
         } else if (mTouchState == TOUCH_STATE_SCROLLING) {
             final float now = System.nanoTime() / NANOTIME_DIV;
@@ -763,14 +763,39 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     void sendBroadcast4Widget() {
+    	//String packageNames = null;
     	Intent intent = new Intent(ACTION_SCROLLER_SCREEN);
     	
-    	intent.putExtra("test", "testValue");
+    	//intent.putExtra("test", "testValue");
+    	//intent.putExtra("packageNames", packageNames);
     	
     	//this.getContext().sendBroadcast(intent);
     	this.getContext().getApplicationContext().sendBroadcast(intent);
     	
     	//mLauncher.sendBroadcast(intent);
+    }
+    
+    void sendBroadcast4Widget(CellLayout layout) {
+    	String packageNames = new String("");
+    	Intent intent = new Intent(ACTION_SCROLLER_SCREEN);
+    	
+    	for(int i=0;i<layout.getChildCount();i++){
+    		View child = layout.getChildAt(i);
+    		if (child instanceof LauncherAppWidgetHostView){
+    			packageNames+=((LauncherAppWidgetHostView)child).getAppWidgetInfo().provider.getPackageName()+":";
+    		}
+    		//packageNames+=":";
+    	}
+    	
+    	if(!packageNames.equals(new String(""))){
+	    	//intent.putExtra("test", "testValue");
+	    	intent.putExtra("packageNames", packageNames);
+	    	
+	    	//this.getContext().sendBroadcast(intent);
+	    	this.getContext().getApplicationContext().sendBroadcast(intent);
+	    	
+	    	//mLauncher.sendBroadcast(intent);
+    	}
     }
     
     @Override
