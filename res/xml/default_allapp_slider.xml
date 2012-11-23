@@ -17,11 +17,6 @@
 
 <favorite_allapps xmlns:launcher="http://schemas.android.com/apk/res/com.fruit.launcher" >
 
-    <favorite_allapp
-        launcher:AllappClassName="com.huaqin.taskmanager.RecentAppListActivity"
-        launcher:AllappPackageName="com.huaqin.taskmanager" />
-    <favorite_allapp
-        launcher:AllappClassName="com.huaqin.taskmanager.RunningAppListActivity"
-        launcher:AllappPackageName="com.huaqin.taskmanager" />
+    
 
 </favorite_allapps>

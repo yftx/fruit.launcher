@@ -1,7 +1,5 @@
 package com.fruit.launcher;
 
-import static com.fruit.launcher.Launcher.FOURLEAFS_WIDGET_PACKAGE_NAME;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +13,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-/* HQ_wangmeihua 2012-5-10 add for FourLeafsWidget's SettingView start*/
+/*  2012-5-10 add for FourLeafsWidget's SettingView start*/
 public class SettingView {
 	private Launcher mLauncher;
 	private Workspace mWorkspace;
@@ -28,8 +26,6 @@ public class SettingView {
 	private LauncherAppWidgetHostView mLauncherAppWidgetHostView;
 	Boolean flag = false;
 	
-
-	public static final String ACTIVITY_CLASS_NAME = "com.huaqin.FourleafsWidget.FourleafsWidgetActivity";
 	public static final String POPUPWINDOW_START_SETTING = "intent.action.START_SETTING";
 
 	public SettingView(Launcher launcher, Workspace workspace, int index,
@@ -79,17 +75,7 @@ public class SettingView {
 
 		@Override
 		public void onClick(View arg0) {
-			Intent mIntent = new Intent();
-			mIntent.putExtra("leafIndex", mLeafIndex);
-			mIntent.setAction(Intent.ACTION_MAIN);
-			ComponentName localComponentName1 = new ComponentName(FOURLEAFS_WIDGET_PACKAGE_NAME,
-					ACTIVITY_CLASS_NAME);
-			mIntent.setComponent(localComponentName1);
-			
-			if (localComponentName1 != null) {
-				mLauncher.startActivity(mIntent);
-				dismiss();
-			}
+
 		}
 	}
 
@@ -152,4 +138,4 @@ public class SettingView {
 		}
 	}
 }
-/* HQ_wangmeihua 2012-5-10 add for FourLeafsWidget's SettingView end*/
+/*  2012-5-10 add for FourLeafsWidget's SettingView end*/

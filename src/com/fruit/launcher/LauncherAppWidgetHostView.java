@@ -27,10 +27,10 @@ import android.view.ViewConfiguration;
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends AppWidgetHostView {
-	/* HQ_wangmeihua 2012-5-8 modified for FourLeafsWidget start*/
+	/*  2012-5-8 modified for FourLeafsWidget start*/
 	public float  mTouchX;
 	public float  mTouchY;
-	/* HQ_wangmeihua 2012-5-8 modified for FourLeafsWidget end*/
+	/*  2012-5-8 modified for FourLeafsWidget end*/
 
     private boolean mHasPerformedLongPress;
 
@@ -74,10 +74,10 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 postCheckForLongClick();
-                /* HQ_wangmeihua 2012-5-8 modified for FourLeafsWidget start*/
+                /*  2012-5-8 modified for FourLeafsWidget start*/
                 mTouchX = ev.getX();
                 mTouchY = ev.getY();
-                /* HQ_wangmeihua 2012-5-8 modified for FourLeafsWidget end*/
+                /*  2012-5-8 modified for FourLeafsWidget end*/
                 break;
             }
 

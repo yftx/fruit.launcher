@@ -17,30 +17,7 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.fruit.launcher" >
 
-    <appwidget
-        launcher:className="com.baidu.searchbox.widget.SearchWidgetProvider"
-        launcher:packageName="com.baidu.searchbox"
-        launcher:screen="0"
-        launcher:spanX="4"
-        launcher:spanY="1"
-        launcher:x="0"
-        launcher:y="0" />
-    <appwidget
-        launcher:className="vollo.weatherforcast.widget.Widget_2x4_style1"
-        launcher:packageName="vollo.weatherforcast"
-        launcher:screen="0"
-        launcher:spanX="4"
-        launcher:spanY="2"
-        launcher:x="0"
-        launcher:y="1" />
-    <appwidget
-        launcher:className="com.huaqin.musicwidget.musicwidget"
-        launcher:packageName="com.huaqin.musicwidget"
-        launcher:screen="3"
-        launcher:spanX="4"
-        launcher:spanY="3"
-        launcher:x="0"
-        launcher:y="0" />
+
     <appwidget
         launcher:className="com.android.protips.ProtipWidget"
         launcher:packageName="com.android.protips"
@@ -178,24 +155,7 @@
         launcher:y="1" />
 
     <!-- row No. 3 -->
-    <favorite
-        launcher:className="com.mediatek.camera.Camera"
-        launcher:container="-100"
-        launcher:packageName="com.mediatek.camera"
-        launcher:screen="1"
-        launcher:spanX="1"
-        launcher:spanY="1"
-        launcher:x="0"
-        launcher:y="2" />
-    <favorite
-        launcher:className="com.baidu.BaiduMap.BaiduMap"
-        launcher:container="-100"
-        launcher:packageName="com.baidu.BaiduMap"
-        launcher:screen="1"
-        launcher:spanX="1"
-        launcher:spanY="1"
-        launcher:x="1"
-        launcher:y="2" />
+    
     <favorite
         launcher:className="com.android.music.MusicBrowserActivity"
         launcher:container="-100"
@@ -205,35 +165,10 @@
         launcher:spanY="1"
         launcher:x="2"
         launcher:y="2" />
-    <favorite
-        launcher:className="com.huaqin.videoplayer.VideoBrowserActivity"
-        launcher:container="-100"
-        launcher:packageName="com.huaqin.videoplayer"
-        launcher:screen="1"
-        launcher:spanX="1"
-        launcher:spanY="1"
-        launcher:x="3"
-        launcher:y="2" />
+
 
     <!-- row No. 4 -->
-    <favorite
-        launcher:className="com.cooliris.media.Gallery"
-        launcher:container="-100"
-        launcher:packageName="com.cooliris.media"
-        launcher:screen="1"
-        launcher:spanX="1"
-        launcher:spanY="1"
-        launcher:x="0"
-        launcher:y="3" />
-    <favorite
-        launcher:className="com.huaqin.filemanager.FileManager"
-        launcher:container="-100"
-        launcher:packageName="com.huaqin.filemanager"
-        launcher:screen="1"
-        launcher:spanX="1"
-        launcher:spanY="1"
-        launcher:x="1"
-        launcher:y="3" />
+
     <favorite
         launcher:className="com.android.providers.downloads.ui.DownloadList"
         launcher:container="-100"

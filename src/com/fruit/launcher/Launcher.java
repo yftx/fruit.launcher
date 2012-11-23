@@ -265,12 +265,10 @@ public final class Launcher extends Activity
 	private int mPaddingTop = -1;
 
     private Context mCtx;
-	/* HQ_wangmeihua 2012-5-10 add for FourLeafsWidget start*/
+	/*  2012-5-10 add for FourLeafsWidget start*/
 	private SettingView mSettingView;
-	public static final String FOURLEAFS_WIDGET_PACKAGE_NAME = "com.huaqin.FourleafsWidget";
-	public static final String FOURLEAFS_WIDGET_CLASS_NAME = "com.huaqin.FourleafsWidget.FourLeafsWidget";
 
-	/* HQ_wangmeihua 2012-5-10 add for FourLeafsWidget end */
+	/*  2012-5-10 add for FourLeafsWidget end */
 
     private LauncherMonitor mPhoneMonitor;
     private LauncherMonitor mMssMonitor;
@@ -2303,24 +2301,20 @@ public final class Launcher extends Activity
                 }
             }
         }
-		/* HQ_wangmeihua 2012-5-10 modified for FourLeafsWidet start */
+		/*  2012-5-10 modified for FourLeafsWidet start */
 		if (cellInfo.cell instanceof LauncherAppWidgetHostView) {
 			showSettingPopUpWindow((LauncherAppWidgetHostView) cellInfo.cell,cellInfo);
 		}
-		/* HQ_wangmeihua 2012-5-10 modified for FourLeafsWidget end */
+		/*  2012-5-10 modified for FourLeafsWidget end */
         return true;
     }
 
-	/* HQ_wangmeihua 2012-5-10 modified for FourLeafsWidget start */
+	/*  2012-5-10 modified for FourLeafsWidget start */
 	private void showSettingPopUpWindow(LauncherAppWidgetHostView view,
 			CellLayout.CellInfo cellInfo) {
 		AppWidgetProviderInfo widgetInfo = view.getAppWidgetInfo();
 		String pkgName = widgetInfo.provider.getPackageName();
 		String clsName = widgetInfo.provider.getClassName();
-		
-		if (!pkgName.equals(FOURLEAFS_WIDGET_PACKAGE_NAME) || !clsName.equals(FOURLEAFS_WIDGET_CLASS_NAME)) {
-			return;
-		}
 		
 		String[] LEAFS_BUTTON_TAG = new String[] {"leaf1", "leaf2", "leaf3","leaf4" };
 		float touchedX = view.mTouchX;
@@ -2356,7 +2350,7 @@ public final class Launcher extends Activity
 		mSettingView.show((int)touchedX+viewPosition[0], (int)touchedY+viewPosition[1]);
 		mDragController.mSettingView = mSettingView;
 	}
-	/* HQ_wangmeihua 2012-5-10 modified for FourLeafsWidget end */
+	/*  2012-5-10 modified for FourLeafsWidget end */
 
     @SuppressWarnings({"unchecked"})
     private void dismissPreview(final View v) {

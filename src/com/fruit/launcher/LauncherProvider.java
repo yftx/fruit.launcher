@@ -830,12 +830,11 @@ public class LauncherProvider extends ContentProvider {
         				||actInfoName.equals("com.android.deskclock.DeskClock")
         				
         				||actInfoName.equals("com.mediatek.camera.Camera")
-        				||actInfoName.equals("com.baidu.BaiduMap.BaiduMap")
-        				||actInfoName.equals("com.android.music.MusicBrowserActivity")
-        				||actInfoName.equals("com.huaqin.videoplayer")//("com.mediatek.mtkvideoplayer.GalleryPicker")
         				
-        				||actInfoName.equals("com.cooliris.media.Gallery")
-        				||actInfoName.equals("com.huaqin.filemanager.FileManager")
+        				||actInfoName.equals("com.android.music.MusicBrowserActivity")
+        				||actInfoName.equals("com.mediatek.mtkvideoplayer.GalleryPicker")
+        				
+        				
         				||actInfoName.equals("com.android.providers.downloads.ui.DownloadList")
         				||actInfoName.equals("com.android.settings.Settings")
 
