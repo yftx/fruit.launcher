@@ -1397,9 +1397,9 @@ public final class Launcher extends Activity
         menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
                  .setIcon(android.R.drawable.ic_menu_gallery)
                  .setAlphabeticShortcut('W');
-        //menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
-           //     .setIcon(android.R.drawable.ic_search_category_default)
-            //    .setAlphabeticShortcut(SearchManager.MENU_KEY);
+        menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
+                .setIcon(android.R.drawable.ic_search_category_default)
+                .setAlphabeticShortcut(SearchManager.MENU_KEY);
         menu.add(MENU_GROUP_THUMBNAIL, MENU_THUMBNAIL, 0, R.string.menu_thumbnail)
                 .setIcon(R.drawable.ic_menu_thumbnail)
                 .setAlphabeticShortcut('N');
@@ -2302,54 +2302,54 @@ public final class Launcher extends Activity
             }
         }
 		/*  2012-5-10 modified for FourLeafsWidet start */
-		if (cellInfo.cell instanceof LauncherAppWidgetHostView) {
-			showSettingPopUpWindow((LauncherAppWidgetHostView) cellInfo.cell,cellInfo);
-		}
+//		if (cellInfo.cell instanceof LauncherAppWidgetHostView) {
+//			showSettingPopUpWindow((LauncherAppWidgetHostView) cellInfo.cell,cellInfo);
+//		}
 		/*  2012-5-10 modified for FourLeafsWidget end */
         return true;
     }
 
 	/*  2012-5-10 modified for FourLeafsWidget start */
-	private void showSettingPopUpWindow(LauncherAppWidgetHostView view,
-			CellLayout.CellInfo cellInfo) {
-		AppWidgetProviderInfo widgetInfo = view.getAppWidgetInfo();
-		String pkgName = widgetInfo.provider.getPackageName();
-		String clsName = widgetInfo.provider.getClassName();
-		
-		String[] LEAFS_BUTTON_TAG = new String[] {"leaf1", "leaf2", "leaf3","leaf4" };
-		float touchedX = view.mTouchX;
-		float touchedY = view.mTouchY;
-		int leafIndex = -1;
-		int[] viewPosition = new int[2];
-		view.getLocationInWindow(viewPosition);
-		
-		for (int i = 0; i < 4; i++) {
-			ImageButton leafButton = (ImageButton)view.findViewWithTag(LEAFS_BUTTON_TAG[i]);
-			int[] leafPosition = new int[2];
-			leafButton.getLocationInWindow(leafPosition);
-			float dirX = touchedX - leafPosition[0] + viewPosition[0];
-			float dirY = touchedY - leafPosition[1] + viewPosition[1];
-			Rect leafRect = new Rect();
-			leafButton.getDrawingRect(leafRect);
-
-			Boolean leafFlag = leafRect.contains((int) dirX, (int) dirY);
-			if (leafFlag == true) {
-				leafIndex = i;
-				break;
-			}
-		}
-		
-		if (leafIndex == -1) {
-			return;
-		}
-
-		LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
-		CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
-
-		mSettingView = new SettingView(this, mWorkspace, leafIndex, info, view, layout);
-		mSettingView.show((int)touchedX+viewPosition[0], (int)touchedY+viewPosition[1]);
-		mDragController.mSettingView = mSettingView;
-	}
+//	private void showSettingPopUpWindow(LauncherAppWidgetHostView view,
+//			CellLayout.CellInfo cellInfo) {
+//		AppWidgetProviderInfo widgetInfo = view.getAppWidgetInfo();
+//		String pkgName = widgetInfo.provider.getPackageName();
+//		String clsName = widgetInfo.provider.getClassName();
+//		
+//		String[] LEAFS_BUTTON_TAG = new String[] {"leaf1", "leaf2", "leaf3","leaf4" };
+//		float touchedX = view.mTouchX;
+//		float touchedY = view.mTouchY;
+//		int leafIndex = -1;
+//		int[] viewPosition = new int[2];
+//		view.getLocationInWindow(viewPosition);
+//		
+//		for (int i = 0; i < 4; i++) {
+//			ImageButton leafButton = (ImageButton)view.findViewWithTag(LEAFS_BUTTON_TAG[i]);
+//			int[] leafPosition = new int[2];
+//			leafButton.getLocationInWindow(leafPosition);
+//			float dirX = touchedX - leafPosition[0] + viewPosition[0];
+//			float dirY = touchedY - leafPosition[1] + viewPosition[1];
+//			Rect leafRect = new Rect();
+//			leafButton.getDrawingRect(leafRect);
+//
+//			Boolean leafFlag = leafRect.contains((int) dirX, (int) dirY);
+//			if (leafFlag == true) {
+//				leafIndex = i;
+//				break;
+//			}
+//		}
+//		
+//		if (leafIndex == -1) {
+//			return;
+//		}
+//
+//		LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
+//		CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
+//
+//		mSettingView = new SettingView(this, mWorkspace, leafIndex, info, view, layout);
+//		mSettingView.show((int)touchedX+viewPosition[0], (int)touchedY+viewPosition[1]);
+//		mDragController.mSettingView = mSettingView;
+//	}
 	/*  2012-5-10 modified for FourLeafsWidget end */
 
     @SuppressWarnings({"unchecked"})
