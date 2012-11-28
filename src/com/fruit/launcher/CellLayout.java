@@ -252,15 +252,33 @@ public class CellLayout extends ViewGroup {
     
     int cellToIndex(int cellX, int cellY){
     	int result = INVALID_CELL;
+    	int[] used = new int[ItemInfo.COL*ItemInfo.ROW];
+    	for (int i=0;i<ItemInfo.COL*ItemInfo.ROW;i++){
+    		used[i] = -1;
+    	}
     	
     	//
     	for (int i = 0; i < getChildCount(); i++) {
     		View v = getChildAt(i);
     		if (v == null) continue;
+    		
     		LayoutParams lp = (LayoutParams) v.getLayoutParams();
     		if (lp == null) continue;
-    		if (lp.cellX == cellX && lp.cellY == cellY) {
+    		
+    		if (lp.cellHSpan >= 1 || lp.cellVSpan >= 1){
+    			int cellNumStart = lp.cellY * (ItemInfo.COL) + lp.cellX;
+    			for (int j= 0;j<lp.cellHSpan;j++){
+    				for(int k=0;k<lp.cellVSpan;k++){
+    					used[cellNumStart+ItemInfo.COL*k+j]=i;
+    				}
+    			}
+    		}
+    		
+    		int overNum = cellY * (ItemInfo.COL) + cellX;    		
+        	
+        	if (used[overNum]!=-1){
     			result = i;
+    			break;
     		} else {
     			//pass
     		}
@@ -393,6 +411,16 @@ public class CellLayout extends ViewGroup {
     	boolean result = false;
     	
     	if (getChildCount() >= getMaxCount()) {
+    		result = true;
+    	}
+    	
+    	return result;
+    }
+    
+    boolean isOverFull() {
+    	boolean result = false;
+    	
+    	if (getChildCount() > getMaxCount()) {
     		result = true;
     	}
     	
@@ -1557,7 +1585,7 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
 			// TODO Auto-generated method stub
 			String str="cell("+this.cellX+","+this.cellY+","+this.cellHSpan+","+this.cellVSpan+")";
 			str+="pos("+this.x+","+this.y+","+this.width+","+this.height+")";
-			str+="isDragging="+this.isDragging;
+			str+=", isDragging="+this.isDragging;
 			
 			return str;//super.toString();
 		}

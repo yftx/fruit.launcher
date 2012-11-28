@@ -31,6 +31,9 @@ import android.util.Log;
  */
 class ItemInfo {
 
+	public static int ROW = 4;
+	public static int COL = 4;
+
     static final int NO_ID = -1;
 
     /**
@@ -90,6 +93,11 @@ class ItemInfo {
     int position;
 
     /**
+     * Indicates item's position in desktop
+     */
+    int seqNo;
+    
+    /**
      * Indicates item's order if it is in folder
      */
     int orderId = -1;
@@ -109,7 +117,9 @@ class ItemInfo {
         container = info.container;
         position = info.position;
         orderId = info.orderId;
+        seqNo = info.screen * (ROW*COL) + info.cellY * (COL) + info.cellX;
     }
+
 
     /**
      * Write the fields of this item to the DB
@@ -162,4 +172,12 @@ class ItemInfo {
     public String toString() {
         return "Item(id=" + this.id + " type=" + this.itemType + ")";
     }
+
+	/**
+	 * @return the seqNo
+	 */
+	public int getSeqNo() {
+		return (this.screen * (ROW*COL) + this.cellY * (COL) + this.cellX);
+	}
+
 }
