@@ -14,7 +14,7 @@
         android:key="settings_key_high_quality"
         android:summary="@string/settings_high_quality_summary"
         android:title="@string/settings_high_quality" />
-"
+
     <Preference
         android:key="settings_theme"
         android:title="@string/settings_theme" />
@@ -29,7 +29,7 @@
 		android:defaultValue="false"
 		android:summary="@string/settings_lockscreen_summary" />
     -->
-"
+
     <Preference
         android:key="settings_key_about"
         android:summary="@string/current_desk_version"
