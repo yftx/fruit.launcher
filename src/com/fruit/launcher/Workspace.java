@@ -3415,6 +3415,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	// }
 	// }
 
+	
+
+    
 	@Override
 	public void onDrop(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
@@ -3436,82 +3439,36 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				// if(dragInfo != null){
 				ItemInfo itemInfo = (ItemInfo) dragInfo;
 				// }
-
-				if (isViewSpan1x1(mDragInfo)) {
-					// int[] newCell = new int[2]; // the cell on dropped
-					// cellLayout.pointToCellRounded(x - xOffset, y - yOffset,
-					// newCell);
-					//
-					// if (!(isViewMoveToSamePlace(mDragInfo, mDragInfo.screen,
-					// index, newCell[0], newCell[1]))) {
-					// //cellLayout.checkCellLayout();
-					// int dropIndex = cellLayout.cellToIndex(newCell[0],
-					// newCell[1]);
-					// if (dropIndex >= 0) {
-					// if ((cellLayout.getCellSpanX(dropIndex) == 1) &&
-					// (cellLayout.getCellSpanY(dropIndex) == 1)) {
-					// View dropView = cellLayout.getChildAt(dropIndex);
-					// if (!(dropView instanceof Folder)) {
-					// //onDropScreen(mDragInfo, mDragInfo.screen, index,
-					// newCell[0], newCell[1]);
-					// onDropInternalEx(x, y , xOffset, yOffset, cell,
-					// cellLayout, index);
-					// exchangeAllCells(index);
-					// return;
-					// }
-					// }
-					// }
-					// }
+				
+				if (!isViewSpan1x1(dragInfo)){
+					onDropInternal(x, y, xOffset, yOffset, cell,
+							cellLayout, cellLayout.getPageIndex());
+					return;
+				} else {
 					
-						if (cellLayout.isOverFull()) {
-							dragView.setmCallbackFlag(false);
-							invalidate();
-							return;
-						} 
+					if (cellLayout.isOverFull()) {
+						dragView.setmCallbackFlag(false);
+						invalidate();
+						return;
+					} 
 					
 					
-					//CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-					//		.getLayoutParams();
-					//newCell[0] = lp.cellX;
-					//newCell[1] = lp.cellY;
-					//cellLayout.onDropChild(cell, newCell);
+					CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
+							.getLayoutParams();
+					newCell[0] = lp.cellX;
+					newCell[1] = lp.cellY;
+					cellLayout.onDropChild(cell, newCell);
 					
-					invalidate();
+					//invalidate();
 					
 					exchangeAllCells(mCurrentScreen);
 					
 					return;
-				} else {
-
-					if (cellLayout.getPageIndex() != itemInfo.screen) {
-						if (cellLayout.isFull()
-								|| !acceptDropInternal(source, x, y, xOffset,
-										yOffset, dragView, dragInfo)) {
-							// cellLayout.removeView(mDragInfo.cell);
-							// oriLayout.addView(mDragInfo.cell);
-							// final CellLayout originalCellLayout =
-							// (CellLayout) getChildAt(itemInfo.screen);
-							// originalCellLayout.addView(cell);
-
-							dragView.setmCallbackFlag(false);
-							// mDragInfo.screen=mCurrentScreen;//oriLayout.getPageIndex();
-
-						} else {
-							//oriLayout.removeView(cell);
-							//cellLayout.addView(cell);
-							// if(cellLayout.indexOfChild(cell)<0)
-							// cellLayout.addView(cell);
-							// mDragInfo.screen=cellLayout.getPageIndex();
-							onDropInternal(x, y, xOffset, yOffset, cell,
-									cellLayout, mCurrentScreen);
-						}
-					} else { // move in current page
-						onDropInternal(x, y, xOffset, yOffset, cell,
-								cellLayout, mCurrentScreen);
-					}
-				}
+				} 
+					
 
 			} else {
+				invalidate();
 				Log.i(TAG, "mDragInfo == null");
 			}
 		}
@@ -3547,7 +3504,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);
 	}
 
-	void onDropInternal(int x, int y, int xOffset, int yOffset, View cell,
+	void onDropInternal2(int x, int y, int xOffset, int yOffset, View cell,
 			CellLayout cellLayout, int index) {
 
 		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
@@ -3562,8 +3519,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		updateCellByScreenIndex(cell, cellLayout.getPageIndex()/* index */);
 
 		// dropAllChilds(cellLayout);
+
 	}
 
+            
 	void onDropInternalEx(int x, int y, int xOffset, int yOffset, View cell,
 			CellLayout cellLayout, int index) {
 
@@ -3578,6 +3537,24 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		updateCellByScreenIndex(cell, cellLayout.getPageIndex()/* index */);
 
 	}
+            
+	void onDropInternal(int x, int y, int xOffset, int yOffset, View cell,
+			CellLayout cellLayout, int index) {
+        if (index != mDragInfo.screen) {
+            final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
+            originalCellLayout.removeView(cell);
+            cellLayout.addView(cell);
+        }
+        
+        mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+                mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
+        cellLayout.onDropChild(cell, mTargetCell);
+
+        final ItemInfo info = (ItemInfo) cell.getTag();
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
+        LauncherModel.moveItemInDatabase(mLauncher, info,
+                Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);
+	}
 
 	@Override
 	public void onDragEnter(DragSource source, int x, int y, int xOffset,
@@ -3587,8 +3564,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		clearVacantCache();
 
-		if (!isViewSpan1x1(dragInfo))
-			return;
 		
 		// yfzhao
 		// 1. from workspace, pass
@@ -3597,7 +3572,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			lastLayout = oriLayout;
 			return;
 		}
-
+		
+		if (!isViewSpan1x1(dragInfo))
+			return;
+		
 		// double check
 		if (dragInfo == null)
 			return;
@@ -4037,14 +4015,16 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			}
 		} else {
 			if (mDragInfo != null && mDragInfo.cell != null) {
-				lastLayout.removeView(mDragInfo.cell);
-				oriLayout.addView(mDragInfo.cell);
-				
-				// final CellLayout cellLayout = (CellLayout)
-				// getChildAt(mDragInfo.screen);
-				
-				if (oriLayout != null)
-					oriLayout.onDropAborted(mDragInfo.cell);
+				if (isViewSpan1x1(mDragInfo.cell)){
+					lastLayout.removeView(mDragInfo.cell);
+					oriLayout.addView(mDragInfo.cell);
+					
+					if (oriLayout != null)
+						oriLayout.onDropAborted(mDragInfo.cell);
+				} else {					
+					if (oriLayout != null)
+						oriLayout.onDropAborted(mDragInfo.cell);
+				}
 			}
 		}
 
