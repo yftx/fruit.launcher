@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100.0dip"
-    android:layout_height="140.0dip"
-    android:padding="2.0dip" >
+    android:layout_width="@dimen/thumbnail_width"
+    android:layout_height="@dimen/thumbnail_height"
+    android:padding="@dimen/thumbnail_padding" >
 
     <ImageView
         android:id="@+id/thumbnail_imageview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/thumbnail_bg_selector"
-        android:padding="6.0dip"
+        android:padding="@dimen/thumbnail_bg_padding"
         android:scaleType="fitXY" />
 
     <ImageView
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:padding="4.0dip"
+        android:padding="@dimen/thumbnail_delete_padding"
         android:src="@drawable/thumbnail_delete_selector" />
 
     <ImageView
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="5.0dip"
+        android:paddingBottom="@dimen/thumbnail_home_padding"
         android:src="@drawable/ic_homescreen_none" />
 
 </RelativeLayout>
