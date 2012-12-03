@@ -38,7 +38,7 @@ import java.util.ArrayList;
  */
 public class DragController {
 
-    private static final String TAG = "Launcher.DragController";
+    private static final String TAG = "DragController";
     private static final boolean DEBUG = false;
 
     /** Indicates the drag is a move.  */

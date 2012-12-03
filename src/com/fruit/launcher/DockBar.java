@@ -31,6 +31,7 @@ import com.fruit.launcher.LauncherSettings.Favorites;
 public class DockBar extends ViewGroup {
 
     public static final String TAG = "DockBar";
+    
 	public static final int DEFAULT_CELL_NUM_IDEAL = 4;//yfzhao//5;
 	public static final int DEFAULT_CELL_NUM_ALL_APP = 3;
 	private static final int ORIENTATION_HORIZONTAL = 1;

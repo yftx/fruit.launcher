@@ -163,7 +163,8 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     	}
     }
 
-    private void deleteFromAllApps(ItemInfo itemInfo) {
+    @SuppressWarnings("unused")
+	private void deleteFromAllApps(ItemInfo itemInfo) {
 		// TODO Auto-generated method stub
 		if (itemInfo instanceof ApplicationInfoEx) {
 			ApplicationInfoEx appInfo = (ApplicationInfoEx) itemInfo;
