@@ -25,7 +25,9 @@
     <!-- height of the free play area in the dock bar -->
     <dimen name="dock_bar_top_padding">6.0dip</dimen>
     <dimen name="dock_bar_bottom_padding">6.0dip</dimen>
-
+    <dimen name="dock_bar_left_padding">6.0dip</dimen>
+    <dimen name="dock_bar_right_padding">6.0dip</dimen>
+ 
     <!-- Area of workspace -->
     <dimen name="workspace_cell_top_padding">18.0dip</dimen>
     <dimen name="workspace_cell_bottom_padding">140.0dip</dimen>
@@ -41,5 +43,14 @@
     <dimen name="workspace_cell_width">88dip</dimen>
     <dimen name="workspace_cell_height">116dip</dimen>
     <dimen name="workspace_cell_icon_size">116px</dimen>
-
+    
+    <dimen name="thumbnail_width">100.0dip</dimen>
+    <dimen name="thumbnail_height">140.0dip</dimen>
+    
+    <dimen name="thumbnail_padding">2.0dip</dimen>
+    
+    <dimen name="thumbnail_bg_padding">6.0dip</dimen>
+    <dimen name="thumbnail_delete_padding">4.0dip</dimen>
+    <dimen name="thumbnail_home_padding">5.0dip</dimen>  
+    
 </resources>
