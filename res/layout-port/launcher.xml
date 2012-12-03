@@ -23,7 +23,7 @@
                 android:id="@+id/workspace"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                launcher:defaultScreen="0" >
+                launcher:defaultScreen="2" >
 
                 <!-- <include android:id="@+id/cell1" layout="@layout/workspace_screen" /> -->
                 <!-- <include android:id="@+id/cell2" layout="@layout/workspace_screen" /> -->
@@ -36,6 +36,7 @@
                 android:id="@+id/screenIndicator"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/screen_indicator_height"
+                android:background="@drawable/screen_indicator"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/dock_bar_height" />
@@ -51,8 +52,8 @@
             launcher:bottomPadding="@dimen/dock_bar_bottom_padding"
             launcher:cellNum="4"
             launcher:direction="horizontal"
-            launcher:leftPadding="4.0dip"
-            launcher:rightPadding="4.0dip"
+            launcher:leftPadding="@dimen/dock_bar_left_padding"
+            launcher:rightPadding="@dimen/dock_bar_right_padding"
             launcher:topPadding="@dimen/dock_bar_top_padding" />
 
         <com.fruit.launcher.DeleteZone
