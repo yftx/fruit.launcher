@@ -122,164 +122,164 @@ public class DockBar extends ViewGroup {
 		setBackgroundDrawable(mIconCache.getLocalIcon(R.drawable.dock_background, "dock_background"));
 	}
 	
-	private void initAllAppDockButton() {
-		// TODO Auto-generated method stub
-		LayoutInflater inflater = LayoutInflater.from(mContext);
-
-		mInAllAppMode = false;
-		mDockButtonClickListener = new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (mInAllAppMode && v.getTag() != null) {
-					ShortcutInfo appInfo = (ShortcutInfo) v.getTag();
-					if (appInfo.intent != null) {
-						mContext.startActivity(appInfo.intent);
-					}
-				}
-			}
-		};
-
-		int dockBarCount = mAllAppHomeBar.size() + 1;
-		
-		for (int i = 0; i < dockBarCount; i++) {
-	
-			DockButton dockButton = (DockButton) inflater.inflate(R.layout.dock_button, null);
-			ShortcutInfo info = null;
-			if(i == mAllAppHomeIndex){
-				info = new ShortcutInfo();
-				
-				dockButton.mIsHome = true;
-				dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.home_button, "ic_home_button"));
-			}else{
-				int allAppHomeIndex = i > mAllAppHomeIndex ? i-1 : i;
-			
-				info = mAllAppHomeBar.get(allAppHomeIndex);
-				dockButton.mIsHome = false;
-				dockButton.setImageBitmap(mIconCache.getIcon(info.intent));
-			}
-
-			info.cellX = i;
-			info.cellY = -1;
-			info.container = Favorites.CONTAINER_DOCKBAR;
-			info.screen = -1;
-
-			dockButton.mIsHold = true;
-			dockButton.mIsEmpty = false;
-			dockButton.setTag(info);
-			dockButton.setPaint(mTrashPaint);
-			dockButton.setClickable(true);
-			dockButton.setOnClickListener(mDockButtonClickListener);
-			mAllAppDockButtons[i] = dockButton;
-		}
-	}
-
-	private void initIdealDockButton(){
-		LayoutInflater inflater = LayoutInflater.from(mContext);
-		// Initialize Home button
-		ShortcutInfo info = new ShortcutInfo();
-		info.container = Favorites.CONTAINER_DOCKBAR;
-		info.cellX = mIdealHomeIndex;
-		info.cellY = -1;
-		info.screen = -1;
-		info.itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
-		
-    	try {
-			DockButton dockButton =(DockButton) inflater.inflate(R.layout.dock_button, null);
-			
-			dockButton.mIsHome = true;
-			dockButton.mIsHold = true;
-			dockButton.mIsEmpty = false;
-			dockButton.setPaint(mTrashPaint);
-			dockButton.setClickable(true);
-			dockButton.setTag(info);
-			dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.all_apps_button, "ic_all_apps_button"));
-			
-			mDockButtons[mIdealHomeIndex] = dockButton;
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-	}
+//	private void initAllAppDockButton() {
+//		// TODO Auto-generated method stub
+//		LayoutInflater inflater = LayoutInflater.from(mContext);
+//
+//		mInAllAppMode = false;
+//		mDockButtonClickListener = new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				if (mInAllAppMode && v.getTag() != null) {
+//					ShortcutInfo appInfo = (ShortcutInfo) v.getTag();
+//					if (appInfo.intent != null) {
+//						mContext.startActivity(appInfo.intent);
+//					}
+//				}
+//			}
+//		};
+//
+//		int dockBarCount = mAllAppHomeBar.size() + 1;
+//		
+//		for (int i = 0; i < dockBarCount; i++) {
+//	
+//			DockButton dockButton = (DockButton) inflater.inflate(R.layout.dock_button, null);
+//			ShortcutInfo info = null;
+//			if(i == mAllAppHomeIndex){
+//				info = new ShortcutInfo();
+//				
+//				dockButton.mIsHome = true;
+//				dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.home_button, "ic_home_button"));
+//			}else{
+//				int allAppHomeIndex = i > mAllAppHomeIndex ? i-1 : i;
+//			
+//				info = mAllAppHomeBar.get(allAppHomeIndex);
+//				dockButton.mIsHome = false;
+//				dockButton.setImageBitmap(mIconCache.getIcon(info.intent));
+//			}
+//
+//			info.cellX = i;
+//			info.cellY = -1;
+//			info.container = Favorites.CONTAINER_DOCKBAR;
+//			info.screen = -1;
+//
+//			dockButton.mIsHold = true;
+//			dockButton.mIsEmpty = false;
+//			dockButton.setTag(info);
+//			dockButton.setPaint(mTrashPaint);
+//			dockButton.setClickable(true);
+//			dockButton.setOnClickListener(mDockButtonClickListener);
+//			mAllAppDockButtons[i] = dockButton;
+//		}
+//	}
+//
+//	private void initIdealDockButton(){
+//		LayoutInflater inflater = LayoutInflater.from(mContext);
+//		// Initialize Home button
+//		ShortcutInfo info = new ShortcutInfo();
+//		info.container = Favorites.CONTAINER_DOCKBAR;
+//		info.cellX = mIdealHomeIndex;
+//		info.cellY = -1;
+//		info.screen = -1;
+//		info.itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
+//		
+//    	try {
+//			DockButton dockButton =(DockButton) inflater.inflate(R.layout.dock_button, null);
+//			
+//			dockButton.mIsHome = true;
+//			dockButton.mIsHold = true;
+//			dockButton.mIsEmpty = false;
+//			dockButton.setPaint(mTrashPaint);
+//			dockButton.setClickable(true);
+//			dockButton.setTag(info);
+//			dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.all_apps_button, "ic_all_apps_button"));
+//			
+//			mDockButtons[mIdealHomeIndex] = dockButton;
+//    	} catch (Exception e) {
+//    		e.printStackTrace();
+//    	}
+//	}
 	
 	/**
      * Loads the default set of default to packages from an xml file.
      * @modify guo
      * @param context The context 
      */
-     private boolean loadAllAppHomeBar(Context context) {
-    	boolean bRet = false;
-    	
-    	if (mAllAppHomeBar == null) {
-    		mAllAppHomeBar = new ArrayList<ShortcutInfo>();
-    	} else {
-    		return true;
-    	}
+//     private boolean loadAllAppHomeBar(Context context) {
+//    	boolean bRet = false;
+//    	
+//    	if (mAllAppHomeBar == null) {
+//    		mAllAppHomeBar = new ArrayList<ShortcutInfo>();
+//    	} else {
+//    		return true;
+//    	}
+//
+//    	PackageManager packageManager = mContext.getPackageManager();
+//    	ActivityInfo actInfo;
+//        try {
+//            XmlResourceParser parser = context.getResources().getXml(R.xml.default_allapp_slider);
+//            AttributeSet attrs = Xml.asAttributeSet(parser);
+//            XmlUtils.beginDocument(parser, TAG_Favorite_All_Apps);
+//
+//            final int depth = parser.getDepth();
+//            
+//            int type;
+//            int i = 0;
+//            while (((type = parser.next()) != XmlPullParser.END_TAG || parser.getDepth() > depth) 
+//            		&& type != XmlPullParser.END_DOCUMENT) {
+//
+//                if (type != XmlPullParser.START_TAG) {
+//                    continue;
+//                }                    
+//
+//                TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Favorite_Allapp);   
+//                String packageName = a.getString(R.styleable.Favorite_Allapp_AllappPackageName);
+//                String className = a.getString(R.styleable.Favorite_Allapp_AllappClassName);
+//                try {
+//                    ComponentName cn;
+//                    try {
+//                        cn = new ComponentName(packageName, className);
+//                        actInfo = packageManager.getActivityInfo(cn, 0);
+//                    } catch (PackageManager.NameNotFoundException nnfe) {
+//                        String[] packages = packageManager.currentToCanonicalPackageNames(
+//                            new String[] { packageName });
+//                        cn = new ComponentName(packages[0], className);
+//                        actInfo = packageManager.getActivityInfo(cn, 0);
+//                    }
+//
+//                    ShortcutInfo info = new ShortcutInfo();
+//                    Intent intent = new Intent();
+//                    intent.setAction(Intent.ACTION_MAIN);
+//                    intent.setComponent(cn);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+//                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//                    info.intent = intent;
+//                    mAllAppHomeBar.add(info);
+//                } catch (PackageManager.NameNotFoundException e) {
+//                    Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
+//                    continue;
+//                }
+//
+//                a.recycle();
+//                i++;
+//                if(i > MAX_CELL_NUM_ALL_APP){
+//                	break;
+//                }
+//            }
+//        } catch (XmlPullParserException e) {
+//            Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
+//        } catch (IOException e) {
+//            Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
+//        }
+//        
+//        return bRet;
+//    }
 
-    	PackageManager packageManager = mContext.getPackageManager();
-    	ActivityInfo actInfo;
-        try {
-            XmlResourceParser parser = context.getResources().getXml(R.xml.default_allapp_slider);
-            AttributeSet attrs = Xml.asAttributeSet(parser);
-            XmlUtils.beginDocument(parser, TAG_Favorite_All_Apps);
-
-            final int depth = parser.getDepth();
-            
-            int type;
-            int i = 0;
-            while (((type = parser.next()) != XmlPullParser.END_TAG || parser.getDepth() > depth) 
-            		&& type != XmlPullParser.END_DOCUMENT) {
-
-                if (type != XmlPullParser.START_TAG) {
-                    continue;
-                }                    
-
-                TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Favorite_Allapp);   
-                String packageName = a.getString(R.styleable.Favorite_Allapp_AllappPackageName);
-                String className = a.getString(R.styleable.Favorite_Allapp_AllappClassName);
-                try {
-                    ComponentName cn;
-                    try {
-                        cn = new ComponentName(packageName, className);
-                        actInfo = packageManager.getActivityInfo(cn, 0);
-                    } catch (PackageManager.NameNotFoundException nnfe) {
-                        String[] packages = packageManager.currentToCanonicalPackageNames(
-                            new String[] { packageName });
-                        cn = new ComponentName(packages[0], className);
-                        actInfo = packageManager.getActivityInfo(cn, 0);
-                    }
-
-                    ShortcutInfo info = new ShortcutInfo();
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_MAIN);
-                    intent.setComponent(cn);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    info.intent = intent;
-                    mAllAppHomeBar.add(info);
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
-                    continue;
-                }
-
-                a.recycle();
-                i++;
-                if(i > MAX_CELL_NUM_ALL_APP){
-                	break;
-                }
-            }
-        } catch (XmlPullParserException e) {
-            Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
-        } catch (IOException e) {
-            Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
-        }
-        
-        return bRet;
-    }
-
-    private int getAppHomeBarCount() {
-    	return mAllAppHomeBar.size();
-    }
+//    private int getAppHomeBarCount() {
+//    	return mAllAppHomeBar.size();
+//    }
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
