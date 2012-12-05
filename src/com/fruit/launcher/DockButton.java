@@ -207,7 +207,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 			} else*/ {
 				dockIteminfo.cellX = deskItemInfo.cellX;
 				dockIteminfo.cellY = deskItemInfo.cellY;
-				dockIteminfo.screen = deskItemInfo.screen;
+				dockIteminfo.screen = workspace.getOriLayout().getPageIndex();//deskItemInfo.screen;
 			}
 			
 			dockIteminfo.container = deskItemInfo.container;			
@@ -249,9 +249,9 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 			} else {
 				// Drag from workspace to Dock bar
 				final View shortcut = mLauncher.createShortcut(R.layout.application,
-						(ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()/*dockIteminfo.screen*/), dockIteminfo);
+						(ViewGroup) workspace.getChildAt(workspace.getChildIndexByPos(workspace.getOriLayout().getPageIndex())/*workspace.getCurrentScreen()*//*dockIteminfo.screen*/), dockIteminfo);
 				//Log.i(TAG,"dockbar, before addInScreen,current has "+ ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
-				workspace.addInScreen(shortcut, workspace.getCurrentScreen()/*dockIteminfo.screen*/,
+				workspace.addInScreen(shortcut, workspace.getChildIndexByPos(workspace.getOriLayout().getPageIndex())/*workspace.getCurrentScreen()*//*dockIteminfo.screen*/,
 						dockIteminfo.cellX, dockIteminfo.cellY, 1, 1, false);
 				//Log.i(TAG,"dockbar, after addInScreen,current has "+ ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
 			}
