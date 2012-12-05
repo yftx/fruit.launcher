@@ -369,11 +369,11 @@ public class LauncherModel extends BroadcastReceiver {
 			//values2.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
 			
 	        Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");  
-	        // 不允许重复创�?  
+	        
 	        shortcutintent.putExtra("duplicate", false); 
-	        // 需要现实的名称   
+	        
 	        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, info.loadLabel(packageManager).toString());  
-	        // 快捷图片   
+	       
 	        Drawable da = info.activityInfo.loadIcon(packageManager);//info.loadIcon(packageManager);
 	        
 				
@@ -395,14 +395,14 @@ public class LauncherModel extends BroadcastReceiver {
 	        intent2.setFlags(0x10200000);
 	        //intent2.setAction(intentInfo);
 	        
-	        // 点击快捷图片，运行的程序主入�?  
+	     
 	        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent2);  
 //	        
 //	        Intent intent3 = intent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
 //	        String name = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
 //	        Parcelable bitmap = intent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
 //	       
-	        // 发送广�?  
+	       
 	        context.sendBroadcast(shortcutintent);  
 	        //context.getApplicationContext().sendBroadcast(shortcutintent);
 	        //((LauncherApplication) context.getApplicationContext()).sendBroadcast(shortcutintent);
