@@ -108,6 +108,9 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
         final ItemInfo item = (ItemInfo) dragInfo;
 
 		if (item.container == -1) {
+			String string = getContext().getString(R.string.out_of_space);
+			string += String.valueOf(item.container);			
+			Toast.makeText(getContext(), string, Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
