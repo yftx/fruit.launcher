@@ -352,7 +352,7 @@ public class AllApps2D_Slide extends RelativeLayout
 				folderInfo.allAppsHomeBars = mAllAppsHomeBar;
 				mLauncher.openFolder(folderInfo);
 			} else {
-				Log.i(TAG, "folder view not found, do not perform click action");
+				Log.d(TAG, "folder view not found, do not perform click action");
 			}
 			nPos = position;
 		}
@@ -645,7 +645,7 @@ public class AllApps2D_Slide extends RelativeLayout
 					}
 					mSlideAppsList.add(appInfoEx);
 				} else {
-					Log.i(TAG, "find launcherEx theme package " + pkgName);
+					Log.d(TAG, "find launcherEx theme package " + pkgName);
 				}
 			} else {
 				Log.w(TAG, "addPackage couldn't find a match for item \"" + item + "\"");
@@ -1180,7 +1180,7 @@ public class AllApps2D_Slide extends RelativeLayout
 					new String[]{String.valueOf(Applications.CONTAINER_APPS)},
 					Applications.DEFAULT_SORT_ORDER);
 			if (c != null) {
-				Log.i(TAG, "updateAppcationList count=" + c.getCount());
+				Log.d(TAG, "updateAppcationList count=" + c.getCount());
 				final int idIndex = c.getColumnIndexOrThrow(BaseColumns._ID);
 				final int titleIndex = c.getColumnIndexOrThrow(BaseLauncherColumns.TITLE);
 				final int intentIndex = c.getColumnIndexOrThrow(BaseLauncherColumns.INTENT);

@@ -545,7 +545,7 @@ public class LauncherModel extends BroadcastReceiver {
                      }
                      if (DEBUG_LOADERS) {
 	                     for(String app:packages){
-	                    	 Log.i(TAG, "package:"+app);
+	                    	 Log.d(TAG, "package:"+app);
 	                     }
                      }
                      synchronized (this) {
@@ -1494,7 +1494,7 @@ public class LauncherModel extends BroadcastReceiver {
                                             + (SystemClock.uptimeMillis() - t) + "ms");
                                     }
                                 } else {
-                                    Log.i(TAG, "not binding apps: no Launcher activity");
+                                    Log.d(TAG, "not binding apps: no Launcher activity");
                                 }
                             }
                         });
@@ -1547,7 +1547,7 @@ public class LauncherModel extends BroadcastReceiver {
                                     + (SystemClock.uptimeMillis() - t) + "ms");
                             }
                         } else {
-                            Log.i(TAG, "not binding apps: no Launcher activity");
+                            Log.d(TAG, "not binding apps: no Launcher activity");
                         }
                     }
                 });
@@ -1766,7 +1766,7 @@ public class LauncherModel extends BroadcastReceiver {
         if (icon == null) {
             icon = getFallbackIcon();
             info.usingFallbackIcon = true;
-            if (DEBUG_LOADERS) Log.i(TAG, "getShortcutInfo, getFallbackIcon ");
+            if (DEBUG_LOADERS) Log.d(TAG, "getShortcutInfo, getFallbackIcon ");
         }
         info.setIcon(icon);
 
@@ -1874,11 +1874,11 @@ public class LauncherModel extends BroadcastReceiver {
 
         if (intent == null) {
         	intentUri = data.toUri(0);
-        	//Log.i(TAG, "yfzhao-1.1-" + intentUri);
+        	//Log.d(TAG, "yfzhao-1.1-" + intentUri);
         	//intentUri = "%" + intentUri.substring(intentUri.indexOf("component="));
         } else {
             intentUri = intent.toUri(0); 
-            //Log.i(TAG, "yfzhao-1.2-" + intentUri);
+            //Log.d(TAG, "yfzhao-1.2-" + intentUri);
         	//intentUri = intentUri.substring(0, intentUri.indexOf("#")) + "%";  
         }
         
@@ -1890,7 +1890,7 @@ public class LauncherModel extends BroadcastReceiver {
         	//don't change it.
         }
         
-        //Log.i(TAG, "yfzhao-2-" + intentUri);
+        //Log.d(TAG, "yfzhao-2-" + intentUri);
         
         c = cr.query(Favorites.CONTENT_URI,
                 new String[] { "title", "intent" }, "title=? and intent like ?",

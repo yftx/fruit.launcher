@@ -199,7 +199,7 @@ public class CellLayout extends ViewGroup {
 //			}
 //    	}
 //    	
-//    	Log.i(TAG,"checkCellLayout");   	
+//    	Log.d(TAG,"checkCellLayout");   	
 //    }
 //    
 //   
@@ -232,7 +232,7 @@ public class CellLayout extends ViewGroup {
 //    		//}
 //    	}
 //    	
-//    	Log.i(TAG,"aMap");
+//    	Log.d(TAG,"aMap");
 //    }
 //
     

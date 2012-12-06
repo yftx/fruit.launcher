@@ -2003,7 +2003,7 @@ public class SlidingView extends AdapterView<ArrayAdapter> {
         }
 
         if (!mFirstLayout && !mScroller.isFinished()) {
-        	Log.i(TAG, "setAdapter scroller forceFinished");
+        	Log.d(TAG, "setAdapter scroller forceFinished");
         	scrollTo(mScroller.getFinalX(), mScroller.getFinalY());
         }
 

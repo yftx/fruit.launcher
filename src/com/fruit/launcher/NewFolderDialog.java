@@ -87,7 +87,7 @@ public class NewFolderDialog extends Activity {
                     
                     int destLen = dest.toString().getBytes("UTF-8").length;
                     int sourceLen = source.toString().getBytes("UTF-8").length;
-                    Log.i("inputfilter", String.valueOf(destLen + sourceLen));
+                    Log.d("inputfilter", String.valueOf(destLen + sourceLen));
 
                     if ((sourceLen + destLen) > MAX_LENGTH) {
                         Toast.makeText(getBaseContext(), R.string.folder_name_is_full, Toast.LENGTH_SHORT).show();

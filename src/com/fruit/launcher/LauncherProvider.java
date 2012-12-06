@@ -542,7 +542,7 @@ public class LauncherProvider extends ContentProvider {
                 convertWidgets(db);
             }
 
-            Log.i(TAG, "converted result=" + converted);
+            Log.d(TAG, "converted result=" + converted);
             return converted;
         }
 
@@ -786,7 +786,7 @@ public class LauncherProvider extends ContentProvider {
 	            values.put(Applications.CONTAINER, Applications.CONTAINER_APPS);
 	            values.put(Applications.POSITION, position);
 	            values.put(BaseLauncherColumns.ITEM_TYPE, Applications.APPS_TYPE_APP);
-	            Log.i(TAG, "appInfo: " + appInfo.packageName + " flag=" + appInfo.flags);
+	            Log.d(TAG, "appInfo: " + appInfo.packageName + " flag=" + appInfo.flags);
 	            if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 	            	values.put(Applications.SYSAPP, 1);
 	    		} else {
@@ -863,7 +863,7 @@ public class LauncherProvider extends ContentProvider {
 		            values2.put(Favorites.SPANX, 1);
 		            values2.put(Favorites.SPANY, 1);				
 		            values2.put(BaseLauncherColumns.ITEM_TYPE, BaseLauncherColumns.ITEM_TYPE_APPLICATION);
-		            //Log.i(TAG, "appInfo: " + appInfo.packageName + " flag=" + appInfo.flags);
+		            //Log.d(TAG, "appInfo: " + appInfo.packageName + " flag=" + appInfo.flags);
 		            //if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 		            //	values2.put(Favorites.SYSAPP, 1);
 		    		//} else {
@@ -1264,7 +1264,7 @@ public class LauncherProvider extends ContentProvider {
             String type = a.getString(attrMap.get(Configurator.TYPE));
 
             if (type != null && type.equals(FAVORITE_ACTION)) {
-            	Log.i(TAG_SHORTCUT, "find a shortcut with action");
+            	Log.d(TAG_SHORTCUT, "find a shortcut with action");
                 String action = a.getString(attrMap.get(Configurator.ACTION));
                 String uri = a.getString(attrMap.get(Configurator.URI));
                 String dataType = a.getString(attrMap.get(Configurator.DATATYPE));

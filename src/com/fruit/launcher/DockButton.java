@@ -101,7 +101,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 	@Override
 	public void onDrop(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
-		Log.i(TAG,"drag sequence,dockbutton onDrop");
+		Log.d(TAG,"drag sequence,dockbutton onDrop");
 		
 		// TODO Auto-generated method stub
 		final int itemType = ((ItemInfo) dragInfo).itemType;
@@ -157,7 +157,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 			appInfo.screen = -1;
 			setTag(appInfo);
 			LauncherModel.updateItemInDatabase(mLauncher, appInfo);
-			Log.i(TAG,"dockbar, mIsEmpty,current has "+ current.getChildCount()+" children");
+			Log.d(TAG,"dockbar, mIsEmpty,current has "+ current.getChildCount()+" children");
 			
 			
 		} else {
@@ -250,10 +250,10 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 				// Drag from workspace to Dock bar
 				final View shortcut = mLauncher.createShortcut(R.layout.application,
 						(ViewGroup) workspace.getChildAt(workspace.getChildIndexByPos(workspace.getOriLayout().getPageIndex())/*workspace.getCurrentScreen()*//*dockIteminfo.screen*/), dockIteminfo);
-				//Log.i(TAG,"dockbar, before addInScreen,current has "+ ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
+				//Log.d(TAG,"dockbar, before addInScreen,current has "+ ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
 				workspace.addInScreen(shortcut, workspace.getChildIndexByPos(workspace.getOriLayout().getPageIndex())/*workspace.getCurrentScreen()*//*dockIteminfo.screen*/,
 						dockIteminfo.cellX, dockIteminfo.cellY, 1, 1, false);
-				//Log.i(TAG,"dockbar, after addInScreen,current has "+ ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
+				//Log.d(TAG,"dockbar, after addInScreen,current has "+ ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
 			}
 			
 			
@@ -264,7 +264,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 
 	@Override
 	public void onDropCompleted(View target, boolean success) {
-		Log.i(TAG,"drag sequence,dockbutton onDropCompleted");
+		Log.d(TAG,"drag sequence,dockbutton onDropCompleted");
 		
 		// TODO Auto-generated method stub
 		if (!success) {
@@ -279,7 +279,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 	@Override
 	public void onDragEnter(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
-		Log.i(TAG,"drag sequence,dockbutton onDragEnter");
+		Log.d(TAG,"drag sequence,dockbutton onDragEnter");
 		
 		// TODO Auto-generated method stub
 		if (!acceptDrop(source, x, y, xOffset, yOffset, dragView, dragInfo)) {
@@ -295,16 +295,16 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 	@Override
 	public void onDragOver(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
-		Log.i(TAG,"drag sequence,dockbutton onDragOver");
+		Log.d(TAG,"drag sequence,dockbutton onDragOver");
 		// TODO Auto-generated method stub		
 	}
 
 	@Override
 	public void onDragExit(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
-		Log.i(TAG,"drag sequence,dockbutton onDragExit");
+		Log.d(TAG,"drag sequence,dockbutton onDragExit");
 		// TODO Auto-generated method stub
-		Log.i(TAG,"dragview exit,width="+dragView.getWidth()+",height="+dragView.getHeight());
+		Log.d(TAG,"dragview exit,width="+dragView.getWidth()+",height="+dragView.getHeight());
 		dragView.setPaint(null);
 	}
 

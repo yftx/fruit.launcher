@@ -406,8 +406,8 @@ public class ThumbnailWorkspace extends ViewGroup {
 		ImageView home = (ImageView) view.findViewById(R.id.thumbnail_home_indicator);
 		ImageView delete = (ImageView) view.findViewById(R.id.thumbnail_delete_screen);
 
-		Log.i(TAG,"thumb,getMeasuredWidth="+getMeasuredWidth()+",getMeasuredHeight="+getMeasuredHeight());
-		Log.i(TAG,"thumb,getLeft="+getLeft()+",getRight="+getRight()+",getTop="+getTop()+",getBottom="+getBottom());
+		Log.d(TAG,"thumb,getMeasuredWidth="+getMeasuredWidth()+",getMeasuredHeight="+getMeasuredHeight());
+		Log.d(TAG,"thumb,getLeft="+getLeft()+",getRight="+getRight()+",getTop="+getTop()+",getBottom="+getBottom());
 		
 		mThumbWidth = (getMeasuredWidth() - mWidthStartPadding - mWidthEndPadding) / COL_NUM;
 		mThumbHeight = (getMeasuredHeight() - mHeightStartPadding - mHeightEndPadding) / ROW_NUM;

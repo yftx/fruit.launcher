@@ -446,7 +446,7 @@ public final class Utilities {
 //    		
 //    		Bitmap theIcon = Utilities.scaleBitmap(oldIcon, sxo, syo);
 //		
-//    		Log.i(TAG, theIcon.getWidth() + " " + theIcon.getHeight());
+//    		Log.d(TAG, theIcon.getWidth() + " " + theIcon.getHeight());
 //    		
 //    		return theIcon;    		
 //    	}
@@ -477,7 +477,7 @@ public final class Utilities {
     		
     		Bitmap theIcon = Utilities.scaleBitmap(b, sxo, syo);
 		
-    		Log.i(TAG, theIcon.getWidth() + " " + theIcon.getHeight());
+    		Log.d(TAG, theIcon.getWidth() + " " + theIcon.getHeight());
     		
     		return theIcon;    		
     	}

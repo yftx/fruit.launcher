@@ -117,19 +117,19 @@ public class UserFolder extends Folder implements DropTarget {
     @Override
 	public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-    	//Log.i(TAG, "UserFolder onDragEnter");
+    	//Log.d(TAG, "UserFolder onDragEnter");
     }
 
     @Override
 	public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-    	//Log.i(TAG, "UserFolder onDragOver");
+    	//Log.d(TAG, "UserFolder onDragOver");
     }
 
     @Override
 	public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
             DragView dragView, Object dragInfo) {
-    	//Log.i(TAG, "UserFolder onDragExit");
+    	//Log.d(TAG, "UserFolder onDragExit");
     }
 
     @Override
