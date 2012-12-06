@@ -3455,17 +3455,18 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				final View cell = mDragInfo.cell;
 
 				//exchangeAllCells(mCurrentScreen);
-
-				if (cellLayout.getPageIndex() != oriLayout.getPageIndex()) {
-					// final CellLayout originalCellLayout = (CellLayout)
-					// getChildAt(mDragInfo.screen);
-					if (cellLayout.isFull()){
-						dragView.setmCallbackFlag(false);
-						//invalidate();
-						return;
+				if(oriLayout!=null){
+					if (cellLayout.getPageIndex() != oriLayout.getPageIndex()) {
+						// final CellLayout originalCellLayout = (CellLayout)
+						// getChildAt(mDragInfo.screen);
+						if (cellLayout.isFull()){
+							dragView.setmCallbackFlag(false);
+							//invalidate();
+							return;
+						}
+						oriLayout.removeView(cell);
+						cellLayout.addView(cell);
 					}
-					oriLayout.removeView(cell);
-					cellLayout.addView(cell);
 				}
 
 				onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
@@ -3838,8 +3839,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		clearVacantCache();
 
 		exchangeAllCells(getCurrentScreen());
-		(mDragInfo.cell).requestLayout();       
-		invalidate();
+		//(mDragInfo.cell).requestLayout();   
+//		CellLayout layout = (CellLayout)getChildAt(getCurrentScreen());
+//		layout.requestLayout();
+//		layout.invalidate();
+		//invalidate();
 		
 		// if (source instanceof Workspace) {
 		// //do nothing
@@ -4133,20 +4137,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				if (oriLayout != null)
 					oriLayout.onDropAborted(mDragInfo.cell);
 			}
-			if (target instanceof DeleteZone){
-				final View cell = mDragInfo.cell;
-				int newCell[] = new int[2];
-				final ItemInfo info = (ItemInfo) cell.getTag();
-				newCell[0]=info.cellX;
-				newCell[1]=info.cellY;
-				oriLayout.onDropChild(cell, newCell);
-				
-//				CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-//						.getLayoutParams();
-				LauncherModel.moveItemInDatabase(mLauncher, info,
-						Favorites.CONTAINER_DESKTOP, oriLayout.getPageIndex(),
-						info.cellX, info.cellY);
-			}
+//			if (target instanceof DeleteZone){
+//				final View cell = mDragInfo.cell;
+//				int newCell[] = new int[2];
+//				final ItemInfo info = (ItemInfo) cell.getTag();
+//				newCell[0]=info.cellX;
+//				newCell[1]=info.cellY;
+//				oriLayout.onDropChild(cell, newCell);
+//				
+////				CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
+////						.getLayoutParams();
+//				LauncherModel.moveItemInDatabase(mLauncher, info,
+//						Favorites.CONTAINER_DESKTOP, oriLayout.getPageIndex(),
+//						info.cellX, info.cellY);
+//			}
 		}
 
 		// CellLayout current = (CellLayout) getChildAt(getCurrentScreen());
@@ -4159,7 +4163,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// exchangeAllCells(getCurrentScreen()); //yfzhao
 		// }
 		//exchangeAllCells(mCurrentScreen);
-
+//		CellLayout layout = (CellLayout)getChildAt(getCurrentScreen());
+//		layout.requestLayout();
+//		layout.invalidate();
+		
 		clearLongClickValues();
 		mDragInfo = null;
 		oriLayout = null;
