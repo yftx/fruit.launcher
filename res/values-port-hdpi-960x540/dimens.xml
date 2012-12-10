@@ -21,7 +21,7 @@
     <dimen name="screen_indicator_height">25dip</dimen>
 
     <!-- height of the dock bar -->
-    <dimen name="dock_bar_height">100dip</dimen>
+    <dimen name="dock_bar_height">120dip</dimen>
     <!-- height of the free play area in the dock bar -->
     <dimen name="dock_bar_top_padding">6.0dip</dimen>
     <dimen name="dock_bar_bottom_padding">6.0dip</dimen>
