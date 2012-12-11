@@ -21,7 +21,7 @@ import android.util.Log;
 
 public final class ThemeManager {
 
-	static final String TAG = "launcherEx.ThemeManager";
+	static final String TAG = "ThemeManager";
 	static final boolean DEBUG = true;
 
 	private static ThemeManager sInstance;
@@ -36,31 +36,34 @@ public final class ThemeManager {
 
 	private Handler mHandler;
 	private ContentObserver mThemeChangeObserver;
-	
-	enum ThemeType{
-		THEME_DEFALT,
-		THEME_ICON
+
+	enum ThemeType {
+		THEME_DEFALT, THEME_ICON
 	}
 
 	public ThemeManager() {
 		mContext = LauncherApplication.getContext();
-		
-		if(DEBUG) Log.e(TAG, "ThemeManager on create");
-		if(Utilities.isPackageInstall(mContext, ThemeUtils.THEME_MANAGER_PACKAGE)){
+
+		if (DEBUG)
+			Log.e(TAG, "ThemeManager on create");
+		if (Utilities.isPackageInstall(mContext,
+				ThemeUtils.THEME_MANAGER_PACKAGE)) {
 			updateTheme();
 			updateWallpaperTheme();
-		}else{
+		} else {
 			applyConfigTheme();
 		}
-		
+
 		applyAppBgIcons(mDefaultLoader);
 
 		mHandler = new Handler();
 		mThemeChangeObserver = new ThemeObserver(mHandler);
 
 		if (DEBUG) {
-			Log.d(TAG, "ThemeManager, thempkg="+(mDefaultLoader!=null?
-					mDefaultLoader.getResourcePkgName():"not set theme"));
+			Log.d(TAG,
+					"ThemeManager, thempkg="
+							+ (mDefaultLoader != null ? mDefaultLoader
+									.getResourcePkgName() : "not set theme"));
 		}
 		mLauncher = null;
 	}
@@ -76,8 +79,8 @@ public final class ThemeManager {
 		if (sInstance == null) {
 			return;
 		}
-		mContext.getContentResolver().registerContentObserver(ThemeUtils.CONTENT_URI, 
-				true, mThemeChangeObserver);
+		mContext.getContentResolver().registerContentObserver(
+				ThemeUtils.CONTENT_URI, true, mThemeChangeObserver);
 	}
 
 	public void stopListener() {
@@ -89,7 +92,8 @@ public final class ThemeManager {
 	}
 
 	private void applyTheme() {
-		if(DEBUG) Log.d(TAG, "applyTheme");
+		if (DEBUG)
+			Log.d(TAG, "applyTheme");
 		// apply theme for icon
 		applyAppBgIcons(mDefaultLoader);
 		if (mLauncher != null) {
@@ -99,12 +103,14 @@ public final class ThemeManager {
 	}
 
 	private void applyWallpaper() {
-		if(DEBUG) Log.d(TAG, "applyWallpaper");
+		if (DEBUG)
+			Log.d(TAG, "applyWallpaper");
 		try {
-			WallpaperManager wpm = (WallpaperManager) mContext.getSystemService(Context.WALLPAPER_SERVICE);
+			WallpaperManager wpm = (WallpaperManager) mContext
+					.getSystemService(Context.WALLPAPER_SERVICE);
 
 			Bitmap themeWallpaper = null;
-			if(mWallpaperLoader != null){
+			if (mWallpaperLoader != null) {
 				themeWallpaper = mWallpaperLoader.loadBitmap("theme_wallpaper");
 			}
 			if (themeWallpaper != null) {
@@ -126,8 +132,8 @@ public final class ThemeManager {
 			}
 			mAppBgIcons = null;
 		}
-		
-		if(loader != null){
+
+		if (loader != null) {
 			Bitmap[] bitmaps = new Bitmap[ThemeUtils.APP_ICON_BG_MAX_COUNT];
 			int i = 0;
 			int size = 0;
@@ -157,7 +163,7 @@ public final class ThemeManager {
 	public Drawable loadDrawable(String resName) {
 		// TODO Auto-generated method stub
 		final ShareResourceLoader loader = mDefaultLoader;
-		if(loader != null){
+		if (loader != null) {
 			return loader.loadDrawable(resName);
 		}
 		return null;
@@ -166,7 +172,7 @@ public final class ThemeManager {
 	public Bitmap loadBitmap(String resName) {
 		// TODO Auto-generated method stub
 		final ShareResourceLoader loader = mDefaultLoader;
-		if(loader != null){
+		if (loader != null) {
 			return loader.loadBitmap(resName);
 		}
 		return null;
@@ -175,7 +181,7 @@ public final class ThemeManager {
 	public int loadColor(String resName) {
 		// TODO Auto-generated method stub
 		final ShareResourceLoader loader = mDefaultLoader;
-		if(loader != null){
+		if (loader != null) {
 			return loader.loadColor(resName);
 		}
 		return -1;
@@ -184,10 +190,10 @@ public final class ThemeManager {
 	public Bitmap[] loadFolderIcons() {
 		// TODO Auto-generated method stub
 		final ShareResourceLoader loader = mDefaultLoader;
-		if(loader == null){
+		if (loader == null) {
 			return null;
 		}
-		
+
 		Bitmap[] folderIcons = new Bitmap[2];
 
 		folderIcons[0] = loader.loadBitmap("folder_bg");
@@ -201,7 +207,7 @@ public final class ThemeManager {
 		final Resources res = mContext.getResources();
 		final ShareResourceLoader loader = mDefaultLoader;
 		Drawable dot = null;
-		if(loader != null){
+		if (loader != null) {
 			dot = loader.loadDrawable("nav_screen");
 		}
 		if (dot == null) {
@@ -216,68 +222,11 @@ public final class ThemeManager {
 			mLauncher = launcher;
 		}
 	}
-	
-	   
-	public Bitmap getRandomAppBgIcon(Bitmap b) {
-		//if (mAppBgIcons == null || mAppBgIcons.length == 0) {
-		//	return null;
-		//}
-	
-		//int length = mAppBgIcons.length;
-		int index = -1;
-	
-		//if (length == 1) {
-		//	return mAppBgIcons[0];
-		//} else if (className == null) {
-		//	index = (new Random()).nextInt(20);
-		//} else {
-		//	index = (new Random()).nextInt(length);//index = Math.max(0, className.hashCode() % length);
-		//}
-	
-		int k = b.hashCode();
-		//int i =	b.getClass().hashCode();
-		//int j = b.ni;
-		index =	Math.max(0, k % 20);
-		
-		if (index < 0 || index >= 20) {
-			index = 0;
-		}
-		
-		String resName = "mainmenu_icon_bg_" + index;//"theme_icon_bg_" + index;
-		Resources res = mContext.getResources();
-		int id = res.getIdentifier(resName, "drawable", mContext.getPackageName()); 
-		Bitmap tmpBmp = Utilities.drawable2bmp(res.getDrawable(id));
-		
-		return tmpBmp;
-	}
 
-//	public Bitmap getRandomAppBgIcon(String className) {
-//		int index = -1;
-//		Bitmap tmpBmp=null;
-//		
-//		index = Math.max(0, className.hashCode() % 20);
-//		
-//		if (index < 0 || index >= 20) {
-//			index = 0;
-//		}
-//		
-//		String resName = "mainmenu_icon_bg_" + index;//"theme_icon_bg_" + index;
-//		Resources res = mContext.getResources();
-//		int id = res.getIdentifier(resName, "drawable", mContext.getPackageName()); 
-//		try{
-//			tmpBmp = Utilities.drawable2bmp(res.getDrawable(id));
-//		}catch(Exception e){
-//			tmpBmp=null;
-//			e.printStackTrace();
-//		}
-//		
-//		return tmpBmp;
-//	}
-	
 	public Bitmap getRandomAppBgIcon(String className) {
 		return getAppBgIcon(className);
 	}
-	
+
 	public Bitmap getAppBgIcon(String className) {
 		if (mAppBgIcons == null || mAppBgIcons.length == 0) {
 			return null;
@@ -300,75 +249,81 @@ public final class ThemeManager {
 		return mAppBgIcons[index];
 	}
 
-	public String getThemePkgName(){
+	public String getThemePkgName() {
 		String pkg = null;
-		if(mDefaultLoader != null){
+		if (mDefaultLoader != null) {
 			pkg = mDefaultLoader.getResourcePkgName();
 		}
 		return pkg;
 	}
-	
-	public void applyDefaultTheme(){
+
+	public void applyDefaultTheme() {
 		mDefaultLoader = null;
 		mWallpaperLoader = null;
 		applyTheme();
 		applyWallpaper();
 	}
-	
+
 	private String getCurrentTheme(String slectionType) {
 		String theme = null;
 		Cursor cursor = null;
 		try {
-			cursor = mContext.getContentResolver().query(ThemeUtils.CONTENT_URI,
-					null, slectionType, null, null);
+			cursor = mContext.getContentResolver().query(
+					ThemeUtils.CONTENT_URI, null, slectionType, null, null);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
-		}catch (SecurityException e) {
+		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
 
 		if (cursor != null) {
 			cursor.moveToFirst();
-			theme = cursor.getString(cursor.getColumnIndexOrThrow(ThemeUtils.PACKAGE_NAME));
+			theme = cursor.getString(cursor
+					.getColumnIndexOrThrow(ThemeUtils.PACKAGE_NAME));
 			cursor.close();
 		}
-		
-		if(theme != null && theme.equals(ThemeUtils.DEFAULT_THEME_PACKAGENAME)){
+
+		if (theme != null && theme.equals(ThemeUtils.DEFAULT_THEME_PACKAGENAME)) {
 			theme = null;
 		}
-		
-		if(DEBUG) Log.d(TAG, "getCurTheme , theme="+theme);
-		
+
+		if (DEBUG)
+			Log.d(TAG, "getCurTheme , theme=" + theme);
+
 		return theme;
 	}
-	
-	private boolean applyConfigTheme(){
-		String defThemeName = Configurator.getStringConfig(mContext, Configurator.CONFIG_DEFAULTTHME);
-        if(defThemeName != null && Utilities.isPackageInstall(mContext, defThemeName)){
+
+	private boolean applyConfigTheme() {
+		String defThemeName = Configurator.getStringConfig(mContext,
+				Configurator.CONFIG_DEFAULTTHME);
+		if (defThemeName != null
+				&& Utilities.isPackageInstall(mContext, defThemeName)) {
 			try {
 				mDefaultLoader = new ShareResourceLoader(mContext, defThemeName);
 			} catch (NameNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				mDefaultLoader = null;
-			}    
-        }
-        return mDefaultLoader != null;
+			}
+		}
+		return mDefaultLoader != null;
 	}
 
 	private boolean updateTheme() {
 		String themeNew = getCurrentTheme(ThemeUtils.SLECTION_LAUNCHER);
 		String themeCur = null;
 		ShareResourceLoader oldLoader = mDefaultLoader;
-		
-		if(oldLoader != null){
+
+		if (oldLoader != null) {
 			themeCur = oldLoader.getResourcePkgName();
 		}
-		if(DEBUG) Log.d(TAG, "updateTheme, new theme="+themeNew+", cur theme="+themeCur);
-		if(themeNew == null){
+		if (DEBUG)
+			Log.d(TAG, "updateTheme, new theme=" + themeNew + ", cur theme="
+					+ themeCur);
+		if (themeNew == null) {
 			mDefaultLoader = null;
-		}else{
-			if(themeCur == null || !themeNew.equals(themeCur)){
+		} else {
+			if (themeCur == null || !themeNew.equals(themeCur)) {
 				try {
 					mDefaultLoader = new ShareResourceLoader(mContext, themeNew);
 				} catch (NameNotFoundException e) {
@@ -376,39 +331,44 @@ public final class ThemeManager {
 					e.printStackTrace();
 					mDefaultLoader = null;
 				}
-			}else{
-				if(DEBUG) Log.w(TAG, "updateTheme, theme not change");
+			} else {
+				if (DEBUG)
+					Log.w(TAG, "updateTheme, theme not change");
 			}
 		}
-		
+
 		return oldLoader != mDefaultLoader;
 	}
-	
+
 	private boolean updateWallpaperTheme() {
 		String themeNew = getCurrentTheme(ThemeUtils.SLECTION_WALLPAPER);
 		String themeCur = null;
 		ShareResourceLoader oldLoader = mWallpaperLoader;
-		
-		if(oldLoader != null){
+
+		if (oldLoader != null) {
 			themeCur = oldLoader.getResourcePkgName();
 		}
-		if(DEBUG) Log.d(TAG, "updateWallpaperTheme, new theme="+themeNew+", cur theme="+themeCur);
-		if(themeNew == null){
+		if (DEBUG)
+			Log.d(TAG, "updateWallpaperTheme, new theme=" + themeNew
+					+ ", cur theme=" + themeCur);
+		if (themeNew == null) {
 			mWallpaperLoader = null;
-		}else{
-			if(themeCur == null || !themeNew.equals(themeCur)){
+		} else {
+			if (themeCur == null || !themeNew.equals(themeCur)) {
 				try {
-					mWallpaperLoader = new ShareResourceLoader(mContext, themeNew);
+					mWallpaperLoader = new ShareResourceLoader(mContext,
+							themeNew);
 				} catch (NameNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					mWallpaperLoader = null;
 				}
-			}else{
-				if(DEBUG) Log.w(TAG, "updateWallpaperTheme, wallpaper not change");
+			} else {
+				if (DEBUG)
+					Log.w(TAG, "updateWallpaperTheme, wallpaper not change");
 			}
 		}
-		
+
 		return oldLoader != mWallpaperLoader;
 	}
 
@@ -423,7 +383,7 @@ public final class ThemeManager {
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					if(updateTheme()){
+					if (updateTheme()) {
 						applyTheme();
 					}
 				}
@@ -431,7 +391,7 @@ public final class ThemeManager {
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					if(updateWallpaperTheme()){
+					if (updateWallpaperTheme()) {
 						applyWallpaper();
 					}
 				}

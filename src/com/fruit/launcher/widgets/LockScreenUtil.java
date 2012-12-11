@@ -16,9 +16,9 @@ public class LockScreenUtil {
 
 	private LockScreenUtil(Context context) {
 		this.mContext = context;
-		mDevicePolicyManager =
-			(DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-		mLockScreenAdmin = new ComponentName(context, LockScreenAdmin.class); 
+		mDevicePolicyManager = (DevicePolicyManager) context
+				.getSystemService(Context.DEVICE_POLICY_SERVICE);
+		mLockScreenAdmin = new ComponentName(context, LockScreenAdmin.class);
 	}
 
 	public static final LockScreenUtil getInstance(Context context) {
@@ -36,8 +36,10 @@ public class LockScreenUtil {
 		if (mDevicePolicyManager.isAdminActive(mLockScreenAdmin)) {
 			mDevicePolicyManager.lockNow();
 		} else {
-			Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-			intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mLockScreenAdmin);
+			Intent intent = new Intent(
+					DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+			intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+					mLockScreenAdmin);
 			intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
 					mContext.getString(R.string.widget_lock_screen_tips));
 

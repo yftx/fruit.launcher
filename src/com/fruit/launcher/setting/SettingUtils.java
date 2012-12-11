@@ -1,10 +1,7 @@
 package com.fruit.launcher.setting;
 
-
-
 import android.content.Context;
 import android.content.SharedPreferences;
-
 
 public class SettingUtils {
 
@@ -20,49 +17,49 @@ public class SettingUtils {
 	public static final String KEY_SCREEN_COUNT = "screen_count";
 	public static final String KEY_HOME_SCREEN = "homescreen_index";
 
-    
 	public static int mTransitionEffect;
 	public static boolean mHighQuality;
 	public static boolean mPermanentMemory;
-	
 
-	public static int mScreenCount = 5;
-	public static int mHomeScreenIndex = 2;//0;//2; //yfzhao
-	//public static int mFixedScreenIndex = 2;
+	public static final int DEFAULT_SCREEN_COUNT = 5;
+	public static final int DEFAULT_HOME_SCREEN_INDEX = 2;
+
+	public static int mScreenCount = DEFAULT_SCREEN_COUNT;
+	public static int mHomeScreenIndex = DEFAULT_HOME_SCREEN_INDEX;
 
 	public static void loadLauncherSettings(Context context) {
-		SharedPreferences mSharedPreferences =
-			context.getSharedPreferences(LAUNCHER_SETTINGS_NAME, 0);
+		SharedPreferences mSharedPreferences = context.getSharedPreferences(
+				LAUNCHER_SETTINGS_NAME, 0);
 
-		//mShowStatusbar = mSharedPreferences.getBoolean(KEY_SHOW_STATUSBAR, true);
-		//mShowAppName = mSharedPreferences.getBoolean(KEY_SHOW_APPNAME, true);
+		// mShowStatusbar = mSharedPreferences.getBoolean(KEY_SHOW_STATUSBAR,
+		// true);
+		// mShowAppName = mSharedPreferences.getBoolean(KEY_SHOW_APPNAME, true);
 
-		mTransitionEffect =
-			Integer.parseInt(mSharedPreferences.getString(KEY_SWITCH_EFFECT, "0"));
-		mHighQuality =
-			mSharedPreferences.getBoolean(KEY_HIGH_QUALITY, false);
-		mPermanentMemory =
-			mSharedPreferences.getBoolean(KEY_PERMANENT_MEMORY, false);
-		
+		mTransitionEffect = Integer.parseInt(mSharedPreferences.getString(
+				KEY_SWITCH_EFFECT, "0"));
+		mHighQuality = mSharedPreferences.getBoolean(KEY_HIGH_QUALITY, false);
+		mPermanentMemory = mSharedPreferences.getBoolean(KEY_PERMANENT_MEMORY,
+				false);
+
 		loadOtherSettings(context);
 	}
 
 	private static void loadOtherSettings(Context context) {
-		SharedPreferences mSharedPreferences =
-			context.getSharedPreferences(LAUNCHER_OTHER_SETTINGS_NAME, 0);
+		SharedPreferences mSharedPreferences = context.getSharedPreferences(
+				LAUNCHER_OTHER_SETTINGS_NAME, 0);
 
-		mScreenCount = mSharedPreferences.getInt(KEY_SCREEN_COUNT, 5);
-		mHomeScreenIndex = mSharedPreferences.getInt(KEY_HOME_SCREEN, 2/*0*/); //yfzhao
+		mScreenCount = mSharedPreferences.getInt(KEY_SCREEN_COUNT,
+				DEFAULT_SCREEN_COUNT);
+		mHomeScreenIndex = mSharedPreferences.getInt(KEY_HOME_SCREEN,
+				DEFAULT_HOME_SCREEN_INDEX);
 	}
-	
+
 	public static void saveScreenSettings(Context context) {
-		SharedPreferences mSharedPreferences =
-			context.getSharedPreferences(LAUNCHER_OTHER_SETTINGS_NAME, 0);
+		SharedPreferences mSharedPreferences = context.getSharedPreferences(
+				LAUNCHER_OTHER_SETTINGS_NAME, 0);
 
 		mSharedPreferences.edit().putInt(KEY_SCREEN_COUNT, mScreenCount)
-			.putInt(KEY_HOME_SCREEN, mHomeScreenIndex)
-			.commit();
+				.putInt(KEY_HOME_SCREEN, mHomeScreenIndex).commit();
 	}
-
 
 }

@@ -31,8 +31,8 @@ public class TaskManagerUtil {
 
 	private TaskManagerUtil(Context context) {
 		mContext = context;
-		mActivityMgr =
-			(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		mActivityMgr = (ActivityManager) context
+				.getSystemService(Context.ACTIVITY_SERVICE);
 		mTaskWidget = new ArrayList<ITaskManagerUpdate>();
 	}
 
@@ -55,8 +55,8 @@ public class TaskManagerUtil {
 
 	public final void retrieveMemInfo(boolean bPublishProcess) {
 		new OperateProcessProcedure(mContext,
-					OperateProcessProcedure.OPERATE_RETRIEVE_MEM,
-					bPublishProcess).run();
+				OperateProcessProcedure.OPERATE_RETRIEVE_MEM, bPublishProcess)
+				.run();
 	}
 
 	private void publishMemInfo(long totalMem, long availMem) {
@@ -70,7 +70,8 @@ public class TaskManagerUtil {
 		}
 	}
 
-	private void publishProcessList(ArrayList<ApplicationInfo> runningProcessList) {
+	private void publishProcessList(
+			ArrayList<ApplicationInfo> runningProcessList) {
 		Iterator<ITaskManagerUpdate> iterator = mTaskWidget.iterator();
 
 		while (iterator.hasNext()) {
@@ -108,28 +109,26 @@ public class TaskManagerUtil {
 			};
 		}
 
-		new AlertDialog.Builder(context)
-				.setTitle(R.string.widget_clean_memory)
+		new AlertDialog.Builder(context).setTitle(R.string.widget_clean_memory)
 				.setIcon(android.R.drawable.ic_dialog_info)
 				.setMessage(R.string.widget_kill_task)
 				.setPositiveButton(android.R.string.ok, clickListener)
-				.setNegativeButton(android.R.string.cancel, null)
-				.show();
+				.setNegativeButton(android.R.string.cancel, null).show();
 	}
 
 	private void startToKillProcess(boolean bPublishProcess) {
 		// TODO Auto-generated method stub
 		new OperateProcessProcedure(mContext,
-				OperateProcessProcedure.OPERATE_KILL_PROCESS,
-				bPublishProcess).run();
+				OperateProcessProcedure.OPERATE_KILL_PROCESS, bPublishProcess)
+				.run();
 	}
 
 	@SuppressWarnings("deprecation")
 	public void killProcess(ApplicationInfo info) {
 		try {
-			Method method =
-				ActivityManager.class.getDeclaredMethod("killBackgroundProcesses", new Class[] {String.class});
-			method.invoke(mActivityMgr, new Object[] {info.packageName});
+			Method method = ActivityManager.class.getDeclaredMethod(
+					"killBackgroundProcesses", new Class[] { String.class });
+			method.invoke(mActivityMgr, new Object[] { info.packageName });
 		} catch (Exception e) {
 			e.printStackTrace();
 			mActivityMgr.restartPackage(info.packageName);
@@ -154,7 +153,8 @@ public class TaskManagerUtil {
 		private long mTotalMem;
 		private long mAvailableMem;
 
-		public OperateProcessProcedure(Context context, int operateType, boolean bPublishProcess) {
+		public OperateProcessProcedure(Context context, int operateType,
+				boolean bPublishProcess) {
 			if (operateType < OPERATE_RETRIEVE_MEM
 					|| operateType > OPERATE_KILL_PROCESS) {
 				mOperateType = OPERATE_RETRIEVE_MEM;
@@ -164,8 +164,8 @@ public class TaskManagerUtil {
 			mPublishProcessList = bPublishProcess;
 
 			mContext = context;
-			mActivityMgr =
-				(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+			mActivityMgr = (ActivityManager) context
+					.getSystemService(Context.ACTIVITY_SERVICE);
 			mRunningProcess = new ArrayList<ApplicationInfo>();
 			mPkgName = mContext.getPackageName();
 		}
@@ -177,7 +177,8 @@ public class TaskManagerUtil {
 				mInstalledApps.clear();
 				mInstalledApps = null;
 			}
-			mInstalledApps = mContext.getPackageManager().getInstalledApplications(0);
+			mInstalledApps = mContext.getPackageManager()
+					.getInstalledApplications(0);
 			mMemInfo = new ActivityManager.MemoryInfo();
 
 			switch (mOperateType) {
@@ -185,10 +186,10 @@ public class TaskManagerUtil {
 				mActivityMgr.getMemoryInfo(mMemInfo);
 				long oldAvailableMem = mMemInfo.availMem;
 
-				List<ActivityManager.RunningAppProcessInfo> appList =
-					mActivityMgr.getRunningAppProcesses();
-				Iterator<ActivityManager.RunningAppProcessInfo> iterator =
-					appList.iterator();
+				List<ActivityManager.RunningAppProcessInfo> appList = mActivityMgr
+						.getRunningAppProcesses();
+				Iterator<ActivityManager.RunningAppProcessInfo> iterator = appList
+						.iterator();
 
 				while (iterator.hasNext()) {
 					String processName = iterator.next().processName;
@@ -205,21 +206,30 @@ public class TaskManagerUtil {
 					long freedByte = (mAvailableMem - oldAvailableMem);
 					if (freedByte > (long) BYTES_PER_M) {
 						int freedMem = Math.round(freedByte / BYTES_PER_M);
-						String tip = String.format(mContext.getString(R.string.widget_clean_memory_report), freedMem);
-						Toast.makeText(mContext, tip, Toast.LENGTH_SHORT).show();
+						String tip = String
+								.format(mContext
+										.getString(R.string.widget_clean_memory_report),
+										freedMem);
+						Toast.makeText(mContext, tip, Toast.LENGTH_SHORT)
+								.show();
 					}
 				} else {
 					if (mPublishProcessList) {
 						mPublishProcessList = false;
 					}
-					Toast.makeText(mContext, mContext.getString(R.string.widget_clean_memory_alert), Toast.LENGTH_SHORT).show();
+					Toast.makeText(
+							mContext,
+							mContext.getString(R.string.widget_clean_memory_alert),
+							Toast.LENGTH_SHORT).show();
 				}
-				// do not break here, cause OPERATE_KILL_PROCESS will always publish memory info
+				// do not break here, cause OPERATE_KILL_PROCESS will always
+				// publish memory info
 			case OPERATE_RETRIEVE_MEM:
 			default:
 				try {
 					FileReader fileReader = new FileReader("/proc/meminfo");
-					BufferedReader bufferedReader = new BufferedReader(fileReader);
+					BufferedReader bufferedReader = new BufferedReader(
+							fileReader);
 					String line = bufferedReader.readLine();
 					int total = 0;
 
@@ -250,10 +260,10 @@ public class TaskManagerUtil {
 		private void getRunningProcessList() {
 			mRunningProcess.clear();
 
-			List<ActivityManager.RunningAppProcessInfo> appList =
-				mActivityMgr.getRunningAppProcesses();
-			Iterator<ActivityManager.RunningAppProcessInfo> iterator =
-				appList.iterator();
+			List<ActivityManager.RunningAppProcessInfo> appList = mActivityMgr
+					.getRunningAppProcesses();
+			Iterator<ActivityManager.RunningAppProcessInfo> iterator = appList
+					.iterator();
 
 			while (iterator.hasNext()) {
 				ApplicationInfo appInfo = getAppInfo(iterator.next().processName);

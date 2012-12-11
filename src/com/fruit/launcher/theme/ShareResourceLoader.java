@@ -10,21 +10,20 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 public final class ShareResourceLoader {
-	
+
 	private static final String TAG = "ShareResourceLoader";
-    public static final int INVALID_INT = -999999;
-    public static enum BoolVal {
-        BTRUE,
-        BFALSE,
-        BINVALID
-    }
-    
+	public static final int INVALID_INT = -999999;
+
+	public static enum BoolVal {
+		BTRUE, BFALSE, BINVALID
+	}
+
 	private Context mContext;
 	private Resources mResources;
 	private String mResPkgName;
 
-//	private static ShareResourceLoader sInstance;
-	
+	// private static ShareResourceLoader sInstance;
+
 	public ShareResourceLoader(Context context, String packageName)
 			throws NameNotFoundException {
 		this.mContext = context.createPackageContext(packageName,
@@ -33,27 +32,29 @@ public final class ShareResourceLoader {
 		if (mContext != null) {
 			this.mResources = mContext.getResources();
 			this.mResPkgName = packageName;
-		}else{
-			Log.w(TAG, "ShareResourceLoader create fail! packageName="+packageName);
+		} else {
+			Log.w(TAG, "ShareResourceLoader create fail! packageName="
+					+ packageName);
 		}
 	}
-	
-//	public static ShareResourceLoader getInstance(Context context, String packageName) {
-//		if (sInstance == null) {
-//			try {
-//				sInstance = new ShareResourceLoader(context, packageName);
-//			} catch (NameNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//		return sInstance;
-//	}
-	
-	public String getResourcePkgName(){
+
+	// public static ShareResourceLoader getInstance(Context context, String
+	// packageName) {
+	// if (sInstance == null) {
+	// try {
+	// sInstance = new ShareResourceLoader(context, packageName);
+	// } catch (NameNotFoundException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// }
+	// return sInstance;
+	// }
+
+	public String getResourcePkgName() {
 		return mResPkgName;
 	}
-	
+
 	public final String loadString(String resName) {
 		final Resources res = mResources;
 		final String pkgName = mResPkgName;
@@ -62,8 +63,8 @@ public final class ShareResourceLoader {
 
 			if (resId > 0) {
 				return res.getString(resId);
-			}else{
-				Log.w(TAG, "loadString fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadString fail! resName=" + resName);
 			}
 		}
 		return null;
@@ -77,8 +78,8 @@ public final class ShareResourceLoader {
 
 			if (resId > 0) {
 				return mResources.getDrawable(resId);
-			}else{
-				Log.w(TAG, "loadDrawable fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadDrawable fail! resName=" + resName);
 			}
 		}
 		return null;
@@ -103,10 +104,10 @@ public final class ShareResourceLoader {
 					bitmap = null;
 					Log.w(TAG, "loadDrawable fail! OutOfMemoryError");
 				}
-			}else{
-				Log.w(TAG, "loadDrawable fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadDrawable fail! resName=" + resName);
 			}
-			
+
 		}
 		return bitmap;
 	}
@@ -120,8 +121,8 @@ public final class ShareResourceLoader {
 			int listId = res.getIdentifier(resName, "array", pkgName);
 			if (listId > 0) {
 				array = res.getStringArray(listId);
-			}else{
-				Log.w(TAG, "loadStringArray fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadStringArray fail! resName=" + resName);
 			}
 		}
 		return array;
@@ -136,8 +137,8 @@ public final class ShareResourceLoader {
 
 			if (resId > 0) {
 				return res.getColor(resId);
-			}else{
-				Log.w(TAG, "loadColor fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadColor fail! resName=" + resName);
 			}
 		}
 		return INVALID_INT;
@@ -151,8 +152,8 @@ public final class ShareResourceLoader {
 
 			if (resId > 0) {
 				return mResources.getXml(resId);
-			}else{
-				Log.w(TAG, "loadXml fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadXml fail! resName=" + resName);
 			}
 		}
 		return null;
@@ -165,8 +166,8 @@ public final class ShareResourceLoader {
 			int resId = res.getIdentifier(resName, "attr", mResPkgName);
 			if (resId > 0) {
 				return resId;
-			}else{
-				Log.w(TAG, "loadAttrID fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadAttrID fail! resName=" + resName);
 			}
 		}
 		return INVALID_INT;
@@ -189,8 +190,8 @@ public final class ShareResourceLoader {
 			int resId = res.getIdentifier(resName, "integer", pkgName);
 			if (resId > 0) {
 				return res.getInteger(resId);
-			}else{
-				Log.w(TAG, "loadIntegerConfig fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadIntegerConfig fail! resName=" + resName);
 			}
 		}
 		return INVALID_INT;
@@ -203,8 +204,8 @@ public final class ShareResourceLoader {
 			int resId = res.getIdentifier(resName, "string", pkgName);
 			if (resId > 0) {
 				return res.getString(resId);
-			}else{
-				Log.w(TAG, "loadStringConfig fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadStringConfig fail! resName=" + resName);
 			}
 		}
 		return null;
@@ -222,8 +223,8 @@ public final class ShareResourceLoader {
 				} else {
 					return BoolVal.BFALSE;
 				}
-			}else{
-				Log.w(TAG, "loadBoolConfig fail! name="+name);
+			} else {
+				Log.w(TAG, "loadBoolConfig fail! name=" + name);
 			}
 		}
 		return BoolVal.BINVALID;
@@ -236,8 +237,8 @@ public final class ShareResourceLoader {
 			int resId = res.getIdentifier(resName, "dimen", pkgName);
 			if (resId > 0) {
 				return res.getDimensionPixelSize(resId);
-			}else{
-				Log.w(TAG, "loadDimensPixel fail! resName="+resName);
+			} else {
+				Log.w(TAG, "loadDimensPixel fail! resName=" + resName);
 			}
 		}
 		return INVALID_INT;
