@@ -43,9 +43,15 @@
     <dimen name="workspace_cell_width">88dip</dimen>
     <dimen name="workspace_cell_height">116dip</dimen>
     <dimen name="workspace_cell_icon_size">116px</dimen>
+
+    <!-- thumbnail padding -->
+    <dimen name="thumbnail_width_padding_start">4.0dip</dimen>
+    <dimen name="thumbnail_width_padding_end">4.0dip</dimen>
+    <dimen name="thumbnail_height_padding_start">12.0dip</dimen>
+    <dimen name="thumbnail_height_padding_end">12.0dip</dimen>
     
-    <dimen name="thumbnail_width">100.0dip</dimen>
-    <dimen name="thumbnail_height">140.0dip</dimen>
+    <dimen name="thumbnail_width">115.0dip</dimen>
+    <dimen name="thumbnail_height">189.0dip</dimen>
     
     <dimen name="thumbnail_padding">2.0dip</dimen>
     
