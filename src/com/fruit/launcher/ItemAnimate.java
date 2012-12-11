@@ -86,6 +86,8 @@ public class ItemAnimate {
         }
 
         public void startMove(int xDistance, int yDistance, int duration) {
+        	Log.d(TAG,"startMove,xDistance="+xDistance+",yDistance="+yDistance+",duration="+duration);
+        	
             mScroller.startScroll(0, 0, xDistance, yDistance, duration);
 
             if (mToXValue == mFromXValue) {
@@ -100,19 +102,23 @@ public class ItemAnimate {
             	yDirect = mToYValue > mFromYValue ? 1 : -1;
             }
 
+            Log.d(TAG,"startMove,xDirect="+xDirect+",yDirect="+yDirect);
+            
             mChild.post(this);
         }
 
 		@Override
-		public void run() {  
+		public void run() {  	
 			boolean more = mScroller.computeScrollOffset();
+			
+			Log.d(TAG,"run,more="+more);
 
 			if (more) {
 				final int x = mScroller.getCurrX();
 				final int y = mScroller.getCurrY();
 				int left = (int) (mFromXValue + x * xDirect);
 				int top  = (int) (mFromYValue + y * yDirect);
-				Log.d(TAG, "left= " + left + " top= " + top);
+				Log.d(TAG, "run left= " + left + " top= " + top + " mWidth= " + mWidth + " mHeight= "+mHeight);
 				mChild.layout(left, top, left + mWidth, top + mHeight);	
 				mChild.post(this);
 			} else {
