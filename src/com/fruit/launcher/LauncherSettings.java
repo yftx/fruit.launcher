@@ -24,286 +24,331 @@ import android.net.Uri;
  */
 class LauncherSettings {
 
-    static interface BaseLauncherColumns extends BaseColumns {
+	static interface BaseLauncherColumns extends BaseColumns {
 
-        /**
-         * Descriptive name of the gesture that can be displayed to the user.
-         * <P>Type: TEXT</P>
-         */
-        static final String TITLE = "title";
+		/**
+		 * Descriptive name of the gesture that can be displayed to the user.
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		static final String TITLE = "title";
 
-        /**
-         * The Intent URL of the gesture, describing what it points to. This
-         * value is given to {@link android.content.Intent#parseUri(String, int)} to create
-         * an Intent that can be launched.
-         * <P>Type: TEXT</P>
-         */
-        static final String INTENT = "intent";
+		/**
+		 * The Intent URL of the gesture, describing what it points to. This
+		 * value is given to
+		 * {@link android.content.Intent#parseUri(String, int)} to create an
+		 * Intent that can be launched.
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		static final String INTENT = "intent";
 
-        /**
-         * The display order of applications(shortcuts) in folder 
-         */
-        static final String ORDERID = "orderId";
+		/**
+		 * The display order of applications(shortcuts) in folder
+		 */
+		static final String ORDERID = "orderId";
 
-        /**
-         * The type of the gesture
-         *
-         * <P>Type: INTEGER</P>
-         */
-        static final String ITEM_TYPE = "itemType";
+		/**
+		 * The type of the gesture
+		 * 
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String ITEM_TYPE = "itemType";
 
-        /**
-         * The gesture is an application
-         */
-        static final int ITEM_TYPE_APPLICATION = 0;
+		/**
+		 * The gesture is an application
+		 */
+		static final int ITEM_TYPE_APPLICATION = 0;
 
-        /**
-         * The gesture is an application created shortcut
-         */
-        static final int ITEM_TYPE_SHORTCUT = 1;
+		/**
+		 * The gesture is an application created shortcut
+		 */
+		static final int ITEM_TYPE_SHORTCUT = 1;
 
-        /**
-         * The icon type.
-         * <P>Type: INTEGER</P>
-         */
-        static final String ICON_TYPE = "iconType";
+		/**
+		 * The icon type.
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String ICON_TYPE = "iconType";
 
-        /**
-         * The icon is a resource identified by a package name and an integer id.
-         */
-        static final int ICON_TYPE_RESOURCE = 0;
+		/**
+		 * The icon is a resource identified by a package name and an integer
+		 * id.
+		 */
+		static final int ICON_TYPE_RESOURCE = 0;
 
-        /**
-         * The icon is a bitmap.
-         */
-        static final int ICON_TYPE_BITMAP = 1;
+		/**
+		 * The icon is a bitmap.
+		 */
+		static final int ICON_TYPE_BITMAP = 1;
 
-        /**
-         * The icon package name, if icon type is ICON_TYPE_RESOURCE.
-         * <P>Type: TEXT</P>
-         */
-        static final String ICON_PACKAGE = "iconPackage";
+		/**
+		 * The icon package name, if icon type is ICON_TYPE_RESOURCE.
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		static final String ICON_PACKAGE = "iconPackage";
 
-        /**
-         * The icon resource id, if icon type is ICON_TYPE_RESOURCE.
-         * <P>Type: TEXT</P>
-         */
-        static final String ICON_RESOURCE = "iconResource";
+		/**
+		 * The icon resource id, if icon type is ICON_TYPE_RESOURCE.
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		static final String ICON_RESOURCE = "iconResource";
 
-        /**
-         * The custom icon bitmap, if icon type is ICON_TYPE_BITMAP.
-         * <P>Type: BLOB</P>
-         */
-        static final String ICON = "icon";
+		/**
+		 * The custom icon bitmap, if icon type is ICON_TYPE_BITMAP.
+		 * <P>
+		 * Type: BLOB
+		 * </P>
+		 */
+		static final String ICON = "icon";
 
 		/**
 		 * The default sort order for applications(shortcuts) in folder
 		 */
 		static final String DEFAULT_SORT_ORDER_IN_FOLDER = "orderId ASC";
-    }
+	}
 
-    /**
-     * Favorites.
-     */
-    static final class Favorites implements BaseLauncherColumns {
+	/**
+	 * Favorites.
+	 */
+	static final class Favorites implements BaseLauncherColumns {
 
-        /**
-         * The content:// style URL for this table
-         */
-        static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+		/**
+		 * The content:// style URL for this table
+		 */
+		static final Uri CONTENT_URI = Uri.parse("content://"
+				+ LauncherProvider.AUTHORITY + "/"
+				+ LauncherProvider.TABLE_FAVORITES + "?"
+				+ LauncherProvider.PARAMETER_NOTIFY + "=true");
 
-        /**
-         * The content:// style URL for this table. When this Uri is used, no notification is
-         * sent if the content changes.
-         */
-        static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
-                "?" + LauncherProvider.PARAMETER_NOTIFY + "=false");
+		/**
+		 * The content:// style URL for this table. When this Uri is used, no
+		 * notification is sent if the content changes.
+		 */
+		static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://"
+				+ LauncherProvider.AUTHORITY + "/"
+				+ LauncherProvider.TABLE_FAVORITES + "?"
+				+ LauncherProvider.PARAMETER_NOTIFY + "=false");
 
-        /**
-         * The content:// style URL for a given row, identified by its id.
-         *
-         * @param id The row id.
-         * @param notify True to send a notification is the content changes.
-         *
-         * @return The unique content URL for the specified row.
-         */
-        static Uri getContentUri(long id, boolean notify) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                    "/" + LauncherProvider.TABLE_FAVORITES + "/" + id + "?" +
-                    LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
-        }
-
-		static final Uri getCustomUri(String path) {
-			return Uri.parse("content://" +
-					LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
-					path + "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+		/**
+		 * The content:// style URL for a given row, identified by its id.
+		 * 
+		 * @param id
+		 *            The row id.
+		 * @param notify
+		 *            True to send a notification is the content changes.
+		 * 
+		 * @return The unique content URL for the specified row.
+		 */
+		static Uri getContentUri(long id, boolean notify) {
+			return Uri.parse("content://" + LauncherProvider.AUTHORITY + "/"
+					+ LauncherProvider.TABLE_FAVORITES + "/" + id + "?"
+					+ LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
 		}
 
-        /**
-         * The container holding the favorite
-         * <P>Type: INTEGER</P>
-         */
-        static final String CONTAINER = "container";
+		static final Uri getCustomUri(String path) {
+			return Uri.parse("content://" + LauncherProvider.AUTHORITY + "/"
+					+ LauncherProvider.TABLE_FAVORITES + path + "?"
+					+ LauncherProvider.PARAMETER_NOTIFY + "=true");
+		}
 
-        /**
-         * The icon is a resource identified by a package name and an integer id.
-         */
-        static final int CONTAINER_DESKTOP = -100;
+		/**
+		 * The container holding the favorite
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String CONTAINER = "container";
 
-        /**
-         * The icon is a displayed in dock bar
-         */
-        static final int CONTAINER_DOCKBAR = -200;
+		/**
+		 * The icon is a resource identified by a package name and an integer
+		 * id.
+		 */
+		static final int CONTAINER_DESKTOP = -100;
 
-        /**
-         * The screen holding the favorite (if container is CONTAINER_DESKTOP)
-         * <P>Type: INTEGER</P>
-         */
-        static final String SCREEN = "screen";
+		/**
+		 * The icon is a displayed in dock bar
+		 */
+		static final int CONTAINER_DOCKBAR = -200;
 
-        /**
-         * The X coordinate of the cell holding the favorite
-         * (if container is CONTAINER_DESKTOP or CONTAINER_DOCK)
-         * <P>Type: INTEGER</P>
-         */
-        static final String CELLX = "cellX";
+		/**
+		 * The screen holding the favorite (if container is CONTAINER_DESKTOP)
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String SCREEN = "screen";
 
-        /**
-         * The Y coordinate of the cell holding the favorite
-         * (if container is CONTAINER_DESKTOP)
-         * <P>Type: INTEGER</P>
-         */
-        static final String CELLY = "cellY";
+		/**
+		 * The X coordinate of the cell holding the favorite (if container is
+		 * CONTAINER_DESKTOP or CONTAINER_DOCK)
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String CELLX = "cellX";
 
-        /**
-         * The X span of the cell holding the favorite
-         * <P>Type: INTEGER</P>
-         */
-        static final String SPANX = "spanX";
+		/**
+		 * The Y coordinate of the cell holding the favorite (if container is
+		 * CONTAINER_DESKTOP)
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String CELLY = "cellY";
 
-        /**
-         * The Y span of the cell holding the favorite
-         * <P>Type: INTEGER</P>
-         */
-        static final String SPANY = "spanY";
+		/**
+		 * The X span of the cell holding the favorite
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String SPANX = "spanX";
 
-        /**
-         * The favorite is a user created folder
-         */
-        static final int ITEM_TYPE_USER_FOLDER = 2;
+		/**
+		 * The Y span of the cell holding the favorite
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String SPANY = "spanY";
 
-        /**
-         * The favorite is a live folder
-         */
-        static final int ITEM_TYPE_LIVE_FOLDER = 3;
+		/**
+		 * The favorite is a user created folder
+		 */
+		static final int ITEM_TYPE_USER_FOLDER = 2;
 
-        /**
-         * The favorite is a widget
-         */
-        static final int ITEM_TYPE_APPWIDGET = 4;
-        static final int ITEM_TYPE_CUSTOMAPPWIDGET = 5;
+		/**
+		 * The favorite is a live folder
+		 */
+		static final int ITEM_TYPE_LIVE_FOLDER = 3;
 
-        /**
-         * The favorite is a clock
-         */
-        static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
+		/**
+		 * The favorite is a widget
+		 */
+		static final int ITEM_TYPE_APPWIDGET = 4;
+		static final int ITEM_TYPE_CUSTOMAPPWIDGET = 5;
 
-        /**
-         * The favorite is a search widget
-         */
-        static final int ITEM_TYPE_WIDGET_SEARCH = 1001;
+		/**
+		 * The favorite is a clock
+		 */
+		static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
 
-        /**
-         * The favorite is a photo frame
-         */
-        static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
+		/**
+		 * The favorite is a search widget
+		 */
+		static final int ITEM_TYPE_WIDGET_SEARCH = 1001;
 
-        /**
-         * The favorite is a lock screen widget
-         */
-        static final int ITEM_TYPE_WIDGET_LOCK_SCREEN = 2001;
+		/**
+		 * The favorite is a photo frame
+		 */
+		static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
 
-        /**
-         * The favorite is a lock screen widget
-         */
-        static final int ITEM_TYPE_WIDGET_CLEAN_MEMORY = 2002;
+		/**
+		 * The favorite is a lock screen widget
+		 */
+		static final int ITEM_TYPE_WIDGET_LOCK_SCREEN = 2001;
 
-        /**
-         * The appWidgetId of the widget
-         *
-         * <P>Type: INTEGER</P>
-         */
-        static final String APPWIDGET_ID = "appWidgetId";
+		/**
+		 * The favorite is a lock screen widget
+		 */
+		static final int ITEM_TYPE_WIDGET_CLEAN_MEMORY = 2002;
 
-        /**
-         * Indicates whether this favorite is an application-created shortcut or not.
-         * If the value is 0, the favorite is not an application-created shortcut, if the
-         * value is 1, it is an application-created shortcut.
-         * <P>Type: INTEGER</P>
-         */
-        @Deprecated
-        static final String IS_SHORTCUT = "isShortcut";
+		/**
+		 * The appWidgetId of the widget
+		 * 
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		static final String APPWIDGET_ID = "appWidgetId";
 
-        /**
-         * The URI associated with the favorite. It is used, for instance, by
-         * live folders to find the content provider.
-         * <P>Type: TEXT</P>
-         */
-        static final String URI = "uri";
+		/**
+		 * Indicates whether this favorite is an application-created shortcut or
+		 * not. If the value is 0, the favorite is not an application-created
+		 * shortcut, if the value is 1, it is an application-created shortcut.
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		@Deprecated
+		static final String IS_SHORTCUT = "isShortcut";
 
-        /**
-         * The display mode if the item is a live folder.
-         * <P>Type: INTEGER</P>
-         *
-         * @see android.provider.LiveFolders#DISPLAY_MODE_GRID
-         * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
-         */
-        static final String DISPLAY_MODE = "displayMode";
-    }
+		/**
+		 * The URI associated with the favorite. It is used, for instance, by
+		 * live folders to find the content provider.
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		static final String URI = "uri";
+
+		/**
+		 * The display mode if the item is a live folder.
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 * 
+		 * @see android.provider.LiveFolders#DISPLAY_MODE_GRID
+		 * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
+		 */
+		static final String DISPLAY_MODE = "displayMode";
+	}
 
 	public static final class Applications implements BaseLauncherColumns {
 
 		/**
 		 * The content:// style URL for this table
 		 */
-		static final Uri CONTENT_URI = Uri.parse("content://" +
-				LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_APPLICATIONS +
-				"?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+		static final Uri CONTENT_URI = Uri.parse("content://"
+				+ LauncherProvider.AUTHORITY + "/"
+				+ LauncherProvider.TABLE_APPLICATIONS + "?"
+				+ LauncherProvider.PARAMETER_NOTIFY + "=true");
 
 		/**
-		 * The content:// style URL for this table. When this Uri is used, no notification is
-		 * sent if the content changes.
+		 * The content:// style URL for this table. When this Uri is used, no
+		 * notification is sent if the content changes.
 		 */
-		static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://" +
-				LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_APPLICATIONS +
-				"?" + LauncherProvider.PARAMETER_NOTIFY + "=false");
+		static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://"
+				+ LauncherProvider.AUTHORITY + "/"
+				+ LauncherProvider.TABLE_APPLICATIONS + "?"
+				+ LauncherProvider.PARAMETER_NOTIFY + "=false");
 
-        /**
-         * The content:// style URL for a given row, identified by its id.
-         *
-         * @param id The row id.
-         * @param notify True to send a notification is the content changes.
-         *
-         * @return The unique content URL for the specified row.
-         */
-        static Uri getContentUri(long id, boolean notify) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                    "/" + LauncherProvider.TABLE_APPLICATIONS + "/" + id + "?" +
-                    LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
-        }
-
-		static final Uri getCustomUri(String path) {
-			return Uri.parse("content://" +
-					LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_APPLICATIONS +
-					path + "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
+		/**
+		 * The content:// style URL for a given row, identified by its id.
+		 * 
+		 * @param id
+		 *            The row id.
+		 * @param notify
+		 *            True to send a notification is the content changes.
+		 * 
+		 * @return The unique content URL for the specified row.
+		 */
+		static Uri getContentUri(long id, boolean notify) {
+			return Uri.parse("content://" + LauncherProvider.AUTHORITY + "/"
+					+ LauncherProvider.TABLE_APPLICATIONS + "/" + id + "?"
+					+ LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
 		}
 
-		//The Item type
-		static final int APPS_TYPE_APP       = 101;
-		static final int APPS_TYPE_FOLDER    = 102;
+		static final Uri getCustomUri(String path) {
+			return Uri.parse("content://" + LauncherProvider.AUTHORITY + "/"
+					+ LauncherProvider.TABLE_APPLICATIONS + path + "?"
+					+ LauncherProvider.PARAMETER_NOTIFY + "=true");
+		}
+
+		// The Item type
+		static final int APPS_TYPE_APP = 101;
+		static final int APPS_TYPE_FOLDER = 102;
 		static final int APPS_TYPE_FOLDERAPP = 103;
 
 		/**
@@ -311,16 +356,16 @@ class LauncherSettings {
 		 */
 		static final String DEFAULT_SORT_ORDER = "position ASC";
 
-		static final String CONTAINER     = "container";
-		static final String POSITION      = "position";
-		static final String SYSAPP        = "sysApp";
-		static final String PACKAGENAME   = "packageName";
-		static final String INSTALL       = "install";
-		static final String STARTNUM      = "startNum";
+		static final String CONTAINER = "container";
+		static final String POSITION = "position";
+		static final String SYSAPP = "sysApp";
+		static final String PACKAGENAME = "packageName";
+		static final String INSTALL = "install";
+		static final String STARTNUM = "startNum";
 
-        /**
-         * The icon is a displayed in applications
-         */
-        static final int CONTAINER_APPS = -300;
+		/**
+		 * The icon is a displayed in applications
+		 */
+		static final int CONTAINER_APPS = -300;
 	}
 }

@@ -27,44 +27,44 @@ import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
  */
 class UserFolderInfo extends FolderInfo {
 
-    /**
-     * The apps and shortcuts 
-     */
-    ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+	/**
+	 * The apps and shortcuts
+	 */
+	ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
-    UserFolderInfo() {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER;
-    }
+	UserFolderInfo() {
+		itemType = LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER;
+	}
 
-    /**
-     * Add an app or shortcut
-     * 
-     * @param item
-     */
-    public void add(ShortcutInfo item) {
-        contents.add(item);
-    }
+	/**
+	 * Add an app or shortcut
+	 * 
+	 * @param item
+	 */
+	public void add(ShortcutInfo item) {
+		contents.add(item);
+	}
 
-    /**
-     * Remove an app or shortcut. Does not change the DB.
-     * 
-     * @param item
-     */
-    public void remove(ShortcutInfo item) {
-        contents.remove(item);
-        // If item's order is larger than 4, no need to update folder's icon
-        if (item.orderId < 4) {
-        	((FolderIcon) folderIcon).refreshFolderIcon();
-        }
-    }
+	/**
+	 * Remove an app or shortcut. Does not change the DB.
+	 * 
+	 * @param item
+	 */
+	public void remove(ShortcutInfo item) {
+		contents.remove(item);
+		// If item's order is larger than 4, no need to update folder's icon
+		if (item.orderId < 4) {
+			((FolderIcon) folderIcon).refreshFolderIcon();
+		}
+	}
 
-    public int getSize() {
-    	return contents.size();
-    }
+	public int getSize() {
+		return contents.size();
+	}
 
-    @Override
-    void onAddToDatabase(ContentValues values) { 
-        super.onAddToDatabase(values);
-        values.put(BaseLauncherColumns.TITLE, title.toString());
-    }
+	@Override
+	void onAddToDatabase(ContentValues values) {
+		super.onAddToDatabase(values);
+		values.put(BaseLauncherColumns.TITLE, title.toString());
+	}
 }

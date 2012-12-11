@@ -31,136 +31,145 @@ import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
  */
 class ShortcutInfo extends ItemInfo {
 
-    /**
-     * The application name.
-     */
-    CharSequence title;
+	/**
+	 * The application name.
+	 */
+	CharSequence title;
 
-    /**
-     * The intent used to start the application.
-     */
-    Intent intent;
+	/**
+	 * The intent used to start the application.
+	 */
+	Intent intent;
 
-    /**
-     * Indicates whether the icon comes from an application's resource (if false)
-     * or from a custom Bitmap (if true.)
-     */
-    boolean customIcon;
+	/**
+	 * Indicates whether the icon comes from an application's resource (if
+	 * false) or from a custom Bitmap (if true.)
+	 */
+	boolean customIcon;
 
-    /**
-     * Indicates whether we're using the default fallback icon instead of something from the
-     * app.
-     */
-    boolean usingFallbackIcon;
+	/**
+	 * Indicates whether we're using the default fallback icon instead of
+	 * something from the app.
+	 */
+	boolean usingFallbackIcon;
 
-    /**
-     * Indicates whether the shortcut is on external storage and may go away at any time.
-     */
-    boolean onExternalStorage;
+	/**
+	 * Indicates whether the shortcut is on external storage and may go away at
+	 * any time.
+	 */
+	boolean onExternalStorage;
 
-    /**
-     * If isShortcut=true and customIcon=false, this contains a reference to the
-     * shortcut icon as an application's resource.
-     */
-    Intent.ShortcutIconResource iconResource;
+	/**
+	 * If isShortcut=true and customIcon=false, this contains a reference to the
+	 * shortcut icon as an application's resource.
+	 */
+	Intent.ShortcutIconResource iconResource;
 
-    /**
-     * The application icon.
-     */
-    private Bitmap mIcon;
+	/**
+	 * The application icon.
+	 */
+	private Bitmap mIcon;
 
-    ShortcutInfo() {
-        itemType = BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
-    }
+	ShortcutInfo() {
+		itemType = BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
+	}
 
-    public ShortcutInfo(ShortcutInfo info) {
-        super(info);
-        title = info.title.toString();
-        intent = new Intent(info.intent);
-        if (info.iconResource != null) {
-            iconResource = new Intent.ShortcutIconResource();
-            iconResource.packageName = info.iconResource.packageName;
-            iconResource.resourceName = info.iconResource.resourceName;
-        }
-        mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
-        customIcon = info.customIcon;
-    }
+	public ShortcutInfo(ShortcutInfo info) {
+		super(info);
+		title = info.title.toString();
+		intent = new Intent(info.intent);
+		if (info.iconResource != null) {
+			iconResource = new Intent.ShortcutIconResource();
+			iconResource.packageName = info.iconResource.packageName;
+			iconResource.resourceName = info.iconResource.resourceName;
+		}
+		mIcon = info.mIcon; // TODO: should make a copy here. maybe we don't
+							// need this ctor at all
+		customIcon = info.customIcon;
+	}
 
-    /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
-    public ShortcutInfo(ApplicationInfo info) {
-        super(info);
-        title = info.title.toString();
-        intent = new Intent(info.intent);
-        customIcon = false;
-    }
+	/** TODO: Remove this. It's only called by ApplicationInfo.makeShortcut. */
+	public ShortcutInfo(ApplicationInfo info) {
+		super(info);
+		title = info.title.toString();
+		intent = new Intent(info.intent);
+		customIcon = false;
+	}
 
-    public void setIcon(Bitmap b) {
-        mIcon = b;
-    }
+	public void setIcon(Bitmap b) {
+		mIcon = b;
+	}
 
-    public Bitmap getIcon(IconCache iconCache) {
-        if (mIcon == null) {
-            mIcon = iconCache.getIcon(this.intent);
-        }
-        return mIcon;
-    }
+	public Bitmap getIcon(IconCache iconCache) {
+		if (mIcon == null) {
+			mIcon = iconCache.getIcon(this.intent);
+		}
+		return mIcon;
+	}
 
-    /**
-     * Creates the application intent based on a component name and various launch flags.
-     * Sets {@link #itemType} to {@link LauncherSettings.BaseLauncherColumns#ITEM_TYPE_APPLICATION}.
-     *
-     * @param className the class name of the component representing the intent
-     * @param launchFlags the launch flags
-     */
-    final void setActivity(ComponentName className, int launchFlags) {
-        intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setComponent(className);
-        intent.setFlags(launchFlags);
-        itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
-    }
+	/**
+	 * Creates the application intent based on a component name and various
+	 * launch flags. Sets {@link #itemType} to
+	 * {@link LauncherSettings.BaseLauncherColumns#ITEM_TYPE_APPLICATION}.
+	 * 
+	 * @param className
+	 *            the class name of the component representing the intent
+	 * @param launchFlags
+	 *            the launch flags
+	 */
+	final void setActivity(ComponentName className, int launchFlags) {
+		intent = new Intent(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		intent.setComponent(className);
+		intent.setFlags(launchFlags);
+		itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
+	}
 
-    @Override
-    void onAddToDatabase(ContentValues values) {
-        super.onAddToDatabase(values);
+	@Override
+	void onAddToDatabase(ContentValues values) {
+		super.onAddToDatabase(values);
 
-        String titleStr = title != null ? title.toString() : null;
-        values.put(BaseLauncherColumns.TITLE, titleStr);
+		String titleStr = title != null ? title.toString() : null;
+		values.put(BaseLauncherColumns.TITLE, titleStr);
 
-        String uri = intent != null ? intent.toUri(0) : null;
-        values.put(BaseLauncherColumns.INTENT, uri);
+		String uri = intent != null ? intent.toUri(0) : null;
+		values.put(BaseLauncherColumns.INTENT, uri);
 
-        if (customIcon) {
-            values.put(BaseLauncherColumns.ICON_TYPE, BaseLauncherColumns.ICON_TYPE_BITMAP);
-            writeBitmap(values, mIcon);
-        } else {
-            if (onExternalStorage && !usingFallbackIcon) {
-                writeBitmap(values, mIcon);
-            }
-            values.put(BaseLauncherColumns.ICON_TYPE, BaseLauncherColumns.ICON_TYPE_RESOURCE);
-            if (iconResource != null) {
-                values.put(BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName);
-                values.put(BaseLauncherColumns.ICON_RESOURCE, iconResource.resourceName);
-            }
-        }
-    }
+		if (customIcon) {
+			values.put(BaseLauncherColumns.ICON_TYPE,
+					BaseLauncherColumns.ICON_TYPE_BITMAP);
+			writeBitmap(values, mIcon);
+		} else {
+			if (onExternalStorage && !usingFallbackIcon) {
+				writeBitmap(values, mIcon);
+			}
+			values.put(BaseLauncherColumns.ICON_TYPE,
+					BaseLauncherColumns.ICON_TYPE_RESOURCE);
+			if (iconResource != null) {
+				values.put(BaseLauncherColumns.ICON_PACKAGE,
+						iconResource.packageName);
+				values.put(BaseLauncherColumns.ICON_RESOURCE,
+						iconResource.resourceName);
+			}
+		}
+	}
 
-    @Override
-    public String toString() {
-        return "ShortcutInfo(title=" + title.toString() + ")";
-    }
+	@Override
+	public String toString() {
+		return "ShortcutInfo(title=" + title.toString() + ")";
+	}
 
-    @Override
-    void unbind() {
-        super.unbind();
-    }
+	@Override
+	void unbind() {
+		super.unbind();
+	}
 
-    public static void dumpShortcutInfoList(String tag, String label,
-            ArrayList<ShortcutInfo> list) {
-        Log.d(tag, label + " size=" + list.size());
-        for (ShortcutInfo info: list) {
-            Log.d(tag, "title=\"" + info.title + " icon=" + info.mIcon
-                    + " customIcon=" + info.customIcon);
-        }
-    }
+	public static void dumpShortcutInfoList(String tag, String label,
+			ArrayList<ShortcutInfo> list) {
+		Log.d(tag, label + " size=" + list.size());
+		for (ShortcutInfo info : list) {
+			Log.d(tag, "title=\"" + info.title + " icon=" + info.mIcon
+					+ " customIcon=" + info.customIcon);
+		}
+	}
 }

@@ -30,18 +30,18 @@ import com.fruit.launcher.LauncherSettings.Favorites;
 
 public class DockBar extends ViewGroup {
 
-    public static final String TAG = "DockBar";
-    
-	public static final int DEFAULT_CELL_NUM_IDEAL = 4;//yfzhao//5;
+	public static final String TAG = "DockBar";
+
+	public static final int DEFAULT_CELL_NUM_IDEAL = 4;// yfzhao//5;
 	public static final int DEFAULT_CELL_NUM_ALL_APP = 3;
 	private static final int ORIENTATION_HORIZONTAL = 1;
-	
+
 	public static final int MAX_CELL_NUM_ALL_APP = 4;
-	
+
 	private static final String TAG_Favorite_All_Apps = "favorite_allapps";
-	
-	public int mIdealHomeIndex = -1; //yfzhao
-	public int mAllAppHomeIndex = -1; //yfzhao
+
+	public int mIdealHomeIndex = -1; // yfzhao
+	public int mAllAppHomeIndex = -1; // yfzhao
 
 	private float mDensity;
 
@@ -57,7 +57,7 @@ public class DockBar extends ViewGroup {
 	private int mHeightGap;
 
 	private int mCellNumAllApp = 0;
-	
+
 	private DragController mDragController;
 	private Paint mTrashPaint;
 
@@ -68,9 +68,9 @@ public class DockBar extends ViewGroup {
 	private View.OnClickListener mDockButtonClickListener;
 
 	private IconCache mIconCache;
-	
-	//modify by guo 	
- 	private ArrayList<ShortcutInfo> mAllAppHomeBar;
+
+	// modify by guo
+	private ArrayList<ShortcutInfo> mAllAppHomeBar;
 
 	public DockBar(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
@@ -83,203 +83,225 @@ public class DockBar extends ViewGroup {
 		mDensity = Utilities.sDensity;
 		mFirstMeasure = true;
 
-		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DockBar, defStyle, 0);
-		int orientation = typedArray.getInt(R.styleable.DockBar_direction, ORIENTATION_HORIZONTAL);
+		TypedArray typedArray = context.obtainStyledAttributes(attrs,
+				R.styleable.DockBar, defStyle, 0);
+		int orientation = typedArray.getInt(R.styleable.DockBar_direction,
+				ORIENTATION_HORIZONTAL);
 		if (orientation == ORIENTATION_HORIZONTAL) {
 			mPortrait = true;
 		} else {
 			mPortrait = false;
 		}
 
-		mCellNum = typedArray.getInt(R.styleable.DockBar_cellNum, DEFAULT_CELL_NUM_IDEAL);
-		mLeftPadding = typedArray.getDimensionPixelOffset(R.styleable.DockBar_leftPadding, 10);
-		mRightPadding = typedArray.getDimensionPixelOffset(R.styleable.DockBar_rightPadding, 10);
-		
-		mTopPadding = typedArray.getDimensionPixelOffset(R.styleable.DockBar_topPadding, 0);
-		mBottomPadding = typedArray.getDimensionPixelOffset(R.styleable.DockBar_bottomPadding, 0);
+		mCellNum = typedArray.getInt(R.styleable.DockBar_cellNum,
+				DEFAULT_CELL_NUM_IDEAL);
+		mLeftPadding = typedArray.getDimensionPixelOffset(
+				R.styleable.DockBar_leftPadding, 10);
+		mRightPadding = typedArray.getDimensionPixelOffset(
+				R.styleable.DockBar_rightPadding, 10);
 
-		//mIdealHomeIndex = mCellNum / 2;
-//		mAllAppHomeIndex = mCellNumAllApp / 2;
+		mTopPadding = typedArray.getDimensionPixelOffset(
+				R.styleable.DockBar_topPadding, 0);
+		mBottomPadding = typedArray.getDimensionPixelOffset(
+				R.styleable.DockBar_bottomPadding, 0);
+
+		// mIdealHomeIndex = mCellNum / 2;
+		// mAllAppHomeIndex = mCellNumAllApp / 2;
 		mIsDockItemShow = true;
 		mDockButtons = new DockButton[DEFAULT_CELL_NUM_IDEAL];
-		
 
-		final int srcColor = context.getResources().getColor(R.color.dock_color_filter);
+		final int srcColor = context.getResources().getColor(
+				R.color.dock_color_filter);
 		mTrashPaint = new Paint();
-		mTrashPaint.setColorFilter(new PorterDuffColorFilter(srcColor, PorterDuff.Mode.SRC_ATOP));
-		
-		LauncherApplication app = (LauncherApplication)context.getApplicationContext();
-	    mIconCache = app.getIconCache();
-		
-		//loadAllAppHomeBar(getContext());
-		//mAllAppHomeIndex = getAppHomeBarCount() / 2;
-		//mCellNumAllApp = getAppHomeBarCount() + 1;
-		//mAllAppDockButtons = new DockButton[mCellNumAllApp];
-		//initAllAppDockButton();
-		//initIdealDockButton();
+		mTrashPaint.setColorFilter(new PorterDuffColorFilter(srcColor,
+				PorterDuff.Mode.SRC_ATOP));
 
-		//setBackgroundDrawable(null);
-		setBackgroundDrawable(mIconCache.getLocalIcon(R.drawable.dock_background, "dock_background"));
+		LauncherApplication app = (LauncherApplication) context
+				.getApplicationContext();
+		mIconCache = app.getIconCache();
+
+		// loadAllAppHomeBar(getContext());
+		// mAllAppHomeIndex = getAppHomeBarCount() / 2;
+		// mCellNumAllApp = getAppHomeBarCount() + 1;
+		// mAllAppDockButtons = new DockButton[mCellNumAllApp];
+		// initAllAppDockButton();
+		// initIdealDockButton();
+
+		// setBackgroundDrawable(null);
+		setBackgroundDrawable(mIconCache.getLocalIcon(
+				R.drawable.dock_background, "dock_background"));
 	}
-	
-//	private void initAllAppDockButton() {
-//		// TODO Auto-generated method stub
-//		LayoutInflater inflater = LayoutInflater.from(mContext);
-//
-//		mInAllAppMode = false;
-//		mDockButtonClickListener = new View.OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				if (mInAllAppMode && v.getTag() != null) {
-//					ShortcutInfo appInfo = (ShortcutInfo) v.getTag();
-//					if (appInfo.intent != null) {
-//						mContext.startActivity(appInfo.intent);
-//					}
-//				}
-//			}
-//		};
-//
-//		int dockBarCount = mAllAppHomeBar.size() + 1;
-//		
-//		for (int i = 0; i < dockBarCount; i++) {
-//	
-//			DockButton dockButton = (DockButton) inflater.inflate(R.layout.dock_button, null);
-//			ShortcutInfo info = null;
-//			if(i == mAllAppHomeIndex){
-//				info = new ShortcutInfo();
-//				
-//				dockButton.mIsHome = true;
-//				dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.home_button, "ic_home_button"));
-//			}else{
-//				int allAppHomeIndex = i > mAllAppHomeIndex ? i-1 : i;
-//			
-//				info = mAllAppHomeBar.get(allAppHomeIndex);
-//				dockButton.mIsHome = false;
-//				dockButton.setImageBitmap(mIconCache.getIcon(info.intent));
-//			}
-//
-//			info.cellX = i;
-//			info.cellY = -1;
-//			info.container = Favorites.CONTAINER_DOCKBAR;
-//			info.screen = -1;
-//
-//			dockButton.mIsHold = true;
-//			dockButton.mIsEmpty = false;
-//			dockButton.setTag(info);
-//			dockButton.setPaint(mTrashPaint);
-//			dockButton.setClickable(true);
-//			dockButton.setOnClickListener(mDockButtonClickListener);
-//			mAllAppDockButtons[i] = dockButton;
-//		}
-//	}
-//
-//	private void initIdealDockButton(){
-//		LayoutInflater inflater = LayoutInflater.from(mContext);
-//		// Initialize Home button
-//		ShortcutInfo info = new ShortcutInfo();
-//		info.container = Favorites.CONTAINER_DOCKBAR;
-//		info.cellX = mIdealHomeIndex;
-//		info.cellY = -1;
-//		info.screen = -1;
-//		info.itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
-//		
-//    	try {
-//			DockButton dockButton =(DockButton) inflater.inflate(R.layout.dock_button, null);
-//			
-//			dockButton.mIsHome = true;
-//			dockButton.mIsHold = true;
-//			dockButton.mIsEmpty = false;
-//			dockButton.setPaint(mTrashPaint);
-//			dockButton.setClickable(true);
-//			dockButton.setTag(info);
-//			dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.all_apps_button, "ic_all_apps_button"));
-//			
-//			mDockButtons[mIdealHomeIndex] = dockButton;
-//    	} catch (Exception e) {
-//    		e.printStackTrace();
-//    	}
-//	}
-	
-	/**
-     * Loads the default set of default to packages from an xml file.
-     * @modify guo
-     * @param context The context 
-     */
-//     private boolean loadAllAppHomeBar(Context context) {
-//    	boolean bRet = false;
-//    	
-//    	if (mAllAppHomeBar == null) {
-//    		mAllAppHomeBar = new ArrayList<ShortcutInfo>();
-//    	} else {
-//    		return true;
-//    	}
-//
-//    	PackageManager packageManager = mContext.getPackageManager();
-//    	ActivityInfo actInfo;
-//        try {
-//            XmlResourceParser parser = context.getResources().getXml(R.xml.default_allapp_slider);
-//            AttributeSet attrs = Xml.asAttributeSet(parser);
-//            XmlUtils.beginDocument(parser, TAG_Favorite_All_Apps);
-//
-//            final int depth = parser.getDepth();
-//            
-//            int type;
-//            int i = 0;
-//            while (((type = parser.next()) != XmlPullParser.END_TAG || parser.getDepth() > depth) 
-//            		&& type != XmlPullParser.END_DOCUMENT) {
-//
-//                if (type != XmlPullParser.START_TAG) {
-//                    continue;
-//                }                    
-//
-//                TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Favorite_Allapp);   
-//                String packageName = a.getString(R.styleable.Favorite_Allapp_AllappPackageName);
-//                String className = a.getString(R.styleable.Favorite_Allapp_AllappClassName);
-//                try {
-//                    ComponentName cn;
-//                    try {
-//                        cn = new ComponentName(packageName, className);
-//                        actInfo = packageManager.getActivityInfo(cn, 0);
-//                    } catch (PackageManager.NameNotFoundException nnfe) {
-//                        String[] packages = packageManager.currentToCanonicalPackageNames(
-//                            new String[] { packageName });
-//                        cn = new ComponentName(packages[0], className);
-//                        actInfo = packageManager.getActivityInfo(cn, 0);
-//                    }
-//
-//                    ShortcutInfo info = new ShortcutInfo();
-//                    Intent intent = new Intent();
-//                    intent.setAction(Intent.ACTION_MAIN);
-//                    intent.setComponent(cn);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-//                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-//                    info.intent = intent;
-//                    mAllAppHomeBar.add(info);
-//                } catch (PackageManager.NameNotFoundException e) {
-//                    Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
-//                    continue;
-//                }
-//
-//                a.recycle();
-//                i++;
-//                if(i > MAX_CELL_NUM_ALL_APP){
-//                	break;
-//                }
-//            }
-//        } catch (XmlPullParserException e) {
-//            Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
-//        } catch (IOException e) {
-//            Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
-//        }
-//        
-//        return bRet;
-//    }
 
-//    private int getAppHomeBarCount() {
-//    	return mAllAppHomeBar.size();
-//    }
+	// private void initAllAppDockButton() {
+	// // TODO Auto-generated method stub
+	// LayoutInflater inflater = LayoutInflater.from(mContext);
+	//
+	// mInAllAppMode = false;
+	// mDockButtonClickListener = new View.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(View v) {
+	// // TODO Auto-generated method stub
+	// if (mInAllAppMode && v.getTag() != null) {
+	// ShortcutInfo appInfo = (ShortcutInfo) v.getTag();
+	// if (appInfo.intent != null) {
+	// mContext.startActivity(appInfo.intent);
+	// }
+	// }
+	// }
+	// };
+	//
+	// int dockBarCount = mAllAppHomeBar.size() + 1;
+	//
+	// for (int i = 0; i < dockBarCount; i++) {
+	//
+	// DockButton dockButton = (DockButton)
+	// inflater.inflate(R.layout.dock_button, null);
+	// ShortcutInfo info = null;
+	// if(i == mAllAppHomeIndex){
+	// info = new ShortcutInfo();
+	//
+	// dockButton.mIsHome = true;
+	// dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.home_button,
+	// "ic_home_button"));
+	// }else{
+	// int allAppHomeIndex = i > mAllAppHomeIndex ? i-1 : i;
+	//
+	// info = mAllAppHomeBar.get(allAppHomeIndex);
+	// dockButton.mIsHome = false;
+	// dockButton.setImageBitmap(mIconCache.getIcon(info.intent));
+	// }
+	//
+	// info.cellX = i;
+	// info.cellY = -1;
+	// info.container = Favorites.CONTAINER_DOCKBAR;
+	// info.screen = -1;
+	//
+	// dockButton.mIsHold = true;
+	// dockButton.mIsEmpty = false;
+	// dockButton.setTag(info);
+	// dockButton.setPaint(mTrashPaint);
+	// dockButton.setClickable(true);
+	// dockButton.setOnClickListener(mDockButtonClickListener);
+	// mAllAppDockButtons[i] = dockButton;
+	// }
+	// }
+	//
+	// private void initIdealDockButton(){
+	// LayoutInflater inflater = LayoutInflater.from(mContext);
+	// // Initialize Home button
+	// ShortcutInfo info = new ShortcutInfo();
+	// info.container = Favorites.CONTAINER_DOCKBAR;
+	// info.cellX = mIdealHomeIndex;
+	// info.cellY = -1;
+	// info.screen = -1;
+	// info.itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
+	//
+	// try {
+	// DockButton dockButton =(DockButton)
+	// inflater.inflate(R.layout.dock_button, null);
+	//
+	// dockButton.mIsHome = true;
+	// dockButton.mIsHold = true;
+	// dockButton.mIsEmpty = false;
+	// dockButton.setPaint(mTrashPaint);
+	// dockButton.setClickable(true);
+	// dockButton.setTag(info);
+	// dockButton.setImageDrawable(mIconCache.getLocalIcon(R.drawable.all_apps_button,
+	// "ic_all_apps_button"));
+	//
+	// mDockButtons[mIdealHomeIndex] = dockButton;
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+
+	/**
+	 * Loads the default set of default to packages from an xml file.
+	 * 
+	 * @modify guo
+	 * @param context
+	 *            The context
+	 */
+	// private boolean loadAllAppHomeBar(Context context) {
+	// boolean bRet = false;
+	//
+	// if (mAllAppHomeBar == null) {
+	// mAllAppHomeBar = new ArrayList<ShortcutInfo>();
+	// } else {
+	// return true;
+	// }
+	//
+	// PackageManager packageManager = mContext.getPackageManager();
+	// ActivityInfo actInfo;
+	// try {
+	// XmlResourceParser parser =
+	// context.getResources().getXml(R.xml.default_allapp_slider);
+	// AttributeSet attrs = Xml.asAttributeSet(parser);
+	// XmlUtils.beginDocument(parser, TAG_Favorite_All_Apps);
+	//
+	// final int depth = parser.getDepth();
+	//
+	// int type;
+	// int i = 0;
+	// while (((type = parser.next()) != XmlPullParser.END_TAG ||
+	// parser.getDepth() > depth)
+	// && type != XmlPullParser.END_DOCUMENT) {
+	//
+	// if (type != XmlPullParser.START_TAG) {
+	// continue;
+	// }
+	//
+	// TypedArray a = context.obtainStyledAttributes(attrs,
+	// R.styleable.Favorite_Allapp);
+	// String packageName =
+	// a.getString(R.styleable.Favorite_Allapp_AllappPackageName);
+	// String className =
+	// a.getString(R.styleable.Favorite_Allapp_AllappClassName);
+	// try {
+	// ComponentName cn;
+	// try {
+	// cn = new ComponentName(packageName, className);
+	// actInfo = packageManager.getActivityInfo(cn, 0);
+	// } catch (PackageManager.NameNotFoundException nnfe) {
+	// String[] packages = packageManager.currentToCanonicalPackageNames(
+	// new String[] { packageName });
+	// cn = new ComponentName(packages[0], className);
+	// actInfo = packageManager.getActivityInfo(cn, 0);
+	// }
+	//
+	// ShortcutInfo info = new ShortcutInfo();
+	// Intent intent = new Intent();
+	// intent.setAction(Intent.ACTION_MAIN);
+	// intent.setComponent(cn);
+	// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+	// Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+	// info.intent = intent;
+	// mAllAppHomeBar.add(info);
+	// } catch (PackageManager.NameNotFoundException e) {
+	// Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className,
+	// e);
+	// continue;
+	// }
+	//
+	// a.recycle();
+	// i++;
+	// if(i > MAX_CELL_NUM_ALL_APP){
+	// break;
+	// }
+	// }
+	// } catch (XmlPullParserException e) {
+	// Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
+	// } catch (IOException e) {
+	// Log.w(TAG, "Got exception parsing AllAppHomeBar.", e);
+	// }
+	//
+	// return bRet;
+	// }
+
+	// private int getAppHomeBarCount() {
+	// return mAllAppHomeBar.size();
+	// }
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -288,7 +310,8 @@ public class DockBar extends ViewGroup {
 			View view = getChildAt(i);
 			view.clearAnimation();
 			if (view.getVisibility() != View.GONE) {
-				DockBar.LayoutParams layoutParams = (DockBar.LayoutParams) view.getLayoutParams();
+				DockBar.LayoutParams layoutParams = (DockBar.LayoutParams) view
+						.getLayoutParams();
 				view.layout(layoutParams.left, layoutParams.top,
 						layoutParams.width + layoutParams.left,
 						layoutParams.height + layoutParams.top);
@@ -313,43 +336,51 @@ public class DockBar extends ViewGroup {
 		int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
 		int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
 
-		if (widthSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.UNSPECIFIED) {
-			throw new RuntimeException("DockBar cannot have UNSPECIFIED dimensions");
+		if (widthSpecMode == MeasureSpec.UNSPECIFIED
+				|| heightSpecMode == MeasureSpec.UNSPECIFIED) {
+			throw new RuntimeException(
+					"DockBar cannot have UNSPECIFIED dimensions");
 		}
 
 		if (mFirstMeasure) {
 			if (mPortrait) {
-				mWidthGap = (widthSpecSize - mLeftPadding - mRightPadding) / mCellNum;
-				mHeightGap = heightSpecSize - (int) (0.0f * mDensity) - mTopPadding - mBottomPadding;
+				mWidthGap = (widthSpecSize - mLeftPadding - mRightPadding)
+						/ mCellNum;
+				mHeightGap = heightSpecSize - (int) (0.0f * mDensity)
+						- mTopPadding - mBottomPadding;
 			} else {
-				mWidthGap = widthSpecSize - (int) (0.0f * mDensity) - mTopPadding - mBottomPadding;
-				mHeightGap = (heightSpecSize - mLeftPadding - mRightPadding) / mCellNum;
+				mWidthGap = widthSpecSize - (int) (0.0f * mDensity)
+						- mTopPadding - mBottomPadding;
+				mHeightGap = (heightSpecSize - mLeftPadding - mRightPadding)
+						/ mCellNum;
 			}
 			mFirstMeasure = false;
 		}
 
 		for (int i = 0; i < getChildCount(); i++) {
 			View child = getChildAt(i);
-			DockBar.LayoutParams lp = (DockBar.LayoutParams) child.getLayoutParams();
+			DockBar.LayoutParams lp = (DockBar.LayoutParams) child
+					.getLayoutParams();
 
 			lp.width = mWidthGap - lp.leftMargin - lp.rightMargin;
 			lp.height = mHeightGap - lp.topMargin - lp.bottomMargin;
 			if (mPortrait) {
 				lp.left = mWidthGap * lp.index + lp.leftMargin + mLeftPadding;
-//				if (mDensity == 1.0f) {
-					lp.top = lp.topMargin + (int) (2.0f * mDensity) + mTopPadding;
-//				} else if (mDensity >= 1.5f) {
-//					lp.top = lp.topMargin - (int) (4.0f * mDensity) + mTopPadding;
-//				}
+				// if (mDensity == 1.0f) {
+				lp.top = lp.topMargin + (int) (2.0f * mDensity) + mTopPadding;
+				// } else if (mDensity >= 1.5f) {
+				// lp.top = lp.topMargin - (int) (4.0f * mDensity) +
+				// mTopPadding;
+				// }
 			} else {
 				lp.left = lp.leftMargin + (int) (4.0f * mDensity) + mTopPadding;
 				lp.top = mHeightGap * lp.index + lp.topMargin + mLeftPadding;
 			}
 
-			int childWidthMeasureSpec =
-				MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
-			int childheightMeasureSpec =
-				MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
+			int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width,
+					MeasureSpec.EXACTLY);
+			int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
+					MeasureSpec.EXACTLY);
 			child.measure(childWidthMeasureSpec, childheightMeasureSpec);
 		}
 		setMeasuredDimension(widthSpecSize, heightSpecSize);
@@ -362,7 +393,8 @@ public class DockBar extends ViewGroup {
 		int top;
 
 		public LayoutParams(int index) {
-			super(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+			super(ViewGroup.LayoutParams.MATCH_PARENT,
+					ViewGroup.LayoutParams.MATCH_PARENT);
 			// TODO Auto-generated constructor stub
 			this.index = index;
 		}
@@ -411,8 +443,8 @@ public class DockBar extends ViewGroup {
 			// Add mAllAppDockButtons to dock bar
 			for (int i = 0; i < mCellNumAllApp; i++) {
 				lp = new DockBar.LayoutParams(i);
-				if(mAllAppDockButtons[i] != null){
-					addView(mAllAppDockButtons[i], -1, lp);	
+				if (mAllAppDockButtons[i] != null) {
+					addView(mAllAppDockButtons[i], -1, lp);
 				}
 			}
 			mCellNum = mCellNumAllApp;
@@ -423,8 +455,8 @@ public class DockBar extends ViewGroup {
 			// Add mDockButtons to dock bar
 			for (int i = 0; i < DEFAULT_CELL_NUM_IDEAL; i++) {
 				lp = new DockBar.LayoutParams(i);
-				if(mDockButtons[i] != null){
-					addView(mDockButtons[i], -1, lp);	
+				if (mDockButtons[i] != null) {
+					addView(mDockButtons[i], -1, lp);
 				}
 			}
 			mCellNum = DEFAULT_CELL_NUM_IDEAL;
@@ -441,17 +473,17 @@ public class DockBar extends ViewGroup {
 		return mTrashPaint;
 	}
 
-	public void setIdealButton(View view, int index){
-		if (index < 0 || index >= DEFAULT_CELL_NUM_IDEAL 
+	public void setIdealButton(View view, int index) {
+		if (index < 0 || index >= DEFAULT_CELL_NUM_IDEAL
 				&& !(view instanceof DockButton)) {
 			return;
 		}
-		if(mDockButtons[index]!= null){
+		if (mDockButtons[index] != null) {
 			DockButton button = mDockButtons[index];
 			button.setVisibility(View.GONE);
 			mDragController.removeDropTarget(button);
-			
-			button.setTag(null);			
+
+			button.setTag(null);
 			removeView(button);
 		}
 		mDockButtons[index] = (DockButton) view;
@@ -493,12 +525,11 @@ public class DockBar extends ViewGroup {
 		// TODO Auto-generated method stub
 		mDragController = dragController;
 	}
-	
-	
-	public void applyTheme(){
+
+	public void applyTheme() {
 		DockButton button = null;
 		ShortcutInfo info = null;
-		
+
 		for (int i = 0; i < DockBar.DEFAULT_CELL_NUM_IDEAL; i++) {
 			if (i != mIdealHomeIndex) {
 				button = getIdealButtons(i);
@@ -510,7 +541,7 @@ public class DockBar extends ViewGroup {
 			}
 		}
 
-                //jinzhimin add for apply theme in all app 2010-06-15
+		// jinzhimin add for apply theme in all app 2010-06-15
 		for (int i = 0; i < DockBar.DEFAULT_CELL_NUM_ALL_APP; i++) {
 			if (i != mAllAppHomeIndex) {
 				button = getIdealButtons(i);
@@ -521,31 +552,39 @@ public class DockBar extends ViewGroup {
 				}
 			}
 		}
-		
+
 		applyThemeOnHolderBar();
 	}
-	
+
 	public void applyThemeOnHolderBar() {
 		// TODO Auto-generated method stub
 		final IconCache iconCache = mIconCache;
-		//DockButton allAppLeftButton = getAllAppButtons(0);
-		//DockButton allAppRightButton = getAllAppButtons(2);
-		//DockButton allAppButton = getAllAppButtons(mAllAppHomeIndex);
-		//DockButton homeButton = getIdealButtons(mIdealHomeIndex);
-		
-		//Drawable allAppIcon = iconCache.getLocalIcon(R.drawable.all_apps_button, "ic_all_apps_button");
-		//Drawable homeIcon = iconCache.getLocalIcon(R.drawable.home_button, "ic_home_button");
-		
-		//allAppButton.setImageDrawable(homeIcon);
-		//homeButton.setImageDrawable(allAppIcon);
+		// DockButton allAppLeftButton = getAllAppButtons(0);
+		// DockButton allAppRightButton = getAllAppButtons(2);
+		// DockButton allAppButton = getAllAppButtons(mAllAppHomeIndex);
+		// DockButton homeButton = getIdealButtons(mIdealHomeIndex);
 
-//		Drawable leftIcon = iconCache.getLocalIcon(R.drawable.ic_launcher_market_normal, "ic_market_button");
-//		allAppLeftButton.setImageDrawable(leftIcon);
-//
-//		Drawable rightIcon = iconCache.getLocalIcon(R.drawable.ic_launcher_search_normal, "ic_search_button");
-//		allAppRightButton.setImageDrawable(rightIcon);
+		// Drawable allAppIcon =
+		// iconCache.getLocalIcon(R.drawable.all_apps_button,
+		// "ic_all_apps_button");
+		// Drawable homeIcon = iconCache.getLocalIcon(R.drawable.home_button,
+		// "ic_home_button");
 
-		Drawable dockBg = iconCache.getLocalIcon(R.drawable.dock_background, "dock_background");
+		// allAppButton.setImageDrawable(homeIcon);
+		// homeButton.setImageDrawable(allAppIcon);
+
+		// Drawable leftIcon =
+		// iconCache.getLocalIcon(R.drawable.ic_launcher_market_normal,
+		// "ic_market_button");
+		// allAppLeftButton.setImageDrawable(leftIcon);
+		//
+		// Drawable rightIcon =
+		// iconCache.getLocalIcon(R.drawable.ic_launcher_search_normal,
+		// "ic_search_button");
+		// allAppRightButton.setImageDrawable(rightIcon);
+
+		Drawable dockBg = iconCache.getLocalIcon(R.drawable.dock_background,
+				"dock_background");
 		setBackgroundDrawable(dockBg);
 	}
 }

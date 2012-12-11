@@ -26,37 +26,37 @@ import android.content.ContentValues;
  */
 class LauncherAppWidgetInfo extends ItemInfo {
 
-    /**
-     * Identifier for this widget when talking with
-     * {@link android.appwidget.AppWidgetManager} for updates.
-     */
-    int appWidgetId;
+	/**
+	 * Identifier for this widget when talking with
+	 * {@link android.appwidget.AppWidgetManager} for updates.
+	 */
+	int appWidgetId;
 
-    /**
-     * View that holds this widget after it's been created.  This view isn't created
-     * until Launcher knows it's needed.
-     */
-    AppWidgetHostView hostView = null;
+	/**
+	 * View that holds this widget after it's been created. This view isn't
+	 * created until Launcher knows it's needed.
+	 */
+	AppWidgetHostView hostView = null;
 
-    LauncherAppWidgetInfo(int appWidgetId) {
-        itemType = Favorites.ITEM_TYPE_APPWIDGET;
-        this.appWidgetId = appWidgetId;
-    }
+	LauncherAppWidgetInfo(int appWidgetId) {
+		itemType = Favorites.ITEM_TYPE_APPWIDGET;
+		this.appWidgetId = appWidgetId;
+	}
 
-    @Override
-    void onAddToDatabase(ContentValues values) {
-        super.onAddToDatabase(values);
-        values.put(Favorites.APPWIDGET_ID, appWidgetId);
-    }
+	@Override
+	void onAddToDatabase(ContentValues values) {
+		super.onAddToDatabase(values);
+		values.put(Favorites.APPWIDGET_ID, appWidgetId);
+	}
 
-    @Override
-    public String toString() {
-        return "AppWidget(id=" + Integer.toString(appWidgetId) + ")";
-    }
+	@Override
+	public String toString() {
+		return "AppWidget(id=" + Integer.toString(appWidgetId) + ")";
+	}
 
-    @Override
-    void unbind() {
-        super.unbind();
-        hostView = null;
-    }
+	@Override
+	void unbind() {
+		super.unbind();
+		hostView = null;
+	}
 }

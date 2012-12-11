@@ -28,168 +28,170 @@ import android.util.DisplayMetrics;
 import android.widget.TextView;
 
 /**
- * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
- * because we want to make the bubble taller than the text and TextView's clip is
- * too aggressive.
+ * TextView that draws a bubble behind the text. We cannot use a
+ * LineBackgroundSpan because we want to make the bubble taller than the text
+ * and TextView's clip is too aggressive.
  */
 public class BubbleTextView extends TextView {
 
-    static final float CORNER_RADIUS = 8.0f;
-    static final float PADDING_H = 5.0f;
-    static final float PADDING_V = 1.0f;
+	static final float CORNER_RADIUS = 8.0f;
+	static final float PADDING_H = 5.0f;
+	static final float PADDING_V = 1.0f;
 
-    private boolean mBackgroundSizeChanged;
-    private Drawable mBackground;
-    
-    private final RectF mRect = new RectF();
-    private Paint mPaint;
+	private boolean mBackgroundSizeChanged;
+	private Drawable mBackground;
 
-    private float mCornerRadius;
-    private float mPaddingH;
-    private float mPaddingV;
-    
-    private Launcher mLauncher;
-    
-    private boolean mIsDrawShadow = false;
+	private final RectF mRect = new RectF();
+	private Paint mPaint;
 
-    public BubbleTextView(Context context) {
-        super(context);
-        init(context, null, -1);
-    }
+	private float mCornerRadius;
+	private float mPaddingH;
+	private float mPaddingV;
 
-    public BubbleTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, -1);
-    }
+	private Launcher mLauncher;
 
-    public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        
-        
-        init(context, attrs, defStyle);
-    }
+	private boolean mIsDrawShadow = false;
 
-    private void init(Context context, AttributeSet attrs, int defStyle) {
-        setFocusable(true);
-        mBackground = getBackground();
-        setBackgroundDrawable(null);
-        
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(getContext().getResources().getColor(R.color.bubble_dark_background));
+	public BubbleTextView(Context context) {
+		super(context);
+		init(context, null, -1);
+	}
 
-        final float scale = getContext().getResources().getDisplayMetrics().density;
-        mCornerRadius = CORNER_RADIUS * scale;
-        mPaddingH = PADDING_H * scale;
-        //noinspection PointlessArithmeticExpression
-        mPaddingV = PADDING_V * scale;
-        final DisplayMetrics metrics = getResources().getDisplayMetrics();
-        
-        
-        if (DisplayMetrics.DENSITY_DEVICE <= 120) {
-        	setTextSize(16.f);
-        }
-        
-        if( attrs != null){
-        	TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.BubbleTextView, defStyle, 0);
-        	mIsDrawShadow = typedArray.getBoolean(R.styleable.BubbleTextView_drawShadow, false);
-        }
-    }
+	public BubbleTextView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init(context, attrs, -1);
+	}
 
-    @Override
-    protected boolean setFrame(int left, int top, int right, int bottom) {
-        if (mLeft != left || mRight != right || mTop != top || mBottom != bottom) {
-            mBackgroundSizeChanged = true;
-        }
-        return super.setFrame(left, top, right, bottom);
-    }
+	public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
 
-    @Override
-    protected boolean verifyDrawable(Drawable who) {
-        return who == mBackground || super.verifyDrawable(who);
-    }
+		init(context, attrs, defStyle);
+	}
 
-    @Override
-    protected void drawableStateChanged() {
-        Drawable d = mBackground;
-        if (d != null && d.isStateful()) {
-            d.setState(getDrawableState());
-        }
-        super.drawableStateChanged();
-    }
+	private void init(Context context, AttributeSet attrs, int defStyle) {
+		setFocusable(true);
+		mBackground = getBackground();
+		setBackgroundDrawable(null);
 
-    @Override
-    public void draw(Canvas canvas) {
-        final Drawable background = mBackground;
-        if (background != null) {
-            final int scrollX = mScrollX;
-            final int scrollY = mScrollY;
+		mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		mPaint.setColor(getContext().getResources().getColor(
+				R.color.bubble_dark_background));
 
-            if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  mRight - mLeft, mBottom - mTop);
-                mBackgroundSizeChanged = false;
-            }
+		final float scale = getContext().getResources().getDisplayMetrics().density;
+		mCornerRadius = CORNER_RADIUS * scale;
+		mPaddingH = PADDING_H * scale;
+		// noinspection PointlessArithmeticExpression
+		mPaddingV = PADDING_V * scale;
+		final DisplayMetrics metrics = getResources().getDisplayMetrics();
 
-            if ((scrollX | scrollY) == 0) {
-                background.draw(canvas);
-            } else {
-                canvas.translate(scrollX, scrollY);
-                background.draw(canvas);
-                canvas.translate(-scrollX, -scrollY);
-            }
-        }
-        
-        final Layout layout = getLayout();
-        final RectF rect = mRect;
-        final int left = getCompoundPaddingLeft();
-        final int top = getExtendedPaddingTop();
-        if(mIsDrawShadow){
-        	rect.set(left + layout.getLineLeft(0) - mPaddingH,
-                    top + layout.getLineTop(0) -  mPaddingV,
-                    Math.min(left + layout.getLineRight(0) + mPaddingH, mScrollX + mRight - mLeft),
-                    top + layout.getLineBottom(0) + mPaddingV);
-            canvas.drawRoundRect(rect, mCornerRadius, mCornerRadius, mPaint);
-            
-        }
-                
-        if (false) {
-            Paint debugPaint = new Paint();
-            debugPaint.setColor(0xffcccc00);
-            canvas.drawRect(rect, debugPaint);
-        }
+		if (DisplayMetrics.DENSITY_DEVICE <= 120) {
+			setTextSize(16.f);
+		}
 
+		if (attrs != null) {
+			TypedArray typedArray = context.obtainStyledAttributes(attrs,
+					R.styleable.BubbleTextView, defStyle, 0);
+			mIsDrawShadow = typedArray.getBoolean(
+					R.styleable.BubbleTextView_drawShadow, false);
+		}
+	}
 
-        super.draw(canvas);
-    }
+	@Override
+	protected boolean setFrame(int left, int top, int right, int bottom) {
+		if (mLeft != left || mRight != right || mTop != top
+				|| mBottom != bottom) {
+			mBackgroundSizeChanged = true;
+		}
+		return super.setFrame(left, top, right, bottom);
+	}
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (mBackground!=null){
-        mBackground.setCallback(this);
-    }
-    }
+	@Override
+	protected boolean verifyDrawable(Drawable who) {
+		return who == mBackground || super.verifyDrawable(who);
+	}
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (mBackground!=null){
-        mBackground.setCallback(null);
-    }
-    }
+	@Override
+	protected void drawableStateChanged() {
+		Drawable d = mBackground;
+		if (d != null && d.isStateful()) {
+			d.setState(getDrawableState());
+		}
+		super.drawableStateChanged();
+	}
 
-    public final int getHeightOfText() {
-    	int height = 0;
-    	Layout layout = getLayout();
+	@Override
+	public void draw(Canvas canvas) {
+		final Drawable background = mBackground;
+		if (background != null) {
+			final int scrollX = mScrollX;
+			final int scrollY = mScrollY;
 
-    	if (layout != null) {
-    		int top = layout.getLineTop(0);
-    		int bottom = layout.getLineBottom(0);
-    		height = (bottom - top) + (int) (8.0f * Utilities.sDensity);
-    	}
-    	return height;
-    }
-    
-    public void setDrawShadow(boolean shadow){
-    	mIsDrawShadow = shadow;
-    }
+			if (mBackgroundSizeChanged) {
+				background.setBounds(0, 0, mRight - mLeft, mBottom - mTop);
+				mBackgroundSizeChanged = false;
+			}
+
+			if ((scrollX | scrollY) == 0) {
+				background.draw(canvas);
+			} else {
+				canvas.translate(scrollX, scrollY);
+				background.draw(canvas);
+				canvas.translate(-scrollX, -scrollY);
+			}
+		}
+
+		final Layout layout = getLayout();
+		final RectF rect = mRect;
+		final int left = getCompoundPaddingLeft();
+		final int top = getExtendedPaddingTop();
+		if (mIsDrawShadow) {
+			rect.set(left + layout.getLineLeft(0) - mPaddingH,
+					top + layout.getLineTop(0) - mPaddingV, Math.min(left
+							+ layout.getLineRight(0) + mPaddingH, mScrollX
+							+ mRight - mLeft), top + layout.getLineBottom(0)
+							+ mPaddingV);
+			canvas.drawRoundRect(rect, mCornerRadius, mCornerRadius, mPaint);
+
+		}
+
+		if (false) {
+			Paint debugPaint = new Paint();
+			debugPaint.setColor(0xffcccc00);
+			canvas.drawRect(rect, debugPaint);
+		}
+
+		super.draw(canvas);
+	}
+
+	@Override
+	protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		if (mBackground != null) {
+			mBackground.setCallback(this);
+		}
+	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		super.onDetachedFromWindow();
+		if (mBackground != null) {
+			mBackground.setCallback(null);
+		}
+	}
+
+	public final int getHeightOfText() {
+		int height = 0;
+		Layout layout = getLayout();
+
+		if (layout != null) {
+			int top = layout.getLineTop(0);
+			int bottom = layout.getLineBottom(0);
+			height = (bottom - top) + (int) (8.0f * Utilities.sDensity);
+		}
+		return height;
+	}
+
+	public void setDrawShadow(boolean shadow) {
+		mIsDrawShadow = shadow;
+	}
 }

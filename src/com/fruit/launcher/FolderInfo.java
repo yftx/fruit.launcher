@@ -21,23 +21,23 @@ package com.fruit.launcher;
  */
 class FolderInfo extends ItemInfo {
 
-    /**
-     * Whether this folder has been opened
-     */
-    boolean opened;
+	/**
+	 * Whether this folder has been opened
+	 */
+	boolean opened;
 
-    /**
-     * Whether this folder is closing
-     */
-    boolean closing;
+	/**
+	 * Whether this folder is closing
+	 */
+	boolean closing;
 
-    /**
-     * The folder name.
-     */
-    CharSequence title;
+	/**
+	 * The folder name.
+	 */
+	CharSequence title;
 
-    /**
-     * The folder icon
-     */
-    BubbleTextView folderIcon;
+	/**
+	 * The folder icon
+	 */
+	BubbleTextView folderIcon;
 }

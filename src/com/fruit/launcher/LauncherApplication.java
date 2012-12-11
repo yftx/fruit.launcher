@@ -25,85 +25,88 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
+
 //import dalvik.system.VMRuntime;
 
 public class LauncherApplication extends Application {
 
-    public LauncherModel mModel;
-    public IconCache mIconCache;
+	public LauncherModel mModel;
+	public IconCache mIconCache;
 
-    private static Context mContext;
+	private static Context mContext;
 
-    @Override
-    public void onCreate() {
-        //VMRuntime.getRuntime().setMinimumHeapSize(4 * 1024 * 1024);
-        super.onCreate();
+	@Override
+	public void onCreate() {
+		// VMRuntime.getRuntime().setMinimumHeapSize(4 * 1024 * 1024);
+		super.onCreate();
 
-        SettingUtils.loadLauncherSettings(this);
+		SettingUtils.loadLauncherSettings(this);
 
-        mContext = getApplicationContext();
-        mIconCache = new IconCache(this);
-        mModel = new LauncherModel(this, mIconCache);
+		mContext = getApplicationContext();
+		mIconCache = new IconCache(this);
+		mModel = new LauncherModel(this, mIconCache);
 
-        // Register intent receivers
-        IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        filter.addDataScheme("package");
-        registerReceiver(mModel, filter);
-        filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
-        filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
-        registerReceiver(mModel, filter);
+		// Register intent receivers
+		IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+		filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+		filter.addDataScheme("package");
+		registerReceiver(mModel, filter);
+		filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
+		filter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
+		registerReceiver(mModel, filter);
 
-        filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
-        registerReceiver(mModel, filter);
+		filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+		registerReceiver(mModel, filter);
 
-        // Register for changes to the favorites
-        ContentResolver resolver = getContentResolver();
-        resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true,
-                mFavoritesObserver);
-    }
+		// Register for changes to the favorites
+		ContentResolver resolver = getContentResolver();
+		resolver.registerContentObserver(
+				LauncherSettings.Favorites.CONTENT_URI, true,
+				mFavoritesObserver);
+	}
 
-    /**
-     * There's no guarantee that this function is ever called.
-     */
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        SettingUtils.saveScreenSettings(this);
-        unregisterReceiver(mModel);
+	/**
+	 * There's no guarantee that this function is ever called.
+	 */
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+		SettingUtils.saveScreenSettings(this);
+		unregisterReceiver(mModel);
 
-        ContentResolver resolver = getContentResolver();
-        resolver.unregisterContentObserver(mFavoritesObserver);
-    }
+		ContentResolver resolver = getContentResolver();
+		resolver.unregisterContentObserver(mFavoritesObserver);
+	}
 
-    /**
-     * Receives notifications whenever the user favorites have changed.
-     */
-    private final ContentObserver mFavoritesObserver = new ContentObserver(new Handler()) {
+	/**
+	 * Receives notifications whenever the user favorites have changed.
+	 */
+	private final ContentObserver mFavoritesObserver = new ContentObserver(
+			new Handler()) {
 
-        @Override
-        public void onChange(boolean selfChange) {
-            mModel.startLoader(LauncherApplication.this, false);
-        }
-    };
+		@Override
+		public void onChange(boolean selfChange) {
+			mModel.startLoader(LauncherApplication.this, false);
+		}
+	};
 
-    LauncherModel setLauncher(Launcher launcher) {
-        mModel.initialize(launcher);
-        return mModel;
-    }
+	LauncherModel setLauncher(Launcher launcher) {
+		mModel.initialize(launcher);
+		return mModel;
+	}
 
-    IconCache getIconCache() {
-        return mIconCache;
-    }
+	IconCache getIconCache() {
+		return mIconCache;
+	}
 
-    LauncherModel getModel() {
-        return mModel;
-    }
+	LauncherModel getModel() {
+		return mModel;
+	}
 
-    public static Context getContext() {
-        return mContext;
-    }
+	public static Context getContext() {
+		return mContext;
+	}
 }

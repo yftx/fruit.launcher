@@ -39,7 +39,7 @@ public class ScreenIndicator extends ViewGroup {
 	private void initIndicator() {
 		setFocusable(false);
 		setWillNotDraw(false);
-		
+
 		mDotSeparate = 0;
 		mThemeMgr = ThemeManager.getInstance();
 	}
@@ -61,26 +61,31 @@ public class ScreenIndicator extends ViewGroup {
 
 	private void createLayout() {
 		detachAllViewsFromParent();
-		
-		//int dotWidth = Launcher.mScreenWidth / SettingUtils.mScreenCount; 
+
+		// int dotWidth = Launcher.mScreenWidth / SettingUtils.mScreenCount;
 		int dotWidth = mThemeMgr.loadScreenIndicatorIcon().getIntrinsicWidth();
-		
-		int marginLeft =
-			getWidth() / 2 - (mScreenCount * dotWidth / 2 + (mScreenCount - 1) * mDotSeparate / 2);
+
+		int marginLeft = getWidth()
+				/ 2
+				- (mScreenCount * dotWidth / 2 + (mScreenCount - 1)
+						* mDotSeparate / 2);
 		int marginTop = getHeight() / 2 - dotWidth / 2;
 		View currentView = null;
 
 		for (int i = 0; i < mScreenCount; i++) {
-			ViewGroup.LayoutParams lp =
-				new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+			ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MATCH_PARENT,
+					ViewGroup.LayoutParams.MATCH_PARENT);
 			ImageView dot = new ImageView(getContext());
 			Drawable drawable = mThemeMgr.loadScreenIndicatorIcon();
 			dot.setImageDrawable(drawable);
 			dot.setLayoutParams(lp);
 			int childHeightSpec = getChildMeasureSpec(
-					MeasureSpec.makeMeasureSpec(dotWidth, MeasureSpec.UNSPECIFIED), 0, lp.height);
+					MeasureSpec.makeMeasureSpec(dotWidth,
+							MeasureSpec.UNSPECIFIED), 0, lp.height);
 			int childWidthSpec = getChildMeasureSpec(
-					MeasureSpec.makeMeasureSpec(dotWidth, MeasureSpec.EXACTLY), 0, lp.width);
+					MeasureSpec.makeMeasureSpec(dotWidth, MeasureSpec.EXACTLY),
+					0, lp.width);
 			dot.measure(childWidthSpec, childHeightSpec);
 
 			int left = marginLeft + i * (dotWidth + mDotSeparate);
@@ -91,8 +96,8 @@ public class ScreenIndicator extends ViewGroup {
 				currentView = dot;
 			}
 		}
-		
-		if(currentView!=null){
+
+		if (currentView != null) {
 			currentView.setSelected(true);
 		}
 		postInvalidate();
@@ -119,25 +124,24 @@ public class ScreenIndicator extends ViewGroup {
 			updateLayout();
 		}
 	}
-	
-	void scrollLayout(float delta){
-		
+
+	void scrollLayout(float delta) {
+
 	}
-	
-	void scrollLayout(int currrentScreen, int nextScreen){
-		
+
+	void scrollLayout(int currrentScreen, int nextScreen) {
+
 	}
-	
+
 	final void apllyTheme() {
 		removeAllViews();
 		createLayout();
 	}
 
-	/*final void setLeft(int value) {
-		int width = mRight - mLeft;
-		mLeft = value;
-		mRight = mLeft + width;
-	}*/
+	/*
+	 * final void setLeft(int value) { int width = mRight - mLeft; mLeft =
+	 * value; mRight = mLeft + width; }
+	 */
 
 	final void switchScreenMode(boolean bIsFullscreen, int value) {
 		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) getLayoutParams();

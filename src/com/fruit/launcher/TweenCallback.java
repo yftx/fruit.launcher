@@ -18,7 +18,9 @@ package com.fruit.launcher;
 
 interface TweenCallback {
 
-    void onTweenValueChanged(float value, float oldValue);
-    void onTweenStarted();
-    void onTweenFinished();
+	void onTweenValueChanged(float value, float oldValue);
+
+	void onTweenStarted();
+
+	void onTweenFinished();
 }

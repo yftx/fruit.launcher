@@ -27,109 +27,115 @@ import android.view.ViewConfiguration;
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends AppWidgetHostView {
-	/*  2012-5-8 modified for FourLeafsWidget start*/
-	public float  mTouchX;
-	public float  mTouchY;
-	/*  2012-5-8 modified for FourLeafsWidget end*/
+	/* 2012-5-8 modified for FourLeafsWidget start */
+	public float mTouchX;
+	public float mTouchY;
+	/* 2012-5-8 modified for FourLeafsWidget end */
 
-    private boolean mHasPerformedLongPress;
+	private boolean mHasPerformedLongPress;
 
-    private CheckForLongPress mPendingCheckForLongPress;
+	private CheckForLongPress mPendingCheckForLongPress;
 
-    private LayoutInflater mInflater;
+	private LayoutInflater mInflater;
 
-    public LauncherAppWidgetHostView(Context context) {
-        super(context);
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
+	public LauncherAppWidgetHostView(Context context) {
+		super(context);
+		mInflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
 
-    @Override
-    protected View getErrorView() {
-        return mInflater.inflate(R.layout.appwidget_error, this, false);
-    }
+	@Override
+	protected View getErrorView() {
+		return mInflater.inflate(R.layout.appwidget_error, this, false);
+	}
 
-   @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-    	// the ViewGroup dispatchTouchEvent () function some times do not deliver the 
-    	// MotionEvent.Action_UP event to  onInterceptTouchEvent(), cause the LongClick timer time out
-    	// and cause the Widget in a Long press state, so we need to call onInterceptTouchEvent function
-    	// by hand. it is harmless to call onInterceptTouchEvent function twice.     	
-    	if(ev.getAction() == MotionEvent.ACTION_CANCEL || ev.getAction() == MotionEvent.ACTION_UP){
-    		onInterceptTouchEvent(ev);
-    	}
-    	boolean flag = super.dispatchTouchEvent(ev);
-    	return flag;
-    }
-	
-    @Override
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		// the ViewGroup dispatchTouchEvent () function some times do not
+		// deliver the
+		// MotionEvent.Action_UP event to onInterceptTouchEvent(), cause the
+		// LongClick timer time out
+		// and cause the Widget in a Long press state, so we need to call
+		// onInterceptTouchEvent function
+		// by hand. it is harmless to call onInterceptTouchEvent function twice.
+		if (ev.getAction() == MotionEvent.ACTION_CANCEL
+				|| ev.getAction() == MotionEvent.ACTION_UP) {
+			onInterceptTouchEvent(ev);
+		}
+		boolean flag = super.dispatchTouchEvent(ev);
+		return flag;
+	}
+
+	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Consume any touch events for ourselves after longpress is triggered
-        if (mHasPerformedLongPress) {
-            mHasPerformedLongPress = false;
-            return true;
-        }
+		// Consume any touch events for ourselves after longpress is triggered
+		if (mHasPerformedLongPress) {
+			mHasPerformedLongPress = false;
+			return true;
+		}
 
-        // Watch for longpress events at this level to make sure
-        // users can always pick up this widget
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                postCheckForLongClick();
-                /*  2012-5-8 modified for FourLeafsWidget start*/
-                mTouchX = ev.getX();
-                mTouchY = ev.getY();
-                /*  2012-5-8 modified for FourLeafsWidget end*/
-                break;
-            }
+		// Watch for longpress events at this level to make sure
+		// users can always pick up this widget
+		switch (ev.getAction()) {
+		case MotionEvent.ACTION_DOWN: {
+			postCheckForLongClick();
+			/* 2012-5-8 modified for FourLeafsWidget start */
+			mTouchX = ev.getX();
+			mTouchY = ev.getY();
+			/* 2012-5-8 modified for FourLeafsWidget end */
+			break;
+		}
 
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mHasPerformedLongPress = false;
-                if (mPendingCheckForLongPress != null) {
-                    removeCallbacks(mPendingCheckForLongPress);
-                }
-                break;
-        }
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_CANCEL:
+			mHasPerformedLongPress = false;
+			if (mPendingCheckForLongPress != null) {
+				removeCallbacks(mPendingCheckForLongPress);
+			}
+			break;
+		}
 
-        // Otherwise continue letting touch events fall through to children
-        return false;
-    }
+		// Otherwise continue letting touch events fall through to children
+		return false;
+	}
 
-    class CheckForLongPress implements Runnable {
-        private int mOriginalWindowAttachCount;
+	class CheckForLongPress implements Runnable {
+		private int mOriginalWindowAttachCount;
 
-        @Override
+		@Override
 		public void run() {
-            if ((mParent != null) && hasWindowFocus()
-                    && mOriginalWindowAttachCount == getWindowAttachCount()
-                    && !mHasPerformedLongPress) {
-                if (performLongClick()) {
-                    mHasPerformedLongPress = true;
-                }
-            }
-        }
+			if ((mParent != null) && hasWindowFocus()
+					&& mOriginalWindowAttachCount == getWindowAttachCount()
+					&& !mHasPerformedLongPress) {
+				if (performLongClick()) {
+					mHasPerformedLongPress = true;
+				}
+			}
+		}
 
-        public void rememberWindowAttachCount() {
-            mOriginalWindowAttachCount = getWindowAttachCount();
-        }
-    }
+		public void rememberWindowAttachCount() {
+			mOriginalWindowAttachCount = getWindowAttachCount();
+		}
+	}
 
-    private void postCheckForLongClick() {
-        mHasPerformedLongPress = false;
+	private void postCheckForLongClick() {
+		mHasPerformedLongPress = false;
 
-        if (mPendingCheckForLongPress == null) {
-            mPendingCheckForLongPress = new CheckForLongPress();
-        }
-        mPendingCheckForLongPress.rememberWindowAttachCount();
-        postDelayed(mPendingCheckForLongPress, ViewConfiguration.getLongPressTimeout());
-    }
+		if (mPendingCheckForLongPress == null) {
+			mPendingCheckForLongPress = new CheckForLongPress();
+		}
+		mPendingCheckForLongPress.rememberWindowAttachCount();
+		postDelayed(mPendingCheckForLongPress,
+				ViewConfiguration.getLongPressTimeout());
+	}
 
-    @Override
-    public void cancelLongPress() {
-        super.cancelLongPress();
+	@Override
+	public void cancelLongPress() {
+		super.cancelLongPress();
 
-        mHasPerformedLongPress = false;
-        if (mPendingCheckForLongPress != null) {
-            removeCallbacks(mPendingCheckForLongPress);
-        }
-    }
+		mHasPerformedLongPress = false;
+		if (mPendingCheckForLongPress != null) {
+			removeCallbacks(mPendingCheckForLongPress);
+		}
+	}
 }

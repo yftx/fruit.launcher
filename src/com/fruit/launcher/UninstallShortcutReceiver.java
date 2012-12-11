@@ -32,55 +32,59 @@ import com.fruit.launcher.LauncherSettings.Favorites;
 
 public class UninstallShortcutReceiver extends BroadcastReceiver {
 
-    private static final String ACTION_UNINSTALL_SHORTCUT =
-            "com.android.launcher.action.UNINSTALL_SHORTCUT";
+	private static final String ACTION_UNINSTALL_SHORTCUT = "com.android.launcher.action.UNINSTALL_SHORTCUT";
 
-    @Override
+	@Override
 	public void onReceive(Context context, Intent data) {
-        if (!ACTION_UNINSTALL_SHORTCUT.equals(data.getAction())) {
-            return;
-        }
+		if (!ACTION_UNINSTALL_SHORTCUT.equals(data.getAction())) {
+			return;
+		}
 
-        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        boolean duplicate = data.getBooleanExtra(Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
+		Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+		String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+		boolean duplicate = data.getBooleanExtra(
+				Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
 
-        if (intent != null && name != null) {
-            final ContentResolver cr = context.getContentResolver();
-            Cursor c = cr.query(Favorites.CONTENT_URI,
-                new String[] { BaseColumns._ID, BaseLauncherColumns.INTENT },
-                BaseLauncherColumns.TITLE + "=?", new String[] { name }, null);
+		if (intent != null && name != null) {
+			final ContentResolver cr = context.getContentResolver();
+			Cursor c = cr.query(Favorites.CONTENT_URI, new String[] {
+					BaseColumns._ID, BaseLauncherColumns.INTENT },
+					BaseLauncherColumns.TITLE + "=?", new String[] { name },
+					null);
 
-            final int intentIndex = c.getColumnIndexOrThrow(BaseLauncherColumns.INTENT);
-            final int idIndex = c.getColumnIndexOrThrow(BaseColumns._ID);
+			final int intentIndex = c
+					.getColumnIndexOrThrow(BaseLauncherColumns.INTENT);
+			final int idIndex = c.getColumnIndexOrThrow(BaseColumns._ID);
 
-            boolean changed = false;
+			boolean changed = false;
 
-            try {
-                while (c.moveToNext()) {
-                    try {
-                        if (intent.filterEquals(Intent.parseUri(c.getString(intentIndex), 0))) {
-                            final long id = c.getLong(idIndex);
-                            final Uri uri = Favorites.getContentUri(id, false);
-                            cr.delete(uri, null, null);
-                            changed = true;
-                            if (!duplicate) {
-                                break;
-                            }
-                        }
-                    } catch (URISyntaxException e) {
-                        // Ignore
-                    }
-                }
-            } finally {
-                c.close();
-            }
+			try {
+				while (c.moveToNext()) {
+					try {
+						if (intent.filterEquals(Intent.parseUri(
+								c.getString(intentIndex), 0))) {
+							final long id = c.getLong(idIndex);
+							final Uri uri = Favorites.getContentUri(id, false);
+							cr.delete(uri, null, null);
+							changed = true;
+							if (!duplicate) {
+								break;
+							}
+						}
+					} catch (URISyntaxException e) {
+						// Ignore
+					}
+				}
+			} finally {
+				c.close();
+			}
 
-            if (changed) {
-                cr.notifyChange(Favorites.CONTENT_URI, null);
-                Toast.makeText(context, context.getString(R.string.shortcut_uninstalled, name),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+			if (changed) {
+				cr.notifyChange(Favorites.CONTENT_URI, null);
+				Toast.makeText(context,
+						context.getString(R.string.shortcut_uninstalled, name),
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
 }

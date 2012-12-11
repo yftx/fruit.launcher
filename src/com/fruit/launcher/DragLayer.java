@@ -28,39 +28,43 @@ import android.widget.FrameLayout;
  */
 public class DragLayer extends FrameLayout {
 
-    DragController mDragController;
+	DragController mDragController;
 
-    /**
-     * Used to create a new DragLayer from XML.
-     *
-     * @param context The application's context.
-     * @param attrs The attribtues set containing the Workspace's customization values.
-     */
-    public DragLayer(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+	/**
+	 * Used to create a new DragLayer from XML.
+	 * 
+	 * @param context
+	 *            The application's context.
+	 * @param attrs
+	 *            The attribtues set containing the Workspace's customization
+	 *            values.
+	 */
+	public DragLayer(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
 
-    public void setDragController(DragController controller) {
-        mDragController = controller;
-    }
+	public void setDragController(DragController controller) {
+		mDragController = controller;
+	}
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
-    }
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		return mDragController.dispatchKeyEvent(event)
+				|| super.dispatchKeyEvent(event);
+	}
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mDragController.onInterceptTouchEvent(ev);
-    }
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		return mDragController.onInterceptTouchEvent(ev);
+	}
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return mDragController.onTouchEvent(ev);
-    }
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		return mDragController.onTouchEvent(ev);
+	}
 
-    @Override
-    public boolean dispatchUnhandledMove(View focused, int direction) {
-        return mDragController.dispatchUnhandledMove(focused, direction);
-    }
+	@Override
+	public boolean dispatchUnhandledMove(View focused, int direction) {
+		return mDragController.dispatchUnhandledMove(focused, direction);
+	}
 }

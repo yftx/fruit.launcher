@@ -26,48 +26,51 @@ import android.net.Uri;
 
 class LiveFolderInfo extends FolderInfo {
 
-    /**
-     * The base intent, if it exists.
-     */
-    Intent baseIntent;
+	/**
+	 * The base intent, if it exists.
+	 */
+	Intent baseIntent;
 
-    /**
-     * The live folder's content uri.
-     */
-    Uri uri;
+	/**
+	 * The live folder's content uri.
+	 */
+	Uri uri;
 
-    /**
-     * The live folder's display type.
-     */
-    int displayMode;
+	/**
+	 * The live folder's display type.
+	 */
+	int displayMode;
 
-    /**
-     * The live folder icon.
-     */
-    Bitmap icon;
+	/**
+	 * The live folder icon.
+	 */
+	Bitmap icon;
 
-    /**
-     * Reference to the live folder icon as an application's resource.
-     */
-    Intent.ShortcutIconResource iconResource;
+	/**
+	 * Reference to the live folder icon as an application's resource.
+	 */
+	Intent.ShortcutIconResource iconResource;
 
-    LiveFolderInfo() {
-        itemType = Favorites.ITEM_TYPE_LIVE_FOLDER;
-    }
+	LiveFolderInfo() {
+		itemType = Favorites.ITEM_TYPE_LIVE_FOLDER;
+	}
 
-    @Override
-    void onAddToDatabase(ContentValues values) {
-        super.onAddToDatabase(values);
-        values.put(BaseLauncherColumns.TITLE, title.toString());
-        values.put(Favorites.URI, uri.toString());
-        if (baseIntent != null) {
-            values.put(BaseLauncherColumns.INTENT, baseIntent.toUri(0));
-        }
-        values.put(BaseLauncherColumns.ICON_TYPE, BaseLauncherColumns.ICON_TYPE_RESOURCE);
-        values.put(Favorites.DISPLAY_MODE, displayMode);
-        if (iconResource != null) {
-            values.put(BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName);
-            values.put(BaseLauncherColumns.ICON_RESOURCE, iconResource.resourceName);
-        }
-    }
+	@Override
+	void onAddToDatabase(ContentValues values) {
+		super.onAddToDatabase(values);
+		values.put(BaseLauncherColumns.TITLE, title.toString());
+		values.put(Favorites.URI, uri.toString());
+		if (baseIntent != null) {
+			values.put(BaseLauncherColumns.INTENT, baseIntent.toUri(0));
+		}
+		values.put(BaseLauncherColumns.ICON_TYPE,
+				BaseLauncherColumns.ICON_TYPE_RESOURCE);
+		values.put(Favorites.DISPLAY_MODE, displayMode);
+		if (iconResource != null) {
+			values.put(BaseLauncherColumns.ICON_PACKAGE,
+					iconResource.packageName);
+			values.put(BaseLauncherColumns.ICON_RESOURCE,
+					iconResource.resourceName);
+		}
+	}
 }

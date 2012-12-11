@@ -75,7 +75,8 @@ public class AllAppsHomeBar extends FrameLayout implements DropTarget {
 
 	@Override
 	public Rect estimateDropLocation(DragSource source, int x, int y,
-			int xOffset, int yOffset, DragView dragView, Object dragInfo, Rect recycle) {
+			int xOffset, int yOffset, DragView dragView, Object dragInfo,
+			Rect recycle) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -33,32 +33,35 @@ import com.fruit.launcher.theme.ThemeManager;
  */
 public class ShortcutsAdapter extends ArrayAdapter<ShortcutInfo> {
 
-    private final LayoutInflater mInflater;
-    private final IconCache mIconCache;
+	private final LayoutInflater mInflater;
+	private final IconCache mIconCache;
 
-    public ShortcutsAdapter(Context context, ArrayList<ShortcutInfo> apps) {
-        super(context, 0, apps);
-        mInflater = LayoutInflater.from(context);
-        mIconCache = ((LauncherApplication)context.getApplicationContext()).getIconCache();
-    }
+	public ShortcutsAdapter(Context context, ArrayList<ShortcutInfo> apps) {
+		super(context, 0, apps);
+		mInflater = LayoutInflater.from(context);
+		mIconCache = ((LauncherApplication) context.getApplicationContext())
+				.getIconCache();
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final ShortcutInfo info = getItem(position);
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		final ShortcutInfo info = getItem(position);
 
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.application_boxed, parent, false);
-            convertView.setFocusable(false);
-        }
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.application_boxed, parent,
+					false);
+			convertView.setFocusable(false);
+		}
 
-        final TextView textView = (TextView) convertView;
+		final TextView textView = (TextView) convertView;
 
-        Bitmap icon = Utilities.createCompoundBitmapEx(info.title.toString(), info.getIcon(mIconCache));
-         
-        textView.setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(icon), null, null);
-        textView.setText(info.title);
+		Bitmap icon = Utilities.createCompoundBitmapEx(info.title.toString(),
+				info.getIcon(mIconCache));
 
-        return convertView;
-    }
+		textView.setCompoundDrawablesWithIntrinsicBounds(null,
+				new FastBitmapDrawable(icon), null, null);
+		textView.setText(info.title);
+
+		return convertView;
+	}
 }

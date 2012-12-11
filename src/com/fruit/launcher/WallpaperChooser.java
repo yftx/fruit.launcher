@@ -38,151 +38,156 @@ import android.widget.ImageView;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class WallpaperChooser extends Activity implements AdapterView.OnItemSelectedListener,
-        OnClickListener {
+public class WallpaperChooser extends Activity implements
+		AdapterView.OnItemSelectedListener, OnClickListener {
 
-    private static final String TAG = "Launcher.WallpaperChooser";
+	private static final String TAG = "Launcher.WallpaperChooser";
 
-    private Gallery mGallery;
-    private ImageView mImageView;
-    private boolean mIsWallpaperSet;
+	private Gallery mGallery;
+	private ImageView mImageView;
+	private boolean mIsWallpaperSet;
 
-    private Bitmap mBitmap;
+	private Bitmap mBitmap;
 
-    private ArrayList<Integer> mThumbs;
-    private ArrayList<Integer> mImages;
-    private WallpaperLoader mLoader;
-    private Resources mResources = null;
-    
-    @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+	private ArrayList<Integer> mThumbs;
+	private ArrayList<Integer> mImages;
+	private WallpaperLoader mLoader;
+	private Resources mResources = null;
 
-        findWallpapers();
+	@Override
+	public void onCreate(Bundle icicle) {
+		super.onCreate(icicle);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.wallpaper_chooser);
+		findWallpapers();
 
-        mGallery = (Gallery) findViewById(R.id.gallery);
-        mGallery.setAdapter(new ImageAdapter(this));
-        mGallery.setOnItemSelectedListener(this);
-        mGallery.setCallbackDuringFling(false);
+		setContentView(R.layout.wallpaper_chooser);
 
-        findViewById(R.id.set).setOnClickListener(this);
+		mGallery = (Gallery) findViewById(R.id.gallery);
+		mGallery.setAdapter(new ImageAdapter(this));
+		mGallery.setOnItemSelectedListener(this);
+		mGallery.setCallbackDuringFling(false);
 
-        mImageView = (ImageView) findViewById(R.id.wallpaper);
-    }
+		findViewById(R.id.set).setOnClickListener(this);
 
-    private void findWallpapers() {
-        mThumbs = new ArrayList<Integer>(24);
-        mImages = new ArrayList<Integer>(24);
+		mImageView = (ImageView) findViewById(R.id.wallpaper);
+	}
 
-        // Context.getPackageName() may return the "original" package name,
-        // com.fruit.launcher; Resources needs the real package name,
-        // com.fruit.launcher. So we ask Resources for what it thinks the
-        // package name should be.
-        mResources = addConfigWallpapers(Configurator.CONFIG_ARRAY_WALLPAPER);
-        if(mResources == null){
-        	mResources = addWallpapers(Configurator.CONFIG_ARRAY_WALLPAPER);
-        }
-    }
+	private void findWallpapers() {
+		mThumbs = new ArrayList<Integer>(24);
+		mImages = new ArrayList<Integer>(24);
 
-    private Resources addConfigWallpapers(String arrayName) {
-    	final String packageName = Configurator.getConfigPackageName();
-    	final Resources resources = Configurator.getConfigResources(this);
-        final String[] extras = Configurator.getConfigPackageArray(resources, arrayName);
-        if(extras != null){
-	        for (String extra : extras) {
-	            int res = resources.getIdentifier(extra, "drawable", packageName);
-	            if (res != 0) {
-	                final int thumbRes = resources.getIdentifier(extra + "_small",
-	                        "drawable", packageName);
-	
-	                if (thumbRes != 0) {
-	                    mThumbs.add(thumbRes);
-	                    mImages.add(res);
-	                }
-	            }
-	        }
-	        return resources;
-        }
-        return null;
-    }
+		// Context.getPackageName() may return the "original" package name,
+		// com.fruit.launcher; Resources needs the real package name,
+		// com.fruit.launcher. So we ask Resources for what it thinks the
+		// package name should be.
+		mResources = addConfigWallpapers(Configurator.CONFIG_ARRAY_WALLPAPER);
+		if (mResources == null) {
+			mResources = addWallpapers(Configurator.CONFIG_ARRAY_WALLPAPER);
+		}
+	}
 
-    private Resources addWallpapers(String arrayName) {
-    	final String packageName = getPackageName();
-    	final Resources resources = getResources();
-    	final int listId = resources.getIdentifier(arrayName, "array", packageName);
-    	final String[] extras = resources.getStringArray(listId);
-        
-        for (String extra : extras) {
-            int res = resources.getIdentifier(extra, "drawable", packageName);
-            if (res != 0) {
-                final int thumbRes = resources.getIdentifier(extra + "_small",
-                        "drawable", packageName);
+	private Resources addConfigWallpapers(String arrayName) {
+		final String packageName = Configurator.getConfigPackageName();
+		final Resources resources = Configurator.getConfigResources(this);
+		final String[] extras = Configurator.getConfigPackageArray(resources,
+				arrayName);
+		if (extras != null) {
+			for (String extra : extras) {
+				int res = resources.getIdentifier(extra, "drawable",
+						packageName);
+				if (res != 0) {
+					final int thumbRes = resources.getIdentifier(extra
+							+ "_small", "drawable", packageName);
 
-                if (thumbRes != 0) {
-                    mThumbs.add(thumbRes);
-                    mImages.add(res);
-                }
-            }
-        }
-        return resources;
-    }
+					if (thumbRes != 0) {
+						mThumbs.add(thumbRes);
+						mImages.add(res);
+					}
+				}
+			}
+			return resources;
+		}
+		return null;
+	}
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mIsWallpaperSet = false;
-    }
+	private Resources addWallpapers(String arrayName) {
+		final String packageName = getPackageName();
+		final Resources resources = getResources();
+		final int listId = resources.getIdentifier(arrayName, "array",
+				packageName);
+		final String[] extras = resources.getStringArray(listId);
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+		for (String extra : extras) {
+			int res = resources.getIdentifier(extra, "drawable", packageName);
+			if (res != 0) {
+				final int thumbRes = resources.getIdentifier(extra + "_small",
+						"drawable", packageName);
 
-        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
-            mLoader.cancel(true);
-            mLoader = null;
-        }
-    }
+				if (thumbRes != 0) {
+					mThumbs.add(thumbRes);
+					mImages.add(res);
+				}
+			}
+		}
+		return resources;
+	}
 
-    @Override
+	@Override
+	protected void onResume() {
+		super.onResume();
+		mIsWallpaperSet = false;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		if (mLoader != null
+				&& mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+			mLoader.cancel(true);
+			mLoader = null;
+		}
+	}
+
+	@Override
 	public void onItemSelected(AdapterView parent, View v, int position, long id) {
-        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
-            mLoader.cancel();
-        }
-        mLoader = (WallpaperLoader) new WallpaperLoader().execute(position);
-    }
+		if (mLoader != null
+				&& mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+			mLoader.cancel();
+		}
+		mLoader = (WallpaperLoader) new WallpaperLoader().execute(position);
+	}
 
-    /*
-     * When using touch if you tap an image it triggers both the onItemClick and
-     * the onTouchEvent causing the wallpaper to be set twice. Ensure we only
-     * set the wallpaper once.
-     */
-    private void selectWallpaper(int position) {
-        if (mIsWallpaperSet) {
-            return;
-        }
+	/*
+	 * When using touch if you tap an image it triggers both the onItemClick and
+	 * the onTouchEvent causing the wallpaper to be set twice. Ensure we only
+	 * set the wallpaper once.
+	 */
+	private void selectWallpaper(int position) {
+		if (mIsWallpaperSet) {
+			return;
+		}
 
-        mIsWallpaperSet = true;
-        try {
-            WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
-//            wpm.setResource(mImages.get(position));
-            Bitmap bmp = loadWallpaperBitmap(mImages.get(position));
-            if(bmp != null){
-            	wpm.setBitmap(bmp);
-            	setResult(RESULT_OK);
-            }else{
-            	Log.e(TAG, "selectWallpaper error! id="+mImages.get(position));
-            	setResult(RESULT_CANCELED);
-            }
-            finish();
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to set wallpaper: " + e);
-        }
-    }
-	
-    private Bitmap loadWallpaperBitmap(int resId) {
+		mIsWallpaperSet = true;
+		try {
+			WallpaperManager wpm = (WallpaperManager) getSystemService(WALLPAPER_SERVICE);
+			// wpm.setResource(mImages.get(position));
+			Bitmap bmp = loadWallpaperBitmap(mImages.get(position));
+			if (bmp != null) {
+				wpm.setBitmap(bmp);
+				setResult(RESULT_OK);
+			} else {
+				Log.e(TAG, "selectWallpaper error! id=" + mImages.get(position));
+				setResult(RESULT_CANCELED);
+			}
+			finish();
+		} catch (IOException e) {
+			Log.e(TAG, "Failed to set wallpaper: " + e);
+		}
+	}
+
+	private Bitmap loadWallpaperBitmap(int resId) {
 		final Resources res = mResources;
 		Bitmap bitmap = null;
 
@@ -199,117 +204,118 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 		}
 		return bitmap;
 	}
-	
-    @Override
+
+	@Override
 	public void onNothingSelected(AdapterView parent) {
 
-    }
+	}
 
-    private class ImageAdapter extends BaseAdapter {
+	private class ImageAdapter extends BaseAdapter {
 
-        private LayoutInflater mLayoutInflater;
+		private LayoutInflater mLayoutInflater;
 
-        ImageAdapter(WallpaperChooser context) {
-            mLayoutInflater = context.getLayoutInflater();
-        }
+		ImageAdapter(WallpaperChooser context) {
+			mLayoutInflater = context.getLayoutInflater();
+		}
 
-        @Override
+		@Override
 		public int getCount() {
-            return mThumbs.size();
-        }
+			return mThumbs.size();
+		}
 
-        @Override
+		@Override
 		public Object getItem(int position) {
-            return position;
-        }
+			return position;
+		}
 
-        @Override
+		@Override
 		public long getItemId(int position) {
-            return position;
-        }
+			return position;
+		}
 
-        @Override
+		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView image;
+			ImageView image;
 
-            if (convertView == null) {
-                image = (ImageView) mLayoutInflater.inflate(R.layout.wallpaper_item, parent, false);
-            } else {
-                image = (ImageView) convertView;
-            }
+			if (convertView == null) {
+				image = (ImageView) mLayoutInflater.inflate(
+						R.layout.wallpaper_item, parent, false);
+			} else {
+				image = (ImageView) convertView;
+			}
 
-            int thumbRes = mThumbs.get(position);
-            Drawable thumbDrawable = mResources.getDrawable(thumbRes);
-            if (thumbDrawable != null) {
-                thumbDrawable.setDither(true);
-                image.setImageDrawable(thumbDrawable);
-            } else {
-                Log.e(TAG, "Error decoding thumbnail resId=" + thumbRes + " for wallpaper #"
-                        + position);
-            }
-            return image;
-        }
-    }
+			int thumbRes = mThumbs.get(position);
+			Drawable thumbDrawable = mResources.getDrawable(thumbRes);
+			if (thumbDrawable != null) {
+				thumbDrawable.setDither(true);
+				image.setImageDrawable(thumbDrawable);
+			} else {
+				Log.e(TAG, "Error decoding thumbnail resId=" + thumbRes
+						+ " for wallpaper #" + position);
+			}
+			return image;
+		}
+	}
 
-    @Override
+	@Override
 	public void onClick(View v) {
-        selectWallpaper(mGallery.getSelectedItemPosition());
-    }
+		selectWallpaper(mGallery.getSelectedItemPosition());
+	}
 
-    class WallpaperLoader extends AsyncTask<Integer, Void, Bitmap> {
-        BitmapFactory.Options mOptions;
+	class WallpaperLoader extends AsyncTask<Integer, Void, Bitmap> {
+		BitmapFactory.Options mOptions;
 
-        WallpaperLoader() {
-            mOptions = new BitmapFactory.Options();
-            mOptions.inDither = false;
-            mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        }
+		WallpaperLoader() {
+			mOptions = new BitmapFactory.Options();
+			mOptions.inDither = false;
+			mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+		}
 
-        @Override
+		@Override
 		protected Bitmap doInBackground(Integer... params) {
-            if (isCancelled()) {
-            	return null;
-            }
-            try {
-                return BitmapFactory.decodeResource(mResources,
-                        mImages.get(params[0]), mOptions);
-            } catch (OutOfMemoryError e) {
-                return null;
-            }
-        }
+			if (isCancelled()) {
+				return null;
+			}
+			try {
+				return BitmapFactory.decodeResource(mResources,
+						mImages.get(params[0]), mOptions);
+			} catch (OutOfMemoryError e) {
+				return null;
+			}
+		}
 
-        @Override
-        protected void onPostExecute(Bitmap b) {
-            if (b == null) {
-            	return;
-            }
+		@Override
+		protected void onPostExecute(Bitmap b) {
+			if (b == null) {
+				return;
+			}
 
-            if (!isCancelled() && !mOptions.mCancel) {
-                // Help the GC
-                if (mBitmap != null) {
-                    mBitmap.recycle();
-                }
+			if (!isCancelled() && !mOptions.mCancel) {
+				// Help the GC
+				if (mBitmap != null) {
+					mBitmap.recycle();
+				}
 
-                final ImageView view = mImageView;
-                view.setImageBitmap(b);
+				final ImageView view = mImageView;
+				view.setImageBitmap(b);
 
-                mBitmap = b;
+				mBitmap = b;
 
-                final Drawable drawable = view.getDrawable();
-                drawable.setFilterBitmap(true);
-                drawable.setDither(true);
+				final Drawable drawable = view.getDrawable();
+				drawable.setFilterBitmap(true);
+				drawable.setDither(true);
 
-                view.postInvalidate();
+				view.postInvalidate();
 
-                mLoader = null;
-            } else {
-               b.recycle();
-            }
-        }
+				mLoader = null;
+			} else {
+				b.recycle();
+			}
+		}
 
-        void cancel() {
-            mOptions.requestCancelDecode();
-            super.cancel(true);
-        }
-    }
+		void cancel() {
+			mOptions.requestCancelDecode();
+			super.cancel(true);
+		}
+	}
 }

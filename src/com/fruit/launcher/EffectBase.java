@@ -17,9 +17,15 @@ public abstract class EffectBase {
 		this.title = title;
 	}
 
-	public abstract boolean getCellLayoutChildStaticTransformation(ViewGroup parent, View view, Transformation transformation, Camera camera, float ratio, int currentScreen, float indicatorOffset, boolean isPortrait);
+	public abstract boolean getCellLayoutChildStaticTransformation(
+			ViewGroup parent, View view, Transformation transformation,
+			Camera camera, float ratio, int currentScreen,
+			float indicatorOffset, boolean isPortrait);
 
-	public abstract boolean getWorkspaceChildStaticTransformation(ViewGroup parent, View view, Transformation transformation, Camera camera, float ratio, int currentScreen, float indicatorOffset, boolean isPortrait);
+	public abstract boolean getWorkspaceChildStaticTransformation(
+			ViewGroup parent, View view, Transformation transformation,
+			Camera camera, float ratio, int currentScreen,
+			float indicatorOffset, boolean isPortrait);
 
 	@Override
 	public String toString() {

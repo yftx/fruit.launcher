@@ -16,79 +16,83 @@ import java.util.ArrayList;
  */
 public class AddDockAdapter extends BaseAdapter {
 
-    private final LayoutInflater mInflater;
+	private final LayoutInflater mInflater;
 
-    private final ArrayList<ListItem> mItems = new ArrayList<ListItem>();
+	private final ArrayList<ListItem> mItems = new ArrayList<ListItem>();
 
-    public static final int DOCK_ITEM_APPLICATION = 0;
-    public static final int DOCK_ITEM_SHORTCUT = 1;
-    public static final int DOCK_ITEM_USERFOLDER = 2;
+	public static final int DOCK_ITEM_APPLICATION = 0;
+	public static final int DOCK_ITEM_SHORTCUT = 1;
+	public static final int DOCK_ITEM_USERFOLDER = 2;
 
-    /**
-     * Specific item in our list.
-     */
-    public class ListItem {
-        public final CharSequence text;
-        public final Drawable image;
-        public final int actionTag;
+	/**
+	 * Specific item in our list.
+	 */
+	public class ListItem {
+		public final CharSequence text;
+		public final Drawable image;
+		public final int actionTag;
 
-        public ListItem(Resources res, int textResourceId, int imageResourceId, int actionTag) {
-            text = res.getString(textResourceId);
-            if (imageResourceId != -1) {
-                image = res.getDrawable(imageResourceId);
-            } else {
-                image = null;
-            }
-            this.actionTag = actionTag;
-        }
-    }
+		public ListItem(Resources res, int textResourceId, int imageResourceId,
+				int actionTag) {
+			text = res.getString(textResourceId);
+			if (imageResourceId != -1) {
+				image = res.getDrawable(imageResourceId);
+			} else {
+				image = null;
+			}
+			this.actionTag = actionTag;
+		}
+	}
 
-    public AddDockAdapter(Launcher launcher) {
-        super();
+	public AddDockAdapter(Launcher launcher) {
+		super();
 
-        mInflater = (LayoutInflater) launcher.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mInflater = (LayoutInflater) launcher
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        // Create default actions
-        Resources res = launcher.getResources();
+		// Create default actions
+		Resources res = launcher.getResources();
 
-        mItems.add(new ListItem(res, R.string.group_applications,
-                R.drawable.ic_launcher_application, DOCK_ITEM_APPLICATION));
+		mItems.add(new ListItem(res, R.string.group_applications,
+				R.drawable.ic_launcher_application, DOCK_ITEM_APPLICATION));
 
-        mItems.add(new ListItem(res, R.string.group_shortcuts,
-                R.drawable.ic_launcher_shortcut, DOCK_ITEM_SHORTCUT));
+		mItems.add(new ListItem(res, R.string.group_shortcuts,
+				R.drawable.ic_launcher_shortcut, DOCK_ITEM_SHORTCUT));
 
-//        mItems.add(new ListItem(res, R.string.group_folder,
-//                R.drawable.ic_launcher_folder, DOCK_ITEM_USERFOLDER));
-    }
+		// mItems.add(new ListItem(res, R.string.group_folder,
+		// R.drawable.ic_launcher_folder, DOCK_ITEM_USERFOLDER));
+	}
 
-    @Override
+	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-        ListItem item = (ListItem) getItem(position);
+		ListItem item = (ListItem) getItem(position);
 
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.add_list_item, parent, false);
-        }
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.add_list_item, parent,
+					false);
+		}
 
-        TextView textView = (TextView) convertView;
-        textView.setTag(item);
-        textView.setText(item.text);
-        textView.setCompoundDrawablesWithIntrinsicBounds(item.image, null, null, null);
+		TextView textView = (TextView) convertView;
+		textView.setTag(item);
+		textView.setText(item.text);
+		textView.setCompoundDrawablesWithIntrinsicBounds(item.image, null,
+				null, null);
 
-        return convertView;
-    }
+		return convertView;
+	}
 
-    @Override
+	@Override
 	public int getCount() {
-        return mItems.size();
-    }
+		return mItems.size();
+	}
 
-    @Override
+	@Override
 	public Object getItem(int position) {
-        return mItems.get(position);
-    }
+		return mItems.get(position);
+	}
 
-    @Override
+	@Override
 	public long getItemId(int position) {
-        return position;
-    }
+		return position;
+	}
 }

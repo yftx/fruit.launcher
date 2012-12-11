@@ -18,9 +18,10 @@ package com.fruit.launcher;
 
 /**
  * Handles scrolling while dragging
- *
+ * 
  */
 public interface DragScroller {
-    void scrollLeft();
-    void scrollRight();
+	void scrollLeft();
+
+	void scrollRight();
 }

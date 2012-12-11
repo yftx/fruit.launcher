@@ -24,62 +24,65 @@ import android.graphics.Bitmap;
 
 public class LiveFolderIcon extends FolderIcon {
 
-    public LiveFolderIcon(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+	public LiveFolderIcon(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
 
-    public LiveFolderIcon(Context context) {
-        super(context);
-    }
+	public LiveFolderIcon(Context context) {
+		super(context);
+	}
 
-    static LiveFolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-            LiveFolderInfo folderInfo) {
-        LiveFolderIcon icon = (LiveFolderIcon)
-                LayoutInflater.from(launcher).inflate(resId, group, false);
+	static LiveFolderIcon fromXml(int resId, Launcher launcher,
+			ViewGroup group, LiveFolderInfo folderInfo) {
+		LiveFolderIcon icon = (LiveFolderIcon) LayoutInflater.from(launcher)
+				.inflate(resId, group, false);
 
-        Bitmap b = folderInfo.icon;
-        if (b == null) {
-    		IconCache iconCache = ((LauncherApplication) launcher.getApplicationContext()).getIconCache();
-    		b = iconCache.getFolderLocalIcon(true);
-        }
-        icon.setCompoundDrawablesWithIntrinsicBounds(null, new FastBitmapDrawable(b), null, null);
-        icon.setText(folderInfo.title);
-        icon.setTag(folderInfo);
-        icon.setOnClickListener(launcher);
+		Bitmap b = folderInfo.icon;
+		if (b == null) {
+			IconCache iconCache = ((LauncherApplication) launcher
+					.getApplicationContext()).getIconCache();
+			b = iconCache.getFolderLocalIcon(true);
+		}
+		icon.setCompoundDrawablesWithIntrinsicBounds(null,
+				new FastBitmapDrawable(b), null, null);
+		icon.setText(folderInfo.title);
+		icon.setTag(folderInfo);
+		icon.setOnClickListener(launcher);
 
-        boolean shadow = Configurator.getBooleanConfig(launcher, "config_idleIconShadow", false);
-        icon.setDrawShadow(shadow);
-    	
-        return icon;
-    }
+		boolean shadow = Configurator.getBooleanConfig(launcher,
+				"config_idleIconShadow", false);
+		icon.setDrawShadow(shadow);
 
-    @Override
-    public boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
-        return false;
-    }
+		return icon;
+	}
 
-    @Override
-    public void onDrop(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+	@Override
+	public boolean acceptDrop(DragSource source, int x, int y, int xOffset,
+			int yOffset, DragView dragView, Object dragInfo) {
+		return false;
+	}
 
-    }
+	@Override
+	public void onDrop(DragSource source, int x, int y, int xOffset,
+			int yOffset, DragView dragView, Object dragInfo) {
 
-    @Override
-    public void onDragEnter(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+	}
 
-    }
+	@Override
+	public void onDragEnter(DragSource source, int x, int y, int xOffset,
+			int yOffset, DragView dragView, Object dragInfo) {
 
-    @Override
-    public void onDragOver(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+	}
 
-    }
+	@Override
+	public void onDragOver(DragSource source, int x, int y, int xOffset,
+			int yOffset, DragView dragView, Object dragInfo) {
 
-    @Override
-    public void onDragExit(DragSource source, int x, int y, int xOffset, int yOffset,
-            DragView dragView, Object dragInfo) {
+	}
 
-    }
+	@Override
+	public void onDragExit(DragSource source, int x, int y, int xOffset,
+			int yOffset, DragView dragView, Object dragInfo) {
+
+	}
 }

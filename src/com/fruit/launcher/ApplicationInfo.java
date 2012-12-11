@@ -31,84 +31,87 @@ import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
  */
 class ApplicationInfo extends ItemInfo {
 
-    /**
-     * The application name.
-     */
-    CharSequence title;
+	/**
+	 * The application name.
+	 */
+	CharSequence title;
 
-    /**
-     * A bitmap of the application's text in the bubble.
-     */
-    Bitmap titleBitmap;
+	/**
+	 * A bitmap of the application's text in the bubble.
+	 */
+	Bitmap titleBitmap;
 
-    /**
-     * The intent used to start the application.
-     */
-    Intent intent;
+	/**
+	 * The intent used to start the application.
+	 */
+	Intent intent;
 
-    /**
-     * A bitmap version of the application icon.
-     */
-    Bitmap iconBitmap;
+	/**
+	 * A bitmap version of the application icon.
+	 */
+	Bitmap iconBitmap;
 
-    ComponentName componentName;
+	ComponentName componentName;
 
-    ApplicationInfo() {
-        itemType = BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
-    }
+	ApplicationInfo() {
+		itemType = BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
+	}
 
-    /**
-     * Must not hold the Context.
-     */
-    public ApplicationInfo(ResolveInfo info, IconCache iconCache) {
-        this.componentName = new ComponentName(
-                info.activityInfo.applicationInfo.packageName,
-                info.activityInfo.name);
+	/**
+	 * Must not hold the Context.
+	 */
+	public ApplicationInfo(ResolveInfo info, IconCache iconCache) {
+		this.componentName = new ComponentName(
+				info.activityInfo.applicationInfo.packageName,
+				info.activityInfo.name);
 
-        this.container = ItemInfo.NO_ID;
-        this.setActivity(componentName,
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+		this.container = ItemInfo.NO_ID;
+		this.setActivity(componentName, Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
-        iconCache.getTitleAndIcon(this, info);
-    }
+		iconCache.getTitleAndIcon(this, info);
+	}
 
-    public ApplicationInfo(ApplicationInfo info) {
-        super(info);
-        componentName = info.componentName;
-        title = info.title.toString();
-        intent = new Intent(info.intent);
-    }
+	public ApplicationInfo(ApplicationInfo info) {
+		super(info);
+		componentName = info.componentName;
+		title = info.title.toString();
+		intent = new Intent(info.intent);
+	}
 
-    /**
-     * Creates the application intent based on a component name and various launch flags.
-     * Sets {@link #itemType} to {@link LauncherSettings.BaseLauncherColumns#ITEM_TYPE_APPLICATION}.
-     *
-     * @param className the class name of the component representing the intent
-     * @param launchFlags the launch flags
-     */
-    final void setActivity(ComponentName className, int launchFlags) {
-        intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setComponent(className);
-        intent.setFlags(launchFlags);
-        itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
-    }
+	/**
+	 * Creates the application intent based on a component name and various
+	 * launch flags. Sets {@link #itemType} to
+	 * {@link LauncherSettings.BaseLauncherColumns#ITEM_TYPE_APPLICATION}.
+	 * 
+	 * @param className
+	 *            the class name of the component representing the intent
+	 * @param launchFlags
+	 *            the launch flags
+	 */
+	final void setActivity(ComponentName className, int launchFlags) {
+		intent = new Intent(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		intent.setComponent(className);
+		intent.setFlags(launchFlags);
+		itemType = BaseLauncherColumns.ITEM_TYPE_APPLICATION;
+	}
 
-    @Override
-    public String toString() {
-        return "ApplicationInfo(title=" + title.toString() + ")";
-    }
+	@Override
+	public String toString() {
+		return "ApplicationInfo(title=" + title.toString() + ")";
+	}
 
-    public static void dumpApplicationInfoList(String tag, String label,
-            ArrayList<ApplicationInfo> list) {
-        Log.d(tag, label + " size=" + list.size());
-        for (ApplicationInfo info: list) {
-            Log.d(tag, "   title=\"" + info.title + "\" titleBitmap=" + info.titleBitmap
-                    + " iconBitmap=" + info.iconBitmap);
-        }
-    }
+	public static void dumpApplicationInfoList(String tag, String label,
+			ArrayList<ApplicationInfo> list) {
+		Log.d(tag, label + " size=" + list.size());
+		for (ApplicationInfo info : list) {
+			Log.d(tag, "   title=\"" + info.title + "\" titleBitmap="
+					+ info.titleBitmap + " iconBitmap=" + info.iconBitmap);
+		}
+	}
 
-    public ShortcutInfo makeShortcut() {
-        return new ShortcutInfo(this);
-    }
+	public ShortcutInfo makeShortcut() {
+		return new ShortcutInfo(this);
+	}
 }

@@ -22,25 +22,25 @@ public class CustomAppWidget extends BubbleTextView {
 
 	static CustomAppWidget fromXml(int resId, Launcher launcher,
 			ViewGroup group, CustomAppWidgetInfo widgetInfo) {
-		//final ThemeManager mThemeMgr = ThemeManager.getInstance();
-		//Bitmap icon = null;
+		// final ThemeManager mThemeMgr = ThemeManager.getInstance();
+		// Bitmap icon = null;
 
 		CustomAppWidget view = (CustomAppWidget) LayoutInflater.from(launcher)
 				.inflate(resId, group, false);
 		Bitmap icon = Utilities.createIconBitmap(launcher.getResources()
 				.getDrawable(widgetInfo.icon), launcher);
 
-//		if ((widgetInfo.cellX <= 1) && (widgetInfo.cellY <= 1)) {
-//			// Bitmap icon2 = Utilities.scaleBitmap4Launcher(icon1);
-//			// Bitmap icon2 = Utilities.changeBitmap4Launcher(icon1);
-////			icon = Utilities.createCompoundBitmap(mThemeMgr
-////					.getRandomAppBgIcon(Integer.toString(widgetInfo.title)),
-////					icon1);
-//			icon = Utilities.createCompoundBitmapEx(
-//					Integer.toString(widgetInfo.title), icon1);
-//		} else {
-//			icon = icon1;
-//		}
+		// if ((widgetInfo.cellX <= 1) && (widgetInfo.cellY <= 1)) {
+		// // Bitmap icon2 = Utilities.scaleBitmap4Launcher(icon1);
+		// // Bitmap icon2 = Utilities.changeBitmap4Launcher(icon1);
+		// // icon = Utilities.createCompoundBitmap(mThemeMgr
+		// // .getRandomAppBgIcon(Integer.toString(widgetInfo.title)),
+		// // icon1);
+		// icon = Utilities.createCompoundBitmapEx(
+		// Integer.toString(widgetInfo.title), icon1);
+		// } else {
+		// icon = icon1;
+		// }
 
 		view.setCompoundDrawablesWithIntrinsicBounds(null,
 				new FastBitmapDrawable(icon), null, null);

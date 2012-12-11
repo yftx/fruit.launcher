@@ -25,7 +25,7 @@ public class SettingView {
 	private CellLayout mCellLayout;
 	private LauncherAppWidgetHostView mLauncherAppWidgetHostView;
 	Boolean flag = false;
-	
+
 	public static final String POPUPWINDOW_START_SETTING = "intent.action.START_SETTING";
 
 	public SettingView(Launcher launcher, Workspace workspace, int index,
@@ -37,7 +37,8 @@ public class SettingView {
 		mAppWidgetInfo = info;
 		mCellLayout = cellLayout;
 		mLauncherAppWidgetHostView = view;
-		mManager = (WindowManager) mLauncher.getSystemService(Context.WINDOW_SERVICE);
+		mManager = (WindowManager) mLauncher
+				.getSystemService(Context.WINDOW_SERVICE);
 
 		initalizeUI();
 	}
@@ -49,7 +50,7 @@ public class SettingView {
 		setView.setOnClickListener(new SettingOnclickListener());
 		ImageView delView = (ImageView) mView.findViewById(R.id.icon2);
 		delView.setOnClickListener(new DeleteOnClickListener());
-		
+
 		mViewContainer = new ViewContainer(mLauncher);
 		ViewContainer.LayoutParams listParams = new ViewContainer.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -66,7 +67,7 @@ public class SettingView {
 				PixelFormat.TRANSLUCENT);
 		params.gravity = Gravity.TOP | Gravity.LEFT;
 		params.token = mWorkspace.getWindowToken();
-		
+
 		mManager.addView(mViewContainer, params);
 		flag = true;
 	}
@@ -84,17 +85,17 @@ public class SettingView {
 		@Override
 		public void onClick(View arg0) {
 			mLauncher.removeAppWidget(mAppWidgetInfo);
-			
+
 			final LauncherAppWidgetHost appWidgetHost = mLauncher
 					.getAppWidgetHost();
 			if (appWidgetHost != null) {
 				appWidgetHost.deleteAppWidgetId(mAppWidgetInfo.appWidgetId);
 			}
-			
+
 			LauncherModel.deleteItemFromDatabase(mLauncher, mAppWidgetInfo);
-			
+
 			mCellLayout.removeView(mLauncherAppWidgetHostView);
-			
+
 			dismiss();
 		}
 	}
@@ -129,13 +130,13 @@ public class SettingView {
 			Rect rect = new Rect();
 			this.getDrawingRect(rect);
 			Boolean isContain = rect.contains((int) touchedX, (int) touchedY);
-			
+
 			if (!isContain) {
 				dismiss();
 			}
-			
+
 			return super.dispatchTouchEvent(arg0);
 		}
 	}
 }
-/*  2012-5-10 add for FourLeafsWidget's SettingView end*/
+/* 2012-5-10 add for FourLeafsWidget's SettingView end */

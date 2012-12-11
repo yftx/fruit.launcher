@@ -1,6 +1,5 @@
 package com.fruit.launcher;
 
-
 import android.graphics.Rect;
 
 public interface BubbleBase {

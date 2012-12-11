@@ -23,96 +23,101 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 
 class FastBitmapDrawable extends Drawable {
-    private Bitmap mBitmap;
-    private int mWidth;
-    private int mHeight;
+	private Bitmap mBitmap;
+	private int mWidth;
+	private int mHeight;
 
-    FastBitmapDrawable(Bitmap b) {
-    	if (b == null) {
-    		mWidth = mHeight = 0;
-    		mBitmap = null;
-    	} else {
-	    	//if (b.getWidth() == 96 && b.getHeight() == 96) {
-	    	//	mBitmap = b;
-				//mBitmap = Utilities.createCompoundBitmap(IconCache.getAppBgIcon(), b);//b;
-	    	//} else {
-//				final ThemeManager mThemeMgr;
-//				mThemeMgr = ThemeManager.getInstance();
-//		        //mBitmap = Utilities.createCompoundBitmap(mThemeMgr.getAppBgIcon(Integer.toString(b.hashCode())), b);//b;
-//
-//				float sxo = 1.0f;
-//            	float syo = 1.0f;
-//            	Bitmap oldIcon = b;//entry.icon;
-//            	if (oldIcon != null) {
-//            		if (oldIcon.getWidth() > 85) 
-//            			sxo = 1.0f / (oldIcon.getWidth()/85.0f); //0.86f;
-//            		
-//            		if (oldIcon.getHeight() > 85)
-//            			syo = 1.0f / (oldIcon.getWidth()/85.0f);//0.86f;
-//            	}    	
-//        		Bitmap theIcon = Utilities.scaleBitmap(oldIcon, sxo, syo);
-				
-		        //mBitmap = Utilities.createCompoundBitmap(mThemeMgr.getRandomAppBgIcon(), theIcon);//b;
-	    		mBitmap = b;//Utilities.createBitmap4Launcher(b);//Utilities.changeBitmap4Launcher(b);
-	    	//}
-			
-	        mWidth = mBitmap.getWidth();
-	        mHeight = mBitmap.getHeight();
+	FastBitmapDrawable(Bitmap b) {
+		if (b == null) {
+			mWidth = mHeight = 0;
+			mBitmap = null;
+		} else {
+			// if (b.getWidth() == 96 && b.getHeight() == 96) {
+			// mBitmap = b;
+			// mBitmap =
+			// Utilities.createCompoundBitmap(IconCache.getAppBgIcon(), b);//b;
+			// } else {
+			// final ThemeManager mThemeMgr;
+			// mThemeMgr = ThemeManager.getInstance();
+			// //mBitmap =
+			// Utilities.createCompoundBitmap(mThemeMgr.getAppBgIcon(Integer.toString(b.hashCode())),
+			// b);//b;
+			//
+			// float sxo = 1.0f;
+			// float syo = 1.0f;
+			// Bitmap oldIcon = b;//entry.icon;
+			// if (oldIcon != null) {
+			// if (oldIcon.getWidth() > 85)
+			// sxo = 1.0f / (oldIcon.getWidth()/85.0f); //0.86f;
+			//
+			// if (oldIcon.getHeight() > 85)
+			// syo = 1.0f / (oldIcon.getWidth()/85.0f);//0.86f;
+			// }
+			// Bitmap theIcon = Utilities.scaleBitmap(oldIcon, sxo, syo);
 
-        }
-    }
+			// mBitmap =
+			// Utilities.createCompoundBitmap(mThemeMgr.getRandomAppBgIcon(),
+			// theIcon);//b;
+			mBitmap = b;// Utilities.createBitmap4Launcher(b);//Utilities.changeBitmap4Launcher(b);
+			// }
 
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(mBitmap, 0.0f, 0.0f, null);
-    }
+			mWidth = mBitmap.getWidth();
+			mHeight = mBitmap.getHeight();
 
-    @Override
-    public int getOpacity() {
-        return PixelFormat.TRANSLUCENT;
-    }
+		}
+	}
 
-    @Override
-    public void setAlpha(int alpha) {
+	@Override
+	public void draw(Canvas canvas) {
+		canvas.drawBitmap(mBitmap, 0.0f, 0.0f, null);
+	}
 
-    }
+	@Override
+	public int getOpacity() {
+		return PixelFormat.TRANSLUCENT;
+	}
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
+	@Override
+	public void setAlpha(int alpha) {
 
-    }
+	}
 
-    @Override
-    public int getIntrinsicWidth() {
-        return mWidth;
-    }
+	@Override
+	public void setColorFilter(ColorFilter cf) {
 
-    @Override
-    public int getIntrinsicHeight() {
-        return mHeight;
-    }
+	}
 
-    @Override
-    public int getMinimumWidth() {
-        return mWidth;
-    }
+	@Override
+	public int getIntrinsicWidth() {
+		return mWidth;
+	}
 
-    @Override
-    public int getMinimumHeight() {
-        return mHeight;
-    }
+	@Override
+	public int getIntrinsicHeight() {
+		return mHeight;
+	}
 
-    public void setBitmap(Bitmap b) {
-        mBitmap = b;
-        if (b != null) {
-            mWidth = mBitmap.getWidth();
-            mHeight = mBitmap.getHeight();
-        } else {
-            mWidth = mHeight = 0;
-        }
-    }
+	@Override
+	public int getMinimumWidth() {
+		return mWidth;
+	}
 
-    public Bitmap getBitmap() {
-        return mBitmap;
-    }
+	@Override
+	public int getMinimumHeight() {
+		return mHeight;
+	}
+
+	public void setBitmap(Bitmap b) {
+		mBitmap = b;
+		if (b != null) {
+			mWidth = mBitmap.getWidth();
+			mHeight = mBitmap.getHeight();
+		} else {
+			mWidth = mHeight = 0;
+		}
+	}
+
+	public Bitmap getBitmap() {
+		return mBitmap;
+	}
 }

@@ -40,13 +40,21 @@ public class EffectsFactory {
 		if (sEffectsPool == null) {
 			sEffectsPool = new ArrayList<EffectBase>();
 
-			sEffectsPool.add(new EffectClassic(0, Effects.EFFECT_TYPE_CLASSIC, Effects.EFFECT_TITLE_CLASSIC));
-			sEffectsPool.add(new EffectRotate(0, Effects.EFFECT_TYPE_ROTATE, Effects.EFFECT_TITLE_ROTATE));
-			sEffectsPool.add(new EffectFade(0, Effects.EFFECT_TYPE_FADE, Effects.EFFECT_TITLE_FADE));
-			sEffectsPool.add(new EffectStack(0, Effects.EFFECT_TYPE_STACK, Effects.EFFECT_TITLE_STACK));
-			sEffectsPool.add(new EffectWindmill(0, Effects.EFFECT_TYPE_WINDMILL, Effects.EFFECT_TITLE_WINDMILL));
-			sEffectsPool.add(new EffectCube(0, Effects.EFFECT_TYPE_CUBE, Effects.EFFECT_TITLE_CUBE));
-			sEffectsPool.add(new EffectTornado(0, Effects.EFFECT_TYPE_TOR, Effects.EFFECT_TITLE_TOR));
+			sEffectsPool.add(new EffectClassic(0, Effects.EFFECT_TYPE_CLASSIC,
+					Effects.EFFECT_TITLE_CLASSIC));
+			sEffectsPool.add(new EffectRotate(0, Effects.EFFECT_TYPE_ROTATE,
+					Effects.EFFECT_TITLE_ROTATE));
+			sEffectsPool.add(new EffectFade(0, Effects.EFFECT_TYPE_FADE,
+					Effects.EFFECT_TITLE_FADE));
+			sEffectsPool.add(new EffectStack(0, Effects.EFFECT_TYPE_STACK,
+					Effects.EFFECT_TITLE_STACK));
+			sEffectsPool
+					.add(new EffectWindmill(0, Effects.EFFECT_TYPE_WINDMILL,
+							Effects.EFFECT_TITLE_WINDMILL));
+			sEffectsPool.add(new EffectCube(0, Effects.EFFECT_TYPE_CUBE,
+					Effects.EFFECT_TITLE_CUBE));
+			sEffectsPool.add(new EffectTornado(0, Effects.EFFECT_TYPE_TOR,
+					Effects.EFFECT_TITLE_TOR));
 		}
 		return sEffectsPool;
 	}

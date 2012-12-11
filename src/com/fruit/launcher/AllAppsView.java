@@ -22,44 +22,54 @@ import android.widget.AdapterView;
 
 public interface AllAppsView extends DragScroller {
 
-    public interface Watcher {
-        public void zoomed(float zoom);
-    }
+	public interface Watcher {
+		public void zoomed(float zoom);
+	}
 
-    public void setLauncher(Launcher launcher);
+	public void setLauncher(Launcher launcher);
 
-    public void setDragController(DragController dragger);
+	public void setDragController(DragController dragger);
 
-    public void zoom(float zoom, boolean animate);
+	public void zoom(float zoom, boolean animate);
 
-    public boolean isVisible();
+	public boolean isVisible();
 
-    public boolean isOpaque();
+	public boolean isOpaque();
 
-    public void setApps(ArrayList<ApplicationInfo> list);
+	public void setApps(ArrayList<ApplicationInfo> list);
 
-    public void addApps(ArrayList<ApplicationInfo> list);
+	public void addApps(ArrayList<ApplicationInfo> list);
 
-    public void removeApps(ArrayList<ApplicationInfo> list);
+	public void removeApps(ArrayList<ApplicationInfo> list);
 
-    public void updateApps(ArrayList<ApplicationInfo> list);
+	public void updateApps(ArrayList<ApplicationInfo> list);
 
-    public void dumpState();
+	public void dumpState();
 
-    public void surrender();
+	public void surrender();
 
-    //all of the follow are added.
-    public int  getCurrentPage();
-    public void updateAllData();
-    public void removePackage(ArrayList<ApplicationInfo> apps);
-    public void addPackage(ArrayList<ApplicationInfo> apps);
-    public void deleteFolder(ApplicationFolderInfo foldInfo);
-    public void addFolder(ApplicationFolderInfo mFoldInfo);
-    public void updateFolder(int index, String title);
-    public void switchScreenMode(boolean bIsFullScreen, int paddingTop);
-    public AdapterView<?> getGridView();
-    public ScreenIndicator getScreenIndicator();
-    
-    public int getCount();
-    public void applyTheme();
+	// all of the follow are added.
+	public int getCurrentPage();
+
+	public void updateAllData();
+
+	public void removePackage(ArrayList<ApplicationInfo> apps);
+
+	public void addPackage(ArrayList<ApplicationInfo> apps);
+
+	public void deleteFolder(ApplicationFolderInfo foldInfo);
+
+	public void addFolder(ApplicationFolderInfo mFoldInfo);
+
+	public void updateFolder(int index, String title);
+
+	public void switchScreenMode(boolean bIsFullScreen, int paddingTop);
+
+	public AdapterView<?> getGridView();
+
+	public ScreenIndicator getScreenIndicator();
+
+	public int getCount();
+
+	public void applyTheme();
 }

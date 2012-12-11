@@ -83,7 +83,6 @@ import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -94,11 +93,9 @@ import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.theme.ThemeManager;
 import com.fruit.launcher.theme.ThemeUtils;
 
-public class AllApps2D_Slide extends RelativeLayout
-		implements AllAppsView,
-			AdapterView.OnItemClickListener,
-			AdapterView.OnItemLongClickListener,
-			DragSource, DropTarget {
+public class AllApps2D_Slide extends RelativeLayout implements AllAppsView,
+		AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener,
+		DragSource, DropTarget {
 
 	private static final String TAG = "AllApps2D_Slide";
 
@@ -124,7 +121,7 @@ public class AllApps2D_Slide extends RelativeLayout
 
 	private ContentResolver mContentResolver;
 
-	//private HomeButton homeButton;
+	// private HomeButton homeButton;
 
 	private int mCurrentScreen;
 	private ScreenIndicator mScreenIndicator;
@@ -134,7 +131,7 @@ public class AllApps2D_Slide extends RelativeLayout
 	private IconCache mIconCache;
 
 	private Handler mHandler;
-	
+
 	private boolean mbLockApps = false;
 	private int mLockAppsNum = 0;
 
@@ -153,7 +150,8 @@ public class AllApps2D_Slide extends RelativeLayout
 		matrix.postScale(scaleWidth, scaleHeight);
 
 		// resize bitmap
-		Bitmap newbm = Bitmap.createBitmap(src, 0, 0, width, height, matrix, true);
+		Bitmap newbm = Bitmap.createBitmap(src, 0, 0, width, height, matrix,
+				true);
 
 		return newbm;
 	}
@@ -173,69 +171,71 @@ public class AllApps2D_Slide extends RelativeLayout
 			final ItemInfo info = getItem(position);
 
 			if (convertView == null) {
-				convertView = mInflater.inflate(R.layout.application_boxed, parent, false);
+				convertView = mInflater.inflate(R.layout.application_boxed,
+						parent, false);
 				convertView.setFocusable(false);
 			}
 
 			final TextView textView = (TextView) convertView;
 			if (info.itemType == Applications.APPS_TYPE_APP) {
-				//ApplicationInfoEx : packages ,isSystemApp
+				// ApplicationInfoEx : packages ,isSystemApp
 				ApplicationInfoEx appInfoEx = (ApplicationInfoEx) info;
 				appInfoEx.iconBitmap.setDensity(Bitmap.DENSITY_NONE);
 
-				textView.setCompoundDrawablesWithIntrinsicBounds(
-						null,
-						new BitmapDrawable(appInfoEx.iconBitmap),
-						null,
-						null);
+				textView.setCompoundDrawablesWithIntrinsicBounds(null,
+						new BitmapDrawable(appInfoEx.iconBitmap), null, null);
 				textView.setText(appInfoEx.title);
 				textView.setTag(null);
 			} else {
-				//folder app
+				// folder app
 				ApplicationFolderInfo folderInfo = (ApplicationFolderInfo) info;
 				final int count = folderInfo.getSize();
 				LayerDrawable ld;
-				Bitmap bm = mIconCache.getFolderLocalIcon(true);	
-//				Bitmap bm = Utilities.createIconBitmap(getResources().getDrawable(R.drawable.ic_launcher_folder), mContext);
-				
+				Bitmap bm = mIconCache.getFolderLocalIcon(true);
+				// Bitmap bm =
+				// Utilities.createIconBitmap(getResources().getDrawable(R.drawable.ic_launcher_folder),
+				// mContext);
+
 				bm.setDensity(Bitmap.DENSITY_NONE);
 				Drawable[] array = new Drawable[Math.min(4, count) + 1];
-				array[0] = new BitmapDrawable(bm); //bit resource
+				array[0] = new BitmapDrawable(bm); // bit resource
 
 				// Generate drawable array when count > 0
 				if (count > 0) {
 					for (int i = 0; i < Math.min(4, count); i++) {
-						ApplicationInfoEx subAppInfo = folderInfo.contents.get(i);
+						ApplicationInfoEx subAppInfo = folderInfo.contents
+								.get(i);
 						Bitmap photo = resizeBitmap(bm, subAppInfo.iconBitmap);
 						photo.setDensity(Bitmap.DENSITY_NONE);
 						array[i + 1] = new BitmapDrawable(photo);
 					}
 
 					ld = new LayerDrawable(array);
-					if (count >= 1) { 
-						ld.setLayerInset(1, 6, 6, 1 + bm.getWidth() / 2, 1 + bm.getHeight() / 2);
+					if (count >= 1) {
+						ld.setLayerInset(1, 6, 6, 1 + bm.getWidth() / 2,
+								1 + bm.getHeight() / 2);
 					}
 
 					if (count >= 2) {
-						ld.setLayerInset(2, 1 + bm.getWidth() / 2, 6, 6, 1 + bm.getHeight() / 2);
+						ld.setLayerInset(2, 1 + bm.getWidth() / 2, 6, 6,
+								1 + bm.getHeight() / 2);
 					}
 
 					if (count >= 3) {
-						ld.setLayerInset(3, 6, 1 + bm.getHeight() / 2, 1 + bm.getWidth() / 2, 6);
+						ld.setLayerInset(3, 6, 1 + bm.getHeight() / 2,
+								1 + bm.getWidth() / 2, 6);
 					}
 
 					if (count >= 4) {
-						ld.setLayerInset(4, 1 + bm.getWidth() / 2, 1 + bm.getWidth() / 2, 6, 6);
+						ld.setLayerInset(4, 1 + bm.getWidth() / 2,
+								1 + bm.getWidth() / 2, 6, 6);
 					}
 				} else {
 					ld = new LayerDrawable(array);
 				}
 
-				textView.setCompoundDrawablesWithIntrinsicBounds(
-				 		null,
-				 		ld,
-				  		null,
-				  		null);
+				textView.setCompoundDrawablesWithIntrinsicBounds(null, ld,
+						null, null);
 				textView.setText(folderInfo.title);
 				textView.setTag(folderInfo);
 			}
@@ -251,14 +251,16 @@ public class AllApps2D_Slide extends RelativeLayout
 		setSoundEffectsEnabled(false);
 
 		mContentResolver = mContext.getContentResolver();
-		//mAppsAdapter = new AppsAdapter(getContext(), mAllAppsList);
+		// mAppsAdapter = new AppsAdapter(getContext(), mAllAppsList);
 		mAppsAdapter = new AppsAdapter(getContext(), mSlideAppsList);
 		mAppsAdapter.setNotifyOnChange(false);
 
-		mBGColor = context.getResources().getColor(R.color.transparent_background);
-		
+		mBGColor = context.getResources().getColor(
+				R.color.transparent_background);
+
 		mbLockApps = context.getResources().getBoolean(R.bool.config_lock_apps);
-		mLockAppsNum = context.getResources().getInteger(R.integer.config_lock_apps_num);
+		mLockAppsNum = context.getResources().getInteger(
+				R.integer.config_lock_apps_num);
 
 		mHandler = new Handler() {
 
@@ -278,8 +280,9 @@ public class AllApps2D_Slide extends RelativeLayout
 
 	@Override
 	protected void onFinishInflate() {
-//		setBackgroundColor(mBGColor);
-		LauncherApplication app = (LauncherApplication) getContext().getApplicationContext();
+		setBackgroundColor(mBGColor);
+		LauncherApplication app = (LauncherApplication) getContext()
+				.getApplicationContext();
 		mIconCache = app.getIconCache();
 
 		try {
@@ -290,14 +293,15 @@ public class AllApps2D_Slide extends RelativeLayout
 			}
 			mGrid.setOnItemClickListener(this);
 			mGrid.setOnItemLongClickListener(this);
-//			mGrid.setLauncher(mLauncher);
+			// mGrid.setLauncher(mLauncher);
 			mGrid.setScreenIndicator(mScreenIndicator);
 			mAllAppsHomeBar = (AllAppsHomeBar) findViewById(R.id.all_apps_home_bar);
 			// Do not load database here,
 			// called in theme manager to start loading all app data
 			updateAllData();
 		} catch (Resources.NotFoundException e) {
-			Log.e(TAG, "Can't find necessary layout elements for AllApps2D_Slide");
+			Log.e(TAG,
+					"Can't find necessary layout elements for AllApps2D_Slide");
 		}
 	}
 
@@ -315,12 +319,10 @@ public class AllApps2D_Slide extends RelativeLayout
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 		ItemInfo info = (ItemInfo) parent.getItemAtPosition(position);
 		if (info.itemType == Applications.APPS_TYPE_APP) {
-            mLauncher.startActivitySafely(((ApplicationInfoEx) info).intent, info);
-
-            // [[add by liujian at 2012-5-19
-            // recent application
-            saveRecentApplication(((ApplicationInfoEx) info).intent.getComponent());
-            // ]]at 2012-5-19
+			mLauncher.startActivitySafely(((ApplicationInfoEx) info).intent,
+					info);
+			saveRecentApplication(((ApplicationInfoEx) info).intent
+					.getComponent());
 		} else {
 			mCurrentScreen = mGrid.mCurrentScreen;
 
@@ -338,7 +340,8 @@ public class AllApps2D_Slide extends RelativeLayout
 				for (int i = 0; i < gridView.getChildCount(); i++) {
 					View child = gridView.getChildAt(i);
 					Object tagNew = child.getTag();
-					if (tagNew != null && (tagNew instanceof ApplicationFolderInfo)) {
+					if (tagNew != null
+							&& (tagNew instanceof ApplicationFolderInfo)) {
 						if (((ApplicationFolderInfo) tagNew).id == info.id) {
 							folderInfo.folderIcon = (BubbleTextView) child;
 							continue;
@@ -357,99 +360,106 @@ public class AllApps2D_Slide extends RelativeLayout
 			nPos = position;
 		}
 	}
-	
-	//[[add by liujian at 2012-5-19
-    //recent application 
+
 	private static final String LIU_TAG = "saveRecentApplication";
 	private static final int RECENT_MAX_NUM = 16;
 	private static final String KEY_RECENT_APP_LIST = "recentAppList";
-    private void saveRecentApplication(ComponentName componentName){
-        try {
-            PackageManager pm = mContext.getPackageManager();
-            pm.getApplicationInfo("com.huaqin.taskmanager", 0);
-            
-            Log.d(LIU_TAG, "Found Application");
-            
-            int mode = Context.MODE_WORLD_WRITEABLE | Context.MODE_WORLD_READABLE;
-            SharedPreferences shared = mContext.getSharedPreferences("recentAppShared",mode);
-            SharedPreferences.Editor editor = shared.edit();
-            
-            String recentAppString = shared.getString(KEY_RECENT_APP_LIST,"");
-            if (recentAppString.equals("")){
-                String sort = componentName.getPackageName() + "*" 
-                                + componentName.getClassName() + " ";
-                editor.putString(KEY_RECENT_APP_LIST, sort);
-                editor.commit();
-                return;
-            } 
-            
-            Log.d(LIU_TAG,recentAppString);
 
-            String component = componentName.getPackageName() + "*" + componentName.getClassName();
-            String [] recentApps = recentAppString.split("\\s+");
-            List<String> recentAppList = new ArrayList<String>(Arrays.asList(recentApps));
-            
-            recentAppList.remove(component);
-            recentAppList.add(0,component);
-            if (recentAppList.size() > RECENT_MAX_NUM) {
-                recentAppList.remove(RECENT_MAX_NUM);
-            }
-            
-            saveRecentAppToSharedPreference(editor,recentAppList);
-            
-        } catch (NameNotFoundException e) {
-            Log.d(LIU_TAG, "NameNotFoundException");
-            return;
-        }
-    }
-    
-    private void saveRecentAppToSharedPreference(SharedPreferences.Editor editor, List<String> list){
-        String value = new String();
-        for (int i=0; i<list.size(); i++){
-            value += list.get(i)+" ";
-        }
-        
-        Log.d(LIU_TAG, value);
-        
-        editor.putString(KEY_RECENT_APP_LIST, value);
-        editor.commit();
-    }
-    //]]at 2012-5-19
+	private void saveRecentApplication(ComponentName componentName) {
+		try {
+			PackageManager pm = mContext.getPackageManager();
+			pm.getApplicationInfo("com.huaqin.taskmanager", 0);
+
+			Log.d(LIU_TAG, "Found Application");
+
+			int mode = Context.MODE_WORLD_WRITEABLE
+					| Context.MODE_WORLD_READABLE;
+			SharedPreferences shared = mContext.getSharedPreferences(
+					"recentAppShared", mode);
+			SharedPreferences.Editor editor = shared.edit();
+
+			String recentAppString = shared.getString(KEY_RECENT_APP_LIST, "");
+			if (recentAppString.equals("")) {
+				String sort = componentName.getPackageName() + "*"
+						+ componentName.getClassName() + " ";
+				editor.putString(KEY_RECENT_APP_LIST, sort);
+				editor.commit();
+				return;
+			}
+
+			Log.d(LIU_TAG, recentAppString);
+
+			String component = componentName.getPackageName() + "*"
+					+ componentName.getClassName();
+			String[] recentApps = recentAppString.split("\\s+");
+			List<String> recentAppList = new ArrayList<String>(
+					Arrays.asList(recentApps));
+
+			recentAppList.remove(component);
+			recentAppList.add(0, component);
+			if (recentAppList.size() > RECENT_MAX_NUM) {
+				recentAppList.remove(RECENT_MAX_NUM);
+			}
+
+			saveRecentAppToSharedPreference(editor, recentAppList);
+
+		} catch (NameNotFoundException e) {
+			Log.d(LIU_TAG, "NameNotFoundException");
+			return;
+		}
+	}
+
+	private void saveRecentAppToSharedPreference(
+			SharedPreferences.Editor editor, List<String> list) {
+		String value = new String();
+		for (int i = 0; i < list.size(); i++) {
+			value += list.get(i) + " ";
+		}
+
+		Log.d(LIU_TAG, value);
+
+		editor.putString(KEY_RECENT_APP_LIST, value);
+		editor.commit();
+	}
 
 	@Override
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+	public boolean onItemLongClick(AdapterView<?> parent, View view,
+			int position, long id) {
 		if (!view.isInTouchMode()) {
 			Log.e(TAG, "onItemLongClick !view.isInTouchMode()");
 			return false;
 		}
-		
-		synchronized (mSlideAppsList){
+
+		synchronized (mSlideAppsList) {
 			nPos = mGrid.getPositionForView(view);
-			if(mbLockApps && nPos < mLockAppsNum ){
+			if (mbLockApps && nPos < mLockAppsNum) {
 				view.setPressed(false);
 				return false;
 			}
-			
+
 			mAllAppsHomeBar.showHomeBar();
 			ItemInfo info = (ItemInfo) parent.getItemAtPosition(position);
 			view.setVisibility(INVISIBLE);
-			mDragController.startDrag(view, this, info, DragController.DRAG_ACTION_COPY);
-			//mDragController.startDrag(view, this, findAppByItem(info), DragController.DRAG_ACTION_COPY);
-			//mDragController.addDropTarget(homeButton);
-			//mDragController.addDropTarget(mLauncher.getHomeButton());
+			mDragController.startDrag(view, this, info,
+					DragController.DRAG_ACTION_COPY);
+			// mDragController.startDrag(view, this, findAppByItem(info),
+			// DragController.DRAG_ACTION_COPY);
+			// mDragController.addDropTarget(homeButton);
+			// mDragController.addDropTarget(mLauncher.getHomeButton());
 			mDragController.addDropTarget(mLauncher.mDeleteZone);
 			mDragController.addDropTarget(mAllAppsHomeBar);
 			nPos = mGrid.getPositionForView(view);
 			mCurrentScreen = mGrid.mCurrentScreen;
-			
+
 			mGrid.setDragViewIndex(nPos + 1);
-			//mLauncher.closeAllApps(true);
+			// mLauncher.closeAllApps(true);
 			return true;
 		}
 	}
 
 	@Override
-	protected void onFocusChanged(boolean gainFocus, int direction, android.graphics.Rect prev) {
+	protected void onFocusChanged(boolean gainFocus, int direction,
+			android.graphics.Rect prev) {
 		if (gainFocus) {
 			mGrid.requestFocus();
 		}
@@ -472,8 +482,9 @@ public class AllApps2D_Slide extends RelativeLayout
 
 	/**
 	 * Zoom to the specifed level.
-	 *
-	 * @param zoom [0..1] 0 is hidden, 1 is open
+	 * 
+	 * @param zoom
+	 *            [0..1] 0 is hidden, 1 is open
 	 */
 	@Override
 	public void zoom(float zoom, boolean animate) {
@@ -492,20 +503,22 @@ public class AllApps2D_Slide extends RelativeLayout
 			mDragController.addDropTarget(this);
 			mAllAppsHomeBar.hideHomeBar();
 			if (animate) {
-				startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pull_in_from_top));
+				startAnimation(AnimationUtils.loadAnimation(getContext(),
+						R.anim.pull_in_from_top));
 			} else {
 				onAnimationEnd();
 			}
 		} else {
 			mDragController.removeDropTarget(this);
-			//mDragController.removeDropTarget(homeButton);
-			//mDragController.removeDropTarget(mLauncher.getHomeButton());
+			// mDragController.removeDropTarget(homeButton);
+			// mDragController.removeDropTarget(mLauncher.getHomeButton());
 			mDragController.removeDropTarget(mAllAppsHomeBar);
-			//mDragController.removeDropTarget(mLauncher.mDeleteZone);
+			// mDragController.removeDropTarget(mLauncher.mDeleteZone);
 			mScreenIndicator.setVisibility(View.INVISIBLE);
 			mAllAppsHomeBar.hideHomeBar();
 			if (animate) {
-				startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pull_out_to_top));
+				startAnimation(AnimationUtils.loadAnimation(getContext(),
+						R.anim.pull_out_to_top));
 			} else {
 				onAnimationEnd();
 			}
@@ -520,7 +533,7 @@ public class AllApps2D_Slide extends RelativeLayout
 			mZoom = 0.0f;
 		} else {
 			mZoom = 1.0f;
-			//updateAppcationList();
+			// updateAppcationList();
 			mScreenIndicator.setVisibility(View.VISIBLE);
 			if (mGrid != null) {
 				int[] position = new int[2];
@@ -554,7 +567,7 @@ public class AllApps2D_Slide extends RelativeLayout
 
 	@Override
 	public void addApps(ArrayList<ApplicationInfo> list) {
-		//Log.d(TAG, "addApps: " + list.size() + " apps: " + list.toString());
+		// Log.d(TAG, "addApps: " + list.size() + " apps: " + list.toString());
 
 		final int N = list.size();
 
@@ -580,14 +593,14 @@ public class AllApps2D_Slide extends RelativeLayout
 				mAllAppsList.remove(index);
 			} else {
 				Log.w(TAG, "couldn't find a match for item \"" + item + "\"");
-				// Try to recover.  This should keep us from crashing for now.
+				// Try to recover. This should keep us from crashing for now.
 			}
 		}
 		mAppsAdapter.notifyDataSetChanged();
 	}
 
 	@Override
-	//App drag in delete zone ,after revert uninstall UI
+	// App drag in delete zone ,after revert uninstall UI
 	public void removePackage(ArrayList<ApplicationInfo> apps) {
 		final int N = apps.size();
 
@@ -595,7 +608,8 @@ public class AllApps2D_Slide extends RelativeLayout
 			final ApplicationInfo item = apps.get(i);
 
 			if (item == null) {
-				Log.w(TAG, "removePackage couldn't find a match for item \"" + item + "\"");
+				Log.w(TAG, "removePackage couldn't find a match for item \""
+						+ item + "\"");
 				continue;
 			}
 
@@ -605,27 +619,30 @@ public class AllApps2D_Slide extends RelativeLayout
 					ApplicationFolderInfo folderInfo = (ApplicationFolderInfo) info;
 					for (int k = 0; k < folderInfo.getSize(); k++) {
 						ApplicationInfoEx y = folderInfo.contents.get(k);
-						if (item.componentName.getPackageName().equals(y.packageName)) {
+						if (item.componentName.getPackageName().equals(
+								y.packageName)) {
 							mGrid.adjustOrderIdInFolder(folderInfo, y.orderId);
 							folderInfo.remove(y);
 							final Uri deleteUri = Applications.CONTENT_URI;
-							final ContentResolver cr = getContext().getContentResolver();
-							cr.delete(deleteUri,
-									 Applications.PACKAGENAME+ "=?",
-									 new String[]{item.intent.getComponent().getPackageName()});
+							final ContentResolver cr = getContext()
+									.getContentResolver();
+							cr.delete(deleteUri, Applications.PACKAGENAME
+									+ "=?", new String[] { item.intent
+									.getComponent().getPackageName() });
 						}
 					}
 				} else {
 					ApplicationInfoEx appInfoEx = (ApplicationInfoEx) info;
-					if (item.componentName.getPackageName().equals(appInfoEx.packageName)) {
+					if (item.componentName.getPackageName().equals(
+							appInfoEx.packageName)) {
 						mGrid.removePackage(appInfoEx);
 						mSlideAppsList.remove(appInfoEx);
-				 	}
+					}
 				}
 			}
 		}
 
-		//updateAllData();
+		// updateAllData();
 		mHandler.sendEmptyMessage(MSG_APPS_UPDATED);
 	}
 
@@ -648,11 +665,12 @@ public class AllApps2D_Slide extends RelativeLayout
 					Log.d(TAG, "find launcherEx theme package " + pkgName);
 				}
 			} else {
-				Log.w(TAG, "addPackage couldn't find a match for item \"" + item + "\"");
+				Log.w(TAG, "addPackage couldn't find a match for item \""
+						+ item + "\"");
 			}
 		}
 
-		//updateAllData();
+		// updateAllData();
 		mHandler.sendEmptyMessage(MSG_APPS_UPDATED);
 	}
 
@@ -665,9 +683,9 @@ public class AllApps2D_Slide extends RelativeLayout
 		appInfoEx.position = mSlideAppsList.size();
 		appInfoEx.itemType = Applications.APPS_TYPE_APP;
 		appInfoEx.packageName = item.componentName.getPackageName();
-		appInfoEx.intent =
-			Utilities.orgnizeAppIconIntent(item.componentName.getPackageName(),
-					item.componentName.getClassName());
+		appInfoEx.intent = Utilities.orgnizeAppIconIntent(
+				item.componentName.getPackageName(),
+				item.componentName.getClassName());
 
 		if (Utilities.isSystemApplication(mLauncher, appInfoEx.packageName)) {
 			appInfoEx.isSysApp = true;
@@ -691,12 +709,12 @@ public class AllApps2D_Slide extends RelativeLayout
 			if (foldInfo.getSize() > 0) {
 				ApplicationInfoEx infoEx = foldInfo.contents.get(0);
 				infoEx.position = foldInfo.position;
-				infoEx.container  = Applications.CONTAINER_APPS;
-				infoEx.itemType   = Applications.APPS_TYPE_APP;
+				infoEx.container = Applications.CONTAINER_APPS;
+				infoEx.itemType = Applications.APPS_TYPE_APP;
 				mSlideAppsList.add(foldInfo.position, infoEx);
-	
-				for (int i = 1; i < foldInfo.getSize(); i++ ) {
-					ApplicationInfoEx  itemInfoEx = foldInfo.contents.get(i);
+
+				for (int i = 1; i < foldInfo.getSize(); i++) {
+					ApplicationInfoEx itemInfoEx = foldInfo.contents.get(i);
 					itemInfoEx.position = nLast + i;
 					itemInfoEx.container = Applications.CONTAINER_APPS;
 					itemInfoEx.itemType = Applications.APPS_TYPE_APP;
@@ -714,7 +732,7 @@ public class AllApps2D_Slide extends RelativeLayout
 	@Override
 	public void addFolder(ApplicationFolderInfo foldInfo) {
 		synchronized (mSlideAppsList) {
-			for (int i = foldInfo.position ; i < mSlideAppsList.size(); i++) {
+			for (int i = foldInfo.position; i < mSlideAppsList.size(); i++) {
 				ItemInfo info = mSlideAppsList.get(i);
 				switch (info.itemType) {
 				case Applications.APPS_TYPE_APP:
@@ -749,7 +767,8 @@ public class AllApps2D_Slide extends RelativeLayout
 		addApps(list);
 	}
 
-	private static int findAppByComponent(ArrayList<ApplicationInfo> list, ApplicationInfo item) {
+	private static int findAppByComponent(ArrayList<ApplicationInfo> list,
+			ApplicationInfo item) {
 		ComponentName component = item.intent.getComponent();
 		final int N = list.size();
 		for (int i = 0; i < N; i++) {
@@ -763,7 +782,8 @@ public class AllApps2D_Slide extends RelativeLayout
 
 	@Override
 	public void dumpState() {
-		ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList", mAllAppsList);
+		ApplicationInfo.dumpApplicationInfoList(TAG, "mAllAppsList",
+				mAllAppsList);
 	}
 
 	@Override
@@ -809,11 +829,12 @@ public class AllApps2D_Slide extends RelativeLayout
 		}
 	}
 
-	public void moveItemCurrentPage(DragSource source, int x, int y, int xOffset,
-			int yOffset, DragView dragView, Object dragInfo) {
+	public void moveItemCurrentPage(DragSource source, int x, int y,
+			int xOffset, int yOffset, DragView dragView, Object dragInfo) {
 		final int[] mCoordinatesTemp = new int[2];
 		mGrid.getLocationOnScreen(mCoordinatesTemp);
-		View lastView = mGrid.pointToViewEx(x - mCoordinatesTemp[0], y - mCoordinatesTemp[1],nPos);
+		View lastView = mGrid.pointToViewEx(x - mCoordinatesTemp[0], y
+				- mCoordinatesTemp[1], nPos);
 		int nLastPos = -1;
 		if (lastView == null) {
 			nLastPos = mSlideAppsList.size() - 1;
@@ -827,12 +848,15 @@ public class AllApps2D_Slide extends RelativeLayout
 			ApplicationFolderInfo lastSlideInfo = (ApplicationFolderInfo) info;
 
 			if (((ItemInfo) dragInfo).itemType == Applications.APPS_TYPE_FOLDER) {
-				// Drag source is also an application folder, just update their position
-				mGrid.moveItemToPosition(nPos, nLastPos, ((ApplicationFolderInfo) dragInfo).id);
+				// Drag source is also an application folder, just update their
+				// position
+				mGrid.moveItemToPosition(nPos, nLastPos,
+						((ApplicationFolderInfo) dragInfo).id);
 				exchangePos(nPos, nLastPos);
 			} else if (((ItemInfo) dragInfo).itemType == Applications.APPS_TYPE_FOLDERAPP) {
 				// Drag from another application folder
-				// delete the application info from old folder, and insert to new folder
+				// delete the application info from old folder, and insert to
+				// new folder
 				// If source folder is the drag target, do nothing
 				final ApplicationInfoEx appInfo = (ApplicationInfoEx) dragInfo;
 				if (lastView == null) {
@@ -851,11 +875,11 @@ public class AllApps2D_Slide extends RelativeLayout
 					mAppsAdapter.notifyDataSetChanged();
 				} else {
 					if (((ItemInfo) dragInfo).container != lastSlideInfo.id) {
-						final ApplicationFolderInfo initFolderInfo =
-							(ApplicationFolderInfo) ((UserFolder) source).mInfo;
+						final ApplicationFolderInfo initFolderInfo = (ApplicationFolderInfo) ((UserFolder) source).mInfo;
 
 						// Remove appInfo from old folder
-						mGrid.adjustOrderIdInFolder(initFolderInfo, appInfo.orderId);
+						mGrid.adjustOrderIdInFolder(initFolderInfo,
+								appInfo.orderId);
 						initFolderInfo.remove(appInfo);
 
 						// Add appInfo to new folder
@@ -869,7 +893,8 @@ public class AllApps2D_Slide extends RelativeLayout
 			} else {
 				// Drag from all application grid to application folder
 				if (lastView == null) {
-					mGrid.moveItemToPosition(nPos, nLastPos, ((ItemInfo) dragInfo).id);
+					mGrid.moveItemToPosition(nPos, nLastPos,
+							((ItemInfo) dragInfo).id);
 					exchangePos(nPos, nLastPos);
 				} else {
 					ApplicationInfoEx appInfo = (ApplicationInfoEx) dragInfo;
@@ -888,9 +913,11 @@ public class AllApps2D_Slide extends RelativeLayout
 					// Add appInfo to folder
 					lastSlideInfo.add(appInfo);
 
-					View itemView = mGrid.getViewAtIndex(lastSlideInfo.position);
+					View itemView = mGrid
+							.getViewAtIndex(lastSlideInfo.position);
 					if (itemView != null) {
-						mAppsAdapter.getView(lastSlideInfo.position, itemView, null);
+						mAppsAdapter.getView(lastSlideInfo.position, itemView,
+								null);
 					}
 				}
 			}
@@ -926,21 +953,24 @@ public class AllApps2D_Slide extends RelativeLayout
 				// Force update folder item view with new contents
 				View itemView = mGrid.getViewAtIndex(srcFolderInfo.position);
 				if (itemView != null) {
-					mAppsAdapter.getView(srcFolderInfo.position, itemView, null);
+					mAppsAdapter
+							.getView(srcFolderInfo.position, itemView, null);
 				}
 			} else {
 				// update two item' position
-				mGrid.moveItemToPosition(nPos, nLastPos, ((ItemInfo) dragInfo).id);
+				mGrid.moveItemToPosition(nPos, nLastPos,
+						((ItemInfo) dragInfo).id);
 				exchangePos(nPos, nLastPos);
 			}
 		}
 	}
 
-	public void moveItemDifferentPage(DragSource source, int x, int y, int xOffset,
-			int yOffset, DragView dragView, Object dragInfo) {
+	public void moveItemDifferentPage(DragSource source, int x, int y,
+			int xOffset, int yOffset, DragView dragView, Object dragInfo) {
 		final int[] mCoordinatesTemp = new int[2];
 		mGrid.getLocationOnScreen(mCoordinatesTemp);
-		View lastView = mGrid.pointToViewEx(x - mCoordinatesTemp[0], y - mCoordinatesTemp[1],nPos);
+		View lastView = mGrid.pointToViewEx(x - mCoordinatesTemp[0], y
+				- mCoordinatesTemp[1], nPos);
 		int nLastPos = -1;
 		if (lastView == null) {
 			nLastPos = mSlideAppsList.size() - 1;
@@ -954,13 +984,18 @@ public class AllApps2D_Slide extends RelativeLayout
 			ApplicationFolderInfo lastSlideInfo = (ApplicationFolderInfo) info;
 
 			if (((ItemInfo) dragInfo).itemType == Applications.APPS_TYPE_FOLDER) {
-				// Drag source is also an application folder, just update their position
-				View mClickView = mAppsAdapter.getView(((ApplicationFolderInfo) dragInfo).position, null, null);
-				mGrid.moveItemToPositionSlide(nPos, nLastPos, ((ApplicationFolderInfo) dragInfo).id, mClickView);
+				// Drag source is also an application folder, just update their
+				// position
+				View mClickView = mAppsAdapter
+						.getView(((ApplicationFolderInfo) dragInfo).position,
+								null, null);
+				mGrid.moveItemToPositionSlide(nPos, nLastPos,
+						((ApplicationFolderInfo) dragInfo).id, mClickView);
 				exchangePos(nPos, nLastPos);
 			} else if (((ItemInfo) dragInfo).itemType == Applications.APPS_TYPE_FOLDERAPP) {
 				// Drag from another application folder
-				// delete the application info from old folder, and insert to new folder
+				// delete the application info from old folder, and insert to
+				// new folder
 				ApplicationInfoEx appInfo = (ApplicationInfoEx) dragInfo;
 				if (lastView == null) {
 					nLastPos++;
@@ -986,7 +1021,8 @@ public class AllApps2D_Slide extends RelativeLayout
 
 					// Add appInfo to new folder
 					appInfo.orderId = lastSlideInfo.getSize();
-					mGrid.moveFolderItemToFolder((ApplicationInfoEx) dragInfo, lastSlideInfo);
+					mGrid.moveFolderItemToFolder((ApplicationInfoEx) dragInfo,
+							lastSlideInfo);
 					lastSlideInfo.add((ApplicationInfoEx) dragInfo);
 
 					View lastFolderView = mGrid.getViewAtIndex(nLastPos);
@@ -999,21 +1035,24 @@ public class AllApps2D_Slide extends RelativeLayout
 				// Drag from all application grid to application folder
 				ApplicationInfoEx appInfo = (ApplicationInfoEx) dragInfo;
 				if (lastView == null) {
-					View mClickView = mAppsAdapter.getView(appInfo.position, null, null);
-					
+					View mClickView = mAppsAdapter.getView(appInfo.position,
+							null, null);
+
 					// Remove appInfo from applications
 					for (int i = nPos + 1; i < mSlideAppsList.size(); i++) {
 						mSlideAppsList.get(i).position--;
 					}
-					
-					mGrid.moveItemToPositionSlide(nPos, nLastPos, appInfo.id, mClickView);
+
+					mGrid.moveItemToPositionSlide(nPos, nLastPos, appInfo.id,
+							mClickView);
 					mSlideAppsList.remove(appInfo);
 					appInfo.position = nLastPos;
 					appInfo.itemType = Applications.APPS_TYPE_APP;
 					mSlideAppsList.add(nLastPos, appInfo);
 				} else {
 					View nextView = null;
-					int index = (mGrid.mCurrentScreen + 1) * mGrid.getPerPageCount();
+					int index = (mGrid.mCurrentScreen + 1)
+							* mGrid.getPerPageCount();
 					if (mAppsAdapter.getCount() > index) {
 						nextView = mAppsAdapter.getView(index, null, null);
 					}
@@ -1026,7 +1065,8 @@ public class AllApps2D_Slide extends RelativeLayout
 						mSlideAppsList.get(i).position--;
 					}
 
-                    mGrid.moveItemToFolderSlide(appInfo, lastSlideInfo.position, lastSlideInfo.id, nextView);
+					mGrid.moveItemToFolderSlide(appInfo,
+							lastSlideInfo.position, lastSlideInfo.id, nextView);
 					mSlideAppsList.remove(appInfo);
 
 					// Add appInfo to folder
@@ -1035,9 +1075,11 @@ public class AllApps2D_Slide extends RelativeLayout
 					View lastFolderView = mGrid.getViewAtIndex(nLastPos);
 					if (lastFolderView != null) {
 						if (nLastPos > nPos) {
-							mAppsAdapter.getView(nLastPos - 1, lastFolderView, null);
+							mAppsAdapter.getView(nLastPos - 1, lastFolderView,
+									null);
 						} else {
-							mAppsAdapter.getView(nLastPos, lastFolderView, null);	
+							mAppsAdapter
+									.getView(nLastPos, lastFolderView, null);
 						}
 					}
 				}
@@ -1053,7 +1095,8 @@ public class AllApps2D_Slide extends RelativeLayout
 				}
 
 				// Add appInfo to applications
-				mGrid.moveFolderItemToPosition(nLastPos, (ApplicationInfoEx) dragInfo);
+				mGrid.moveFolderItemToPosition(nLastPos,
+						(ApplicationInfoEx) dragInfo);
 				for (int i = nLastPos; i < mSlideAppsList.size(); i++) {
 					mSlideAppsList.get(i).position++;
 				}
@@ -1070,8 +1113,10 @@ public class AllApps2D_Slide extends RelativeLayout
 					srcFolderInfo.remove(appInfo);
 				}
 			} else {
-				View mClickView = mAppsAdapter.getView(((ItemInfo) dragInfo).position, null, null);
-				mGrid.moveItemToPositionSlide(nPos, nLastPos, ((ItemInfo) dragInfo).id, mClickView);
+				View mClickView = mAppsAdapter.getView(
+						((ItemInfo) dragInfo).position, null, null);
+				mGrid.moveItemToPositionSlide(nPos, nLastPos,
+						((ItemInfo) dragInfo).id, mClickView);
 				exchangePos(nPos, nLastPos);
 			}
 		}
@@ -1084,9 +1129,11 @@ public class AllApps2D_Slide extends RelativeLayout
 		synchronized (mSlideAppsList) {
 			mGrid.setDragViewIndex(0);
 			if (mCurrentScreen == mGrid.mCurrentScreen) {
-				moveItemCurrentPage(source, x, y, xOffset, yOffset, dragView, dragInfo);
+				moveItemCurrentPage(source, x, y, xOffset, yOffset, dragView,
+						dragInfo);
 			} else {
-				moveItemDifferentPage(source, x, y, xOffset, yOffset, dragView, dragInfo);
+				moveItemDifferentPage(source, x, y, xOffset, yOffset, dragView,
+						dragInfo);
 			}
 		}
 	}
@@ -1118,27 +1165,28 @@ public class AllApps2D_Slide extends RelativeLayout
 		synchronized (mSlideAppsList) {
 			final int[] mCoordinatesTemp = new int[2];
 			mGrid.getLocationOnScreen(mCoordinatesTemp);
-			View lastView = mGrid.pointToView(x - mCoordinatesTemp[0], y - mCoordinatesTemp[1]);
+			View lastView = mGrid.pointToView(x - mCoordinatesTemp[0], y
+					- mCoordinatesTemp[1]);
 			if (lastView == null) {
-				Log.w(TAG, "acceptDrop lastView null! x="+x+", y="+y);
+				Log.w(TAG, "acceptDrop lastView null! x=" + x + ", y=" + y);
 				return false;
-			} 
-			
+			}
+
 			int nLastPos = mGrid.getPositionForView(lastView);
 			ItemInfo info = mSlideAppsList.get(nLastPos);
 			ItemInfo dragItemInfo = (ItemInfo) dragInfo;
-	
-			if(mbLockApps && nLastPos < mLockAppsNum ){
+
+			if (mbLockApps && nLastPos < mLockAppsNum) {
 				return false;
 			}
-			
+
 			if (info.itemType == Applications.APPS_TYPE_FOLDER
-					&& (dragItemInfo.itemType == Applications.APPS_TYPE_APP
-							|| dragItemInfo.itemType == Applications.APPS_TYPE_FOLDERAPP)) {
+					&& (dragItemInfo.itemType == Applications.APPS_TYPE_APP || dragItemInfo.itemType == Applications.APPS_TYPE_FOLDERAPP)) {
 				ApplicationFolderInfo lastSlideInfo = (ApplicationFolderInfo) info;
 				if (lastSlideInfo.getSize() >= 12
 						&& !lastSlideInfo.contents.contains(dragItemInfo)) {
-					Toast.makeText(mLauncher, R.string.folder_is_full, Toast.LENGTH_SHORT).show();
+					Toast.makeText(mLauncher, R.string.folder_is_full,
+							Toast.LENGTH_SHORT).show();
 					return false;
 				}
 				return ((lastView == null) || (dragItemInfo.container != info.id));
@@ -1157,143 +1205,181 @@ public class AllApps2D_Slide extends RelativeLayout
 
 	private void updateAppcationList() {
 		try {
-		synchronized (mSlideAppsList) {
-			mSlideAppsList.clear();
+			synchronized (mSlideAppsList) {
+				mSlideAppsList.clear();
 
-			final String[] selection = new String[]{BaseColumns._ID,
-					BaseLauncherColumns.TITLE,
-					BaseLauncherColumns.INTENT,
-					Applications.CONTAINER,
-					Applications.POSITION,
-					BaseLauncherColumns.ORDERID,
-					BaseLauncherColumns.ITEM_TYPE,
-					Applications.SYSAPP,
-					Applications.PACKAGENAME,
-					Applications.INSTALL,
-					Applications.STARTNUM};
-			final PackageManager pkgManager = mContext.getPackageManager();
+				final String[] selection = new String[] { BaseColumns._ID,
+						BaseLauncherColumns.TITLE, BaseLauncherColumns.INTENT,
+						Applications.CONTAINER, Applications.POSITION,
+						BaseLauncherColumns.ORDERID,
+						BaseLauncherColumns.ITEM_TYPE, Applications.SYSAPP,
+						Applications.PACKAGENAME, Applications.INSTALL,
+						Applications.STARTNUM };
+				final PackageManager pkgManager = mContext.getPackageManager();
 
-			//add none-grouped applications and folders
-			Cursor c = mContentResolver.query(Applications.CONTENT_URI_NO_NOTIFICATION,
-					selection,
-					Applications.CONTAINER + "=?",
-					new String[]{String.valueOf(Applications.CONTAINER_APPS)},
-					Applications.DEFAULT_SORT_ORDER);
-			if (c != null) {
-				Log.d(TAG, "updateAppcationList count=" + c.getCount());
-				final int idIndex = c.getColumnIndexOrThrow(BaseColumns._ID);
-				final int titleIndex = c.getColumnIndexOrThrow(BaseLauncherColumns.TITLE);
-				final int intentIndex = c.getColumnIndexOrThrow(BaseLauncherColumns.INTENT);
-				final int containerIndex = c.getColumnIndexOrThrow(Applications.CONTAINER);
-				final int positionIndex = c.getColumnIndexOrThrow(Applications.POSITION);
-				final int itemTypeIndex = c.getColumnIndexOrThrow(BaseLauncherColumns.ITEM_TYPE);
-				final int sysAppIndex = c.getColumnIndexOrThrow(Applications.SYSAPP);
-				final int pkgNameIndex = c.getColumnIndexOrThrow(Applications.PACKAGENAME);
-				final int installIndex = c.getColumnIndexOrThrow(Applications.INSTALL);
-				final int startNumIndex = c.getColumnIndexOrThrow(Applications.STARTNUM);
+				// add none-grouped applications and folders
+				Cursor c = mContentResolver.query(
+						Applications.CONTENT_URI_NO_NOTIFICATION, selection,
+						Applications.CONTAINER + "=?", new String[] { String
+								.valueOf(Applications.CONTAINER_APPS) },
+						Applications.DEFAULT_SORT_ORDER);
+				if (c != null) {
+					Log.d(TAG, "updateAppcationList count=" + c.getCount());
+					final int idIndex = c
+							.getColumnIndexOrThrow(BaseColumns._ID);
+					final int titleIndex = c
+							.getColumnIndexOrThrow(BaseLauncherColumns.TITLE);
+					final int intentIndex = c
+							.getColumnIndexOrThrow(BaseLauncherColumns.INTENT);
+					final int containerIndex = c
+							.getColumnIndexOrThrow(Applications.CONTAINER);
+					final int positionIndex = c
+							.getColumnIndexOrThrow(Applications.POSITION);
+					final int itemTypeIndex = c
+							.getColumnIndexOrThrow(BaseLauncherColumns.ITEM_TYPE);
+					final int sysAppIndex = c
+							.getColumnIndexOrThrow(Applications.SYSAPP);
+					final int pkgNameIndex = c
+							.getColumnIndexOrThrow(Applications.PACKAGENAME);
+					final int installIndex = c
+							.getColumnIndexOrThrow(Applications.INSTALL);
+					final int startNumIndex = c
+							.getColumnIndexOrThrow(Applications.STARTNUM);
 
-				final String selfPkgName = mContext.getPackageName();
-				while (c.moveToNext()) {
-					String pkgName = c.getString(pkgNameIndex);
-					// Do not display launcher custom theme applications
-					if (pkgName != null
-							&& (pkgName.startsWith(ThemeUtils.THEME_PACKAGE_TOKEN) ||
-									pkgName.equals(selfPkgName))) {
-						continue;
-					}
-					int itemType = c.getInt(itemTypeIndex);
-					ItemInfo item;
-					final String intentEx = c.getString(intentIndex);
-
-					if (itemType == Applications.APPS_TYPE_APP) {
-						item = new ApplicationInfoEx();
-						((ApplicationInfoEx) item).isSysApp = (c.getInt(sysAppIndex) == 1);
-						((ApplicationInfoEx) item).packageName = pkgName;
-						((ApplicationInfoEx) item).installTime = c.getInt(installIndex);
-						((ApplicationInfoEx) item).startNum = c.getInt(startNumIndex);
-					} else {
-						item = new ApplicationFolderInfo();
-						// Folder's name is saved in db
-						((ApplicationFolderInfo) item).title = c.getString(titleIndex);
-					}
-					item.id = c.getInt(idIndex);
-					item.container = c.getInt(containerIndex);
-					item.position = c.getInt(positionIndex);
-					item.itemType = itemType;
-
-					if (item.itemType != Applications.APPS_TYPE_FOLDER) {
-						final String[] intentInfo = intentEx.split("\\|");
-						Intent intent = Utilities.orgnizeAppIconIntent(intentInfo[0], intentInfo[1]);
-						final ResolveInfo resolveInfo = pkgManager.resolveActivity(intent, 0);
-						if(resolveInfo == null ){
-							Log.e(TAG, "updateAppcationList, resolveInfo null! intent="+intent);
-							continue;
-						}else{
-							((ApplicationInfoEx) item).intent = intent;
-							((ApplicationInfoEx) item).iconBitmap = mIconCache.getIcon(((ApplicationInfoEx) item).intent);
-							((ApplicationInfoEx) item).title = resolveInfo.loadLabel(pkgManager);
-						}
-					}
-					mSlideAppsList.add(item);
-				}
-				c.close();
-
-				// add all grouped applications to corresponding folder
-				if (mSlideAppsList.size() > 0) {
-					for (int i = 0; i < mSlideAppsList.size(); i++) {
-						final ItemInfo itemInfo = mSlideAppsList.get(i);
-
-						if (itemInfo.itemType != Applications.APPS_TYPE_FOLDER) {
+					final String selfPkgName = mContext.getPackageName();
+					while (c.moveToNext()) {
+						String pkgName = c.getString(pkgNameIndex);
+						// Do not display launcher custom theme applications
+						if (pkgName != null
+								&& (pkgName
+										.startsWith(ThemeUtils.THEME_PACKAGE_TOKEN) || pkgName
+										.equals(selfPkgName))) {
 							continue;
 						}
-						Cursor subAppCursor = mContentResolver.query(Applications.CONTENT_URI_NO_NOTIFICATION,
-								selection,
-								Applications.CONTAINER + "=?",
-								new String[] { String.valueOf(itemInfo.id) },
-								BaseLauncherColumns.DEFAULT_SORT_ORDER_IN_FOLDER);
-						if (subAppCursor != null) {
-							final int orderIdIndex = subAppCursor.getColumnIndexOrThrow(BaseLauncherColumns.ORDERID);
-							ApplicationFolderInfo folderInfo = (ApplicationFolderInfo) itemInfo;
-							if (folderInfo.contents == null) {
-								folderInfo.contents = new ArrayList<ApplicationInfoEx>();
+						int itemType = c.getInt(itemTypeIndex);
+						ItemInfo item;
+						final String intentEx = c.getString(intentIndex);
+
+						if (itemType == Applications.APPS_TYPE_APP) {
+							item = new ApplicationInfoEx();
+							((ApplicationInfoEx) item).isSysApp = (c
+									.getInt(sysAppIndex) == 1);
+							((ApplicationInfoEx) item).packageName = pkgName;
+							((ApplicationInfoEx) item).installTime = c
+									.getInt(installIndex);
+							((ApplicationInfoEx) item).startNum = c
+									.getInt(startNumIndex);
+						} else {
+							item = new ApplicationFolderInfo();
+							// Folder's name is saved in db
+							((ApplicationFolderInfo) item).title = c
+									.getString(titleIndex);
+						}
+						item.id = c.getInt(idIndex);
+						item.container = c.getInt(containerIndex);
+						item.position = c.getInt(positionIndex);
+						item.itemType = itemType;
+
+						if (item.itemType != Applications.APPS_TYPE_FOLDER) {
+							final String[] intentInfo = intentEx.split("\\|");
+							Intent intent = Utilities.orgnizeAppIconIntent(
+									intentInfo[0], intentInfo[1]);
+							final ResolveInfo resolveInfo = pkgManager
+									.resolveActivity(intent, 0);
+							if (resolveInfo == null) {
+								Log.e(TAG,
+										"updateAppcationList, resolveInfo null! intent="
+												+ intent);
+								continue;
+							} else {
+								((ApplicationInfoEx) item).intent = intent;
+								((ApplicationInfoEx) item).iconBitmap = mIconCache
+										.getIcon(((ApplicationInfoEx) item).intent);
+								((ApplicationInfoEx) item).title = resolveInfo
+										.loadLabel(pkgManager);
 							}
-							while (subAppCursor.moveToNext()) {
-								ApplicationInfoEx subAppInfoEx = new ApplicationInfoEx();
-								final String intentEx = subAppCursor.getString(intentIndex);
+						}
+						mSlideAppsList.add(item);
+					}
+					c.close();
 
-								subAppInfoEx.id = subAppCursor.getInt(idIndex);
-								subAppInfoEx.container = subAppCursor.getInt(containerIndex);
-								subAppInfoEx.position = subAppCursor.getInt(positionIndex);
-								subAppInfoEx.orderId = subAppCursor.getInt(orderIdIndex);
-								subAppInfoEx.itemType = subAppCursor.getInt(itemTypeIndex);
-								subAppInfoEx.isSysApp = (subAppCursor.getInt(sysAppIndex) == 1);
-								subAppInfoEx.packageName = subAppCursor.getString(pkgNameIndex);
-								subAppInfoEx.installTime = subAppCursor.getInt(installIndex);
-								subAppInfoEx.startNum = subAppCursor.getInt(startNumIndex);
+					// add all grouped applications to corresponding folder
+					if (mSlideAppsList.size() > 0) {
+						for (int i = 0; i < mSlideAppsList.size(); i++) {
+							final ItemInfo itemInfo = mSlideAppsList.get(i);
 
-								if (subAppInfoEx.itemType != Applications.APPS_TYPE_FOLDER) {
-									final String[] intentInfo = intentEx.split("\\|");
-									Intent intent = Utilities.orgnizeAppIconIntent(intentInfo[0], intentInfo[1]);
-									final ResolveInfo resolveInfo = pkgManager.resolveActivity(intent, 0);
-									if(resolveInfo == null ){
-										Log.e(TAG, "updateAppcationList, APPS_TYPE_FOLDER, resolveInfo null! intent="+intent);
-										continue;
-									}else{
-										subAppInfoEx.intent = intent;
-										subAppInfoEx.iconBitmap = mIconCache.getIcon(subAppInfoEx.intent);
-										subAppInfoEx.title = resolveInfo.loadLabel(pkgManager);
-									}
+							if (itemInfo.itemType != Applications.APPS_TYPE_FOLDER) {
+								continue;
+							}
+							Cursor subAppCursor = mContentResolver
+									.query(Applications.CONTENT_URI_NO_NOTIFICATION,
+											selection,
+											Applications.CONTAINER + "=?",
+											new String[] { String
+													.valueOf(itemInfo.id) },
+											BaseLauncherColumns.DEFAULT_SORT_ORDER_IN_FOLDER);
+							if (subAppCursor != null) {
+								final int orderIdIndex = subAppCursor
+										.getColumnIndexOrThrow(BaseLauncherColumns.ORDERID);
+								ApplicationFolderInfo folderInfo = (ApplicationFolderInfo) itemInfo;
+								if (folderInfo.contents == null) {
+									folderInfo.contents = new ArrayList<ApplicationInfoEx>();
 								}
-								folderInfo.contents.add(subAppInfoEx);
+								while (subAppCursor.moveToNext()) {
+									ApplicationInfoEx subAppInfoEx = new ApplicationInfoEx();
+									final String intentEx = subAppCursor
+											.getString(intentIndex);
+
+									subAppInfoEx.id = subAppCursor
+											.getInt(idIndex);
+									subAppInfoEx.container = subAppCursor
+											.getInt(containerIndex);
+									subAppInfoEx.position = subAppCursor
+											.getInt(positionIndex);
+									subAppInfoEx.orderId = subAppCursor
+											.getInt(orderIdIndex);
+									subAppInfoEx.itemType = subAppCursor
+											.getInt(itemTypeIndex);
+									subAppInfoEx.isSysApp = (subAppCursor
+											.getInt(sysAppIndex) == 1);
+									subAppInfoEx.packageName = subAppCursor
+											.getString(pkgNameIndex);
+									subAppInfoEx.installTime = subAppCursor
+											.getInt(installIndex);
+									subAppInfoEx.startNum = subAppCursor
+											.getInt(startNumIndex);
+
+									if (subAppInfoEx.itemType != Applications.APPS_TYPE_FOLDER) {
+										final String[] intentInfo = intentEx
+												.split("\\|");
+										Intent intent = Utilities
+												.orgnizeAppIconIntent(
+														intentInfo[0],
+														intentInfo[1]);
+										final ResolveInfo resolveInfo = pkgManager
+												.resolveActivity(intent, 0);
+										if (resolveInfo == null) {
+											Log.e(TAG,
+													"updateAppcationList, APPS_TYPE_FOLDER, resolveInfo null! intent="
+															+ intent);
+											continue;
+										} else {
+											subAppInfoEx.intent = intent;
+											subAppInfoEx.iconBitmap = mIconCache
+													.getIcon(subAppInfoEx.intent);
+											subAppInfoEx.title = resolveInfo
+													.loadLabel(pkgManager);
+										}
+									}
+									folderInfo.contents.add(subAppInfoEx);
+								}
+								subAppCursor.close();
 							}
-							subAppCursor.close();
 						}
 					}
 				}
 			}
-		}
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -1303,8 +1389,8 @@ public class AllApps2D_Slide extends RelativeLayout
 			return false;
 		}
 		try {
-			mLauncher.getPackageManager().getApplicationInfo(
-					packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
+			mLauncher.getPackageManager().getApplicationInfo(packageName,
+					PackageManager.GET_UNINSTALLED_PACKAGES);
 			return true;
 		} catch (NameNotFoundException e) {
 			return false;
@@ -1329,9 +1415,11 @@ public class AllApps2D_Slide extends RelativeLayout
 	public void switchScreenMode(boolean bIsFullScreen, int paddingTop) {
 		// TODO Auto-generated method stub
 		if (bIsFullScreen) {
-			setPadding(getPaddingLeft(), getPaddingTop() + paddingTop, getPaddingRight(), getPaddingBottom());
+			setPadding(getPaddingLeft(), getPaddingTop() + paddingTop,
+					getPaddingRight(), getPaddingBottom());
 		} else {
-			setPadding(getPaddingLeft(), getPaddingTop() - paddingTop, getPaddingRight(), getPaddingBottom());
+			setPadding(getPaddingLeft(), getPaddingTop() - paddingTop,
+					getPaddingRight(), getPaddingBottom());
 		}
 	}
 
@@ -1358,10 +1446,10 @@ public class AllApps2D_Slide extends RelativeLayout
 		// TODO Auto-generated method stub
 		ThemeManager themeMgr = ThemeManager.getInstance();
 		int color = themeMgr.loadColor("allapp_background");
-		if(color >= 0){
+		if (color >= 0) {
 			setBackgroundColor(color);
 		}
-		
+
 		updateAllData();
-	}	
+	}
 }

@@ -30,27 +30,29 @@ import java.util.ArrayList;
  */
 public class ApplicationsAdapter extends ArrayAdapter<ApplicationInfoEx> {
 
-    private final LayoutInflater mInflater;
+	private final LayoutInflater mInflater;
 
-    public ApplicationsAdapter(Context context, ArrayList<ApplicationInfoEx> apps) {
-        super(context, 0, apps);
-        mInflater = LayoutInflater.from(context);
-    }
+	public ApplicationsAdapter(Context context,
+			ArrayList<ApplicationInfoEx> apps) {
+		super(context, 0, apps);
+		mInflater = LayoutInflater.from(context);
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final ApplicationInfoEx info = getItem(position);
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		final ApplicationInfoEx info = getItem(position);
 
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.application_boxed, parent, false);
-            convertView.setFocusable(false);
-        }
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.application_boxed, parent,
+					false);
+			convertView.setFocusable(false);
+		}
 
-        final TextView textView = (TextView) convertView;
-        textView.setCompoundDrawablesWithIntrinsicBounds(null,
-                new FastBitmapDrawable(info.iconBitmap), null, null);
-        textView.setText(info.title);
+		final TextView textView = (TextView) convertView;
+		textView.setCompoundDrawablesWithIntrinsicBounds(null,
+				new FastBitmapDrawable(info.iconBitmap), null, null);
+		textView.setText(info.title);
 
-        return convertView;
-    }
+		return convertView;
+	}
 }

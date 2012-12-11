@@ -22,19 +22,19 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 
 /**
- * Specific {@link AppWidgetHost} that creates our {@link LauncherAppWidgetHostView}
- * which correctly captures all long-press events. This ensures that users can
- * always pick up and move widgets.
+ * Specific {@link AppWidgetHost} that creates our
+ * {@link LauncherAppWidgetHostView} which correctly captures all long-press
+ * events. This ensures that users can always pick up and move widgets.
  */
 public class LauncherAppWidgetHost extends AppWidgetHost {
 
-    public LauncherAppWidgetHost(Context context, int hostId) {
-        super(context, hostId);
-    }
+	public LauncherAppWidgetHost(Context context, int hostId) {
+		super(context, hostId);
+	}
 
-    @Override
-    protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
-            AppWidgetProviderInfo appWidget) {
-        return new LauncherAppWidgetHostView(context);
-    }
+	@Override
+	protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
+			AppWidgetProviderInfo appWidget) {
+		return new LauncherAppWidgetHostView(context);
+	}
 }
