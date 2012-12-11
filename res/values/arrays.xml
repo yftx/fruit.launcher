@@ -8,7 +8,7 @@
         <item>Stack</item>
         <item>Windmill</item>
         <item>Cube</item>
-<!--         <item>Tornado</item> -->
+        <!-- <item>Tornado</item> -->
     </string-array>
     <string-array name="settings_screen_switcheffects_values">
         <item>0</item>
@@ -17,7 +17,7 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
-<!--         <item>6</item> -->
+        <!-- <item>6</item> -->
     </string-array>
 
 </resources>

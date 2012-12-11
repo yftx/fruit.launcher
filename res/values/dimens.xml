@@ -30,7 +30,7 @@
     <dimen name="dock_bar_bottom_padding">2.0dip</dimen>
     <dimen name="dock_bar_left_padding">2.0dip</dimen>
     <dimen name="dock_bar_right_padding">2.0dip</dimen>
-    
+
     <!-- Area of workspace -->
     <!-- height of top padding -->
     <dimen name="workspace_cell_top_padding">4.0dip</dimen>
@@ -80,16 +80,13 @@
     <dimen name="thumbnail_width_padding_end">4.0dip</dimen>
     <dimen name="thumbnail_height_padding_start">12.0dip</dimen>
     <dimen name="thumbnail_height_padding_end">11.0dip</dimen>
-
     <dimen name="thumbnail_width">100.0dip</dimen>
     <dimen name="thumbnail_height">140.0dip</dimen>
-    
     <dimen name="thumbnail_padding">2.0dip</dimen>
-    
     <dimen name="thumbnail_bg_padding">6.0dip</dimen>
     <dimen name="thumbnail_delete_padding">4.0dip</dimen>
-    <dimen name="thumbnail_home_padding">5.0dip</dimen>    
-    
+    <dimen name="thumbnail_home_padding">5.0dip</dimen>
+
     <!-- top padding of buttons in new folder dialog -->
     <dimen name="folder_button_top_padding">8.0dip</dimen>
 

@@ -17,7 +17,6 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.fruit.launcher" >
 
-
     <appwidget
         launcher:className="com.android.protips.ProtipWidget"
         launcher:packageName="com.android.protips"
@@ -155,7 +154,7 @@
         launcher:y="1" />
 
     <!-- row No. 3 -->
-    
+
     <favorite
         launcher:className="com.android.music.MusicBrowserActivity"
         launcher:container="-100"
@@ -165,7 +164,6 @@
         launcher:spanY="1"
         launcher:x="2"
         launcher:y="2" />
-
 
     <!-- row No. 4 -->
 

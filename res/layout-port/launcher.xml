@@ -35,7 +35,7 @@
             <com.fruit.launcher.ScreenIndicator
                 android:id="@+id/screenIndicator"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/screen_indicator_height"                
+                android:layout_height="@dimen/screen_indicator_height"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="@dimen/dock_bar_height" />

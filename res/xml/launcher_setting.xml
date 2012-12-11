@@ -27,9 +27,9 @@
 		android:title="@string/settings_lockscreen"
 		android:key="settings_key_lockscreen"
 		android:defaultValue="false"
-		android:summary="@string/settings_lockscreen_summary" />
+		android:summary="@string/settings_lockscreen_summary" />
     -->
-
+
     <Preference
         android:key="settings_key_about"
         android:summary="@string/current_desk_version"

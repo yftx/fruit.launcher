@@ -29,7 +29,6 @@
         launcher:topClassName="com.android.mms.ui.ConversationList"
         launcher:topOrder="2"
         launcher:topPackageName="com.android.mms" />
-
     <app
         launcher:topClassName="com.android.soundrecorder.SoundRecorder"
         launcher:topOrder="4"
@@ -46,7 +45,6 @@
         launcher:topClassName="com.mediatek.FMRadio.FMRadioActivity"
         launcher:topOrder="7"
         launcher:topPackageName="com.mediatek.FMRadio" />
-
     <app
         launcher:topClassName="com.android.calendar.LaunchActivity"
         launcher:topOrder="9"
