@@ -121,12 +121,6 @@ public class DragController {
 	private DropTarget mLastDropTarget;
 
 	private InputMethodManager mInputMethodManager;
-	/* 2012-5-9 modified for FourLeafsWidget start */
-	private float mMotionMoveX;
-	private float mMotionMoveY;
-	public SettingView mSettingView = null;
-
-	/* 2012-5-9 modified for FourLeafsWidget end */
 
 	/**
 	 * Interface to receive notifications when a drag starts or stops
@@ -451,18 +445,6 @@ public class DragController {
 			// like it goes off screen a little, intead of bumping up against
 			// the edge.
 			mDragView.move((int) ev.getRawX(), (int) ev.getRawY());
-			/* 2012-5-10 add for FourLeafsWidget start */
-			mMotionMoveX = ev.getX();
-			mMotionMoveY = ev.getY();
-			if (mSettingView != null) {
-				boolean isDismiss = mSettingView.distance(mMotionDownX,
-						mMotionDownY, mMotionMoveX, mMotionMoveY);
-				if (isDismiss) {
-					mSettingView.dismiss();
-					mSettingView = null;
-				}
-			}
-			/* 2012-5-10 add for FourLeafsWidget end */
 
 			// Drop on someone?
 			final int[] coordinates = mCoordinatesTemp;

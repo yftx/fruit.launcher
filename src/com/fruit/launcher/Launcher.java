@@ -46,6 +46,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.Process;
@@ -263,10 +264,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private int mPaddingTop = -1;
 
 	private Context mCtx;
-	/* 2012-5-10 add for FourLeafsWidget start */
-	private SettingView mSettingView;
-
-	/* 2012-5-10 add for FourLeafsWidget end */
 
 	private LauncherMonitor mPhoneMonitor;
 	private LauncherMonitor mMssMonitor;
@@ -292,7 +289,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		registerContentObservers();
 
 		if (PROFILE_STARTUP) {
-			android.os.Debug.startMethodTracing("/sdcard/launcher");
+			android.os.Debug.startMethodTracing(Environment.getExternalStorageDirectory().getPath()+"/launcher");
 		}
 
 		// Initialize setting values
@@ -2476,61 +2473,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				}
 			}
 		}
-		/* 2012-5-10 modified for FourLeafsWidet start */
-		// if (cellInfo.cell instanceof LauncherAppWidgetHostView) {
-		// showSettingPopUpWindow((LauncherAppWidgetHostView)
-		// cellInfo.cell,cellInfo);
-		// }
-		/* 2012-5-10 modified for FourLeafsWidget end */
 		return true;
 	}
-
-	/* 2012-5-10 modified for FourLeafsWidget start */
-	// private void showSettingPopUpWindow(LauncherAppWidgetHostView view,
-	// CellLayout.CellInfo cellInfo) {
-	// AppWidgetProviderInfo widgetInfo = view.getAppWidgetInfo();
-	// String pkgName = widgetInfo.provider.getPackageName();
-	// String clsName = widgetInfo.provider.getClassName();
-	//
-	// String[] LEAFS_BUTTON_TAG = new String[] {"leaf1", "leaf2",
-	// "leaf3","leaf4" };
-	// float touchedX = view.mTouchX;
-	// float touchedY = view.mTouchY;
-	// int leafIndex = -1;
-	// int[] viewPosition = new int[2];
-	// view.getLocationInWindow(viewPosition);
-	//
-	// for (int i = 0; i < 4; i++) {
-	// ImageButton leafButton =
-	// (ImageButton)view.findViewWithTag(LEAFS_BUTTON_TAG[i]);
-	// int[] leafPosition = new int[2];
-	// leafButton.getLocationInWindow(leafPosition);
-	// float dirX = touchedX - leafPosition[0] + viewPosition[0];
-	// float dirY = touchedY - leafPosition[1] + viewPosition[1];
-	// Rect leafRect = new Rect();
-	// leafButton.getDrawingRect(leafRect);
-	//
-	// Boolean leafFlag = leafRect.contains((int) dirX, (int) dirY);
-	// if (leafFlag == true) {
-	// leafIndex = i;
-	// break;
-	// }
-	// }
-	//
-	// if (leafIndex == -1) {
-	// return;
-	// }
-	//
-	// LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
-	// CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
-	//
-	// mSettingView = new SettingView(this, mWorkspace, leafIndex, info, view,
-	// layout);
-	// mSettingView.show((int)touchedX+viewPosition[0],
-	// (int)touchedY+viewPosition[1]);
-	// mDragController.mSettingView = mSettingView;
-	// }
-	/* 2012-5-10 modified for FourLeafsWidget end */
 
 	@SuppressWarnings({ "unchecked" })
 	private void dismissPreview(final View v) {
