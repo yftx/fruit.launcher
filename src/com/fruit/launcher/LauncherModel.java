@@ -16,6 +16,7 @@
 
 package com.fruit.launcher;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
@@ -2265,6 +2266,7 @@ public class LauncherModel extends BroadcastReceiver {
 		}
 	}
 
+	@SuppressLint("NewApi")
 	void updateSavedIcon(Context context, ShortcutInfo info, Cursor c,
 			int iconIndex) {
 		// If this icon doesn't have a custom icon, check to see
