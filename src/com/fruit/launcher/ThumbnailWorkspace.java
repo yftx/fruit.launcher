@@ -71,26 +71,27 @@ public class ThumbnailWorkspace extends ViewGroup {
 		initWorkspace(context);
 	}
 
-	private void setFocusScreen(int pos) {
+	private void setFocusScreen(int pageIndex) {
 		// first scoll screen
 		// then set the screen
-
-		Log.d(TAG, "setFocusScreen,pos=" + pos);
+		int childIndex = mWorkspace.getChildIndexByPageIndex(pageIndex);
+		
+		Log.d(TAG, "setFocusScreen,childIndex="+childIndex+",pageIndex=" + pageIndex);
 
 		int currPos = getWorkspaceFocusIndex();
 
-		if (pos < currPos) {
+		if (pageIndex < currPos) {
 			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-			mWorkspace.changChildWhenScrollLeft(currPos - pos);
-		} else if (pos > currPos) {
+			mWorkspace.changChildWhenScrollLeft(currPos - pageIndex);
+		} else if (pageIndex > currPos) {
 			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-			mWorkspace.changChildWhenScrollRight(pos - currPos);
+			mWorkspace.changChildWhenScrollRight(pageIndex - currPos);
 		}
 
 		// pos = SettingUtils.mFixedScreenIndex; //yfzhao
 		// int index = getIndexByPos(pos);
 		// mWorkspace.getCurrentScreen() = SettingUtils.mHomeScreenIndex;//pos;
-		// Launcher.setScreen(index);
+		Launcher.setScreen(childIndex);
 		// mWorkspace.snapToScreen(index);
 		mWorkspace.moveToScreen(mWorkspace.getCurrentScreen());
 		// mWorkspace.setmTouchDirection(0);
@@ -147,7 +148,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 				// TODO Auto-generated method stub
 				// int count = mWorkspace.getChildCount();
 				// int childIndex = 0; //first one
-				int childIndex = mWorkspace.getChildIndexByPageIndex(0); // insert
+				int childIndex = mWorkspace.getChildIndexByPageIndex(getChildCount()-1)+1; // insert
 																			// before
 																			// first
 																			// thumb(first
@@ -158,7 +159,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 				// final int newScreenIndex = mWorkspace.getChildCount() - 1;
 				CellLayout child = (CellLayout) mWorkspace
 						.getChildAt(childIndex);
-				child.setPageIndex(mWorkspace.getChildCount() - 1);
+//				child.setPageIndex(mWorkspace.getChildCount() - 1);
 				View newScreenThumb = generateThumbView(child,
 						child.getPageIndex(), childIndex);
 
@@ -317,9 +318,10 @@ public class ThumbnailWorkspace extends ViewGroup {
 		// TODO Auto-generated method stub
 		final int deleteScreenIndex = mDeleteScreenIndex;
 
-		mWorkspace.removeScreenAt(
-				mWorkspace.getChildIndexByPageIndex(deleteScreenIndex),
-				deleteScreenIndex);
+//		mWorkspace.removeScreenAt(
+//				mWorkspace.getChildIndexByPageIndex(deleteScreenIndex),
+//				deleteScreenIndex);
+		mWorkspace.removeScreenAt(deleteScreenIndex);
 		removeViewAt(deleteScreenIndex);
 
 		if (deleteScreenIndex == mCurSelectedScreenIndex) {
@@ -366,7 +368,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 
 		Log.d(TAG, "show,shown=" + shown + ",animate=" + animate);
 
-		mWorkspace.printChildCount();
+		//mWorkspace.printChildCount();
 
 		mIsVisible = shown;
 		if (mIsVisible) {

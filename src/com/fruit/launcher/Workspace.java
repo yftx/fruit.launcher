@@ -496,8 +496,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mCurrentScreen = Math.max(0,
 				Math.min(currentScreen, getChildCount() - 1));
 		CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
+		// mScreenIndicator.setCurrentScreen(mCurrentScreen);		
 		mScreenIndicator.setCurrentScreen(next.getPageIndex());
-		// mScreenIndicator.setCurrentScreen(mCurrentScreen);
 		scrollTo(mCurrentScreen * getWidth(), 0);
 		updateWallpaperOffset();
 		invalidate();
@@ -4573,6 +4573,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			return;
 		}
 		// 1. delete items in deleted screen
+		// this shouldn't be executed since screen with child cannot be deleted
 		for (int i = 0; i < cell.getChildCount(); i++) {
 			View child = cell.getChildAt(i);
 			ItemInfo item = (ItemInfo) child.getTag();
@@ -4668,27 +4669,75 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
-	public void removeScreenAt(int screenIndex, int deleteIndex) {
-		CellLayout layout = (CellLayout) getChildAt(mCurrentScreen);
-		int pageIndex = layout.getPageIndex();
+//	public void removeScreenAt(int childIndex, int deleteIndex) {
+//		CellLayout layout = (CellLayout) getChildAt(mCurrentScreen);
+//		int pageIndex = layout.getPageIndex();
+//
+//		// Process items in database
+//		processItemsInScreen(childIndex);
+//
+//		// Remove cell layout from workspace
+//		super.removeViewAt(childIndex);
+//
+//		// Refresh screen indicator
+//		mScreenIndicator.setScreenCount(getChildCount());
+//
+//		// When current screen be deleted, set new current screen to the first
+//		// screen
+//
+//		if (deleteIndex == pageIndex) {
+//			mCurrentScreen = 0;
+//			snapToScreen(mCurrentScreen);
+//			// moveToScreen(mCurrentScreen);
+//		} else if (deleteIndex < pageIndex) {
+//			// When deleted screen is before current screen
+//			// current screen need to minus 1
+//			mCurrentScreen--;
+//		}
+//
+//		// When deleted screen is before the home screen
+//		// Home screen need to minus 1
+//		if (deleteIndex < mDefaultScreen) {
+//			mDefaultScreen--;
+//		}
+//		mScreenCount--;
+//
+//		updatePageIndex(deleteIndex, mScreenCount, childIndex);
+//
+//		this.printChildCount();
+//
+//		// Update shared preferences
+//		SettingUtils.mScreenCount = mScreenCount;
+//		SettingUtils.mHomeScreenIndex = mDefaultScreen;
+//		SettingUtils.saveScreenSettings(mLauncher);
+//
+//		notifyScreenState();
+//	}
 
+    public void removeScreenAt(int screenIndex) {
+    	int childIndex = this.getChildIndexByPageIndex(screenIndex);
 		// Process items in database
-		processItemsInScreen(screenIndex);
+    	processItemsInScreen(childIndex);
 
 		// Remove cell layout from workspace
-		super.removeViewAt(screenIndex);
+		super.removeViewAt(childIndex);
 
 		// Refresh screen indicator
 		mScreenIndicator.setScreenCount(getChildCount());
 
-		// When current screen be deleted, set new current screen to the first
-		// screen
-
-		if (deleteIndex == pageIndex) {
-			mCurrentScreen = 0;
-			snapToScreen(mCurrentScreen);
-			// moveToScreen(mCurrentScreen);
-		} else if (deleteIndex < pageIndex) {
+		//update pageIndex 
+		for(int i=screenIndex;i<getChildCount();i++){
+			CellLayout child = (CellLayout)getChildAt(getChildIndexByPageIndex(i+1));
+			child.setPageIndex(i);
+		}
+		//update db
+		exchangeDatabase(screenIndex, getChildCount());
+		
+		// When current screen be deleted, set new current screen to the first screen
+		if (childIndex == mCurrentScreen) {
+			mCurrentScreen = getChildIndexByPageIndex(0);
+			//snapToScreen(mCurrentScreen);
+		} else if (childIndex < mCurrentScreen) {
 			// When deleted screen is before current screen
 			// current screen need to minus 1
 			mCurrentScreen--;
@@ -4696,67 +4745,89 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		// When deleted screen is before the home screen
 		// Home screen need to minus 1
-		if (deleteIndex < mDefaultScreen) {
+		if (screenIndex < mDefaultScreen) {
 			mDefaultScreen--;
 		}
 		mScreenCount--;
 
-		updatePageIndex(deleteIndex, mScreenCount, screenIndex);
-
-		this.printChildCount();
-
+		assert(mScreenCount==getChildCount());
+		
 		// Update shared preferences
 		SettingUtils.mScreenCount = mScreenCount;
 		SettingUtils.mHomeScreenIndex = mDefaultScreen;
 		SettingUtils.saveScreenSettings(mLauncher);
-
+		
 		notifyScreenState();
-	}
-
+    }
+    
 	public void exchangeScreen(int fromPos, int toPos) {
 		int fromChildIndex = getChildIndexByPageIndex(fromPos);
 		int toChildIndex = getChildIndexByPageIndex(toPos);
-
-		if (fromPos > toPos) {
+		
+		Log.d(TAG,"fromPos="+fromPos+",toPos="+toPos+",fromChildIndex="+fromChildIndex+",toChildIndex="+toChildIndex);
+		
+		if (fromPos > toPos) { //move back
 			for (int i = toPos; i < fromPos; i++) {
 				CellLayout layout = (CellLayout) getChildAt(this
 						.getChildIndexByPageIndex(i));
 				layout.setPageIndex(i + 1);
+				//update db //maybe no need
 			}
-		} else if (fromPos < toPos) {
+		} else if (fromPos < toPos) { //move forward
 			for (int i = fromPos + 1; i <= toPos; i++) {
 				CellLayout layout = (CellLayout) getChildAt(this
 						.getChildIndexByPageIndex(i));
 				layout.setPageIndex(i - 1);
+				//update db //maybe no need
 			}
 		}
 
 		View child = getChildAt(fromChildIndex);
 		((CellLayout) child).setPageIndex(toPos);
-
+		//update db //maybe no need
+		
 		this.printChildCount();
 
 		removeViewAt(fromChildIndex);
 		addView(child, toChildIndex);
+		//sort workspace childs
+//		if (fromPos > toPos) { //move back
+//			changChildWhenScrollLeft(fromPos-toPos);
+//		} else if (fromPos < toPos) { //move forward
+//			changChildWhenScrollRight(toPos-fromPos);
+//		}
 
 		this.printChildCount();
 
+		//update db //update here
 		updateDatabaseAfterExchange(fromPos, toPos, child);
 
-		int newHomeIndex = mDefaultScreen;
-		if (mDefaultScreen == fromPos) {
-			newHomeIndex = toPos;
-		} else if (mDefaultScreen > fromPos && mDefaultScreen <= toPos) {
-			newHomeIndex -= 1;
-		} else if (mDefaultScreen >= toPos && mDefaultScreen < fromPos) {
-			newHomeIndex += 1;
-		}
-		if (newHomeIndex != mDefaultScreen) {
-			mDefaultScreen = newHomeIndex;
-			SettingUtils.mScreenCount = mScreenCount;
-			SettingUtils.mHomeScreenIndex = mDefaultScreen;
-			SettingUtils.saveScreenSettings(mLauncher);
-		}
+		// 3. Process current screen and home screen
+		// int currentpageIndex =
+		// ((CellLayout)this.getChildAt(mCurrentScreen)).getPageIndex();
+		// if (currentpageIndex == fromPos) {
+		// mCurrentScreen = toPos;
+		// } else if (mCurrentScreen > fromPos && mCurrentScreen <= toPos) {
+		// mCurrentScreen -= 1;
+		// } else if (mCurrentScreen >= toPos && mCurrentScreen < fromPos) {
+		// mCurrentScreen += 1;
+		// }
+		// snapToScreen(mCurrentScreen);
+		
+//		int newHomeIndex = mDefaultScreen;
+//		if (mDefaultScreen == fromPos) {
+//			newHomeIndex = toPos;
+//		} else if (mDefaultScreen > fromPos && mDefaultScreen <= toPos) {
+//			newHomeIndex -= 1;
+//		} else if (mDefaultScreen >= toPos && mDefaultScreen < fromPos) {
+//			newHomeIndex += 1;
+//		}
+//		if (newHomeIndex != mDefaultScreen) {
+//			mDefaultScreen = newHomeIndex;
+//			SettingUtils.mScreenCount = mScreenCount;
+//			SettingUtils.mHomeScreenIndex = mDefaultScreen;
+//			SettingUtils.saveScreenSettings(mLauncher);
+//		}
 
 		this.printChildCount();
 	}
@@ -4767,12 +4838,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	 * @param child
 	 */
 	private void updateDatabaseAfterExchange(int fromPos, int toPos, View child) {
-		final ContentResolver cr = mLauncher.getContentResolver();
-		// 1. Process screens' index between fromPos to toPos
-		final Uri uri = (toPos > fromPos) ? LauncherProvider.CONTENT_MOVE_FORWARD_SCREEN_URI
-				: LauncherProvider.CONTENT_MOVE_BACKWARD_SCREEN_URI;
-		cr.update(uri, null, null, new String[] { String.valueOf(fromPos),
-				String.valueOf(toPos) });
+		final ContentResolver cr = exchangeDatabase(fromPos, toPos);
 
 		// 2. Process current screen's index
 		CellLayout cell = (CellLayout) child;
@@ -4796,17 +4862,22 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		cr.update(Favorites.CONTENT_URI_NO_NOTIFICATION, values,
 				where.toString(), null);
-		// 3. Process current screen and home screen
-		// int currentpageIndex =
-		// ((CellLayout)this.getChildAt(mCurrentScreen)).getPageIndex();
-		// if (currentpageIndex == fromPos) {
-		// mCurrentScreen = toPos;
-		// } else if (mCurrentScreen > fromPos && mCurrentScreen <= toPos) {
-		// mCurrentScreen -= 1;
-		// } else if (mCurrentScreen >= toPos && mCurrentScreen < fromPos) {
-		// mCurrentScreen += 1;
-		// }
-		snapToScreen(mCurrentScreen);
+		
+	}
+
+	/**
+	 * @param fromPos
+	 * @param toPos
+	 * @return
+	 */
+	private ContentResolver exchangeDatabase(int fromPos, int toPos) {
+		final ContentResolver cr = mLauncher.getContentResolver();
+		// 1. Process screens' index between fromPos to toPos
+		final Uri uri = (toPos > fromPos) ? LauncherProvider.CONTENT_MOVE_FORWARD_SCREEN_URI
+				: LauncherProvider.CONTENT_MOVE_BACKWARD_SCREEN_URI;
+		cr.update(uri, null, null, new String[] { String.valueOf(fromPos),
+				String.valueOf(toPos) });
+		return cr;
 	}
 
 	public void exchangeTheCell(int index, int fromPos, int toPos,
@@ -4925,8 +4996,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		// updatePageIndex();
 		((CellLayout) cellLayout).setPageIndex(mScreenCount - 1);
-
-		printChildCount();
+		
+		if ((pos + 1) != (getChildCount() - 1)){
+			mCurrentScreen++;
+		}
+		
+		//printChildCount();
 		// Update shared preferences
 		SettingUtils.mScreenCount = mScreenCount;
 		SettingUtils.saveScreenSettings(mLauncher);
