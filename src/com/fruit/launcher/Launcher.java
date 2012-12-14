@@ -745,6 +745,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		if (keyCode == KeyEvent.KEYCODE_BACK && mThumbnailWorkspace.isVisible()) {
+			int currPageIndex = ((CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentScreen())).getPageIndex();
+            mThumbnailWorkspace.setmCurSelectedScreenIndex(currPageIndex);
 			closeThumbnailWorkspace(true);
 			return true;
 		}
@@ -1889,6 +1891,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			switch (event.getKeyCode()) {
 			case KeyEvent.KEYCODE_HOME:
 				if (mThumbnailWorkspace.isVisible()) {
+		            mThumbnailWorkspace.setmCurSelectedScreenIndex(mWorkspace.getDefaultScreen());
 					closeThumbnailWorkspace(true);
 					return true;
 				}
