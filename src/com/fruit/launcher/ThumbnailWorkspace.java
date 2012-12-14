@@ -148,24 +148,25 @@ public class ThumbnailWorkspace extends ViewGroup {
 				// TODO Auto-generated method stub
 				// int count = mWorkspace.getChildCount();
 				// int childIndex = 0; //first one
-				int childIndex = mWorkspace.getChildIndexByPageIndex(getChildCount()-1)+1; // insert
+				int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.getChildCount()-1)+1; // insert
 																			// before
 																			// first
 																			// thumb(first
 																			// showed
-																			// page)
+				//workspace - add															// page)
 				mWorkspace.addNewScreen(childIndex);
 
 				// final int newScreenIndex = mWorkspace.getChildCount() - 1;
 				CellLayout child = (CellLayout) mWorkspace
 						.getChildAt(childIndex);
-//				child.setPageIndex(mWorkspace.getChildCount() - 1);
+
 				View newScreenThumb = generateThumbView(child,
 						child.getPageIndex(), childIndex);
 
 				Log.d(TAG, "add,pageIndex=" + child.getPageIndex()
 						+ ",childIndex" + childIndex);
 
+				//thumb view - add
 				if (mWorkspace.getChildCount() == MAX_COUNT) {
 					mReachMax = true;
 					removeView(mAddScreen);
@@ -174,6 +175,9 @@ public class ThumbnailWorkspace extends ViewGroup {
 					addView(newScreenThumb,
 							(ThumbnailWorkspace.this.getChildCount() - 1));
 				}
+				
+				//print
+				//mWorkspace.printChildCount();
 			}
 		};
 
@@ -267,6 +271,9 @@ public class ThumbnailWorkspace extends ViewGroup {
 
 						mWorkspace.setDefaultScreen(newHomeIndex);
 					}
+					
+					//print
+					//mWorkspace.printChildCount();
 				}
 			};
 		}
@@ -343,6 +350,9 @@ public class ThumbnailWorkspace extends ViewGroup {
 			mReachMax = false;
 			addView(mAddScreen);
 		}
+		
+		//print
+		//mWorkspace.printChildCount();
 	}
 
 	public void setLauncher(Launcher launcher) {
@@ -747,8 +757,8 @@ public class ThumbnailWorkspace extends ViewGroup {
 		if (mDragView != null) {
 			if (mDragInitPos != mToPos) {
 				mWorkspace.exchangeScreen(mDragInitPos, mToPos);
-				mCurSelectedScreenIndex = mToPos;
-				setFocusScreen(mCurSelectedScreenIndex);
+//				mCurSelectedScreenIndex = mToPos;
+//				setFocusScreen(mCurSelectedScreenIndex);
 			}
 			removeViewAt(getChildCount() - 1);
 			addView(mDragView, mToPos);
@@ -774,4 +784,5 @@ public class ThumbnailWorkspace extends ViewGroup {
 	public void setmCurSelectedScreenIndex(int mCurSelectedScreenIndex) {
 		this.mCurSelectedScreenIndex = mCurSelectedScreenIndex;
 	}
+
 }
