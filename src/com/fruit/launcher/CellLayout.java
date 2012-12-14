@@ -1921,4 +1921,13 @@ public class CellLayout extends ViewGroup {
 	public void setPageIndex(int pageIndex) {
 		this.pageIndex = pageIndex;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return ("Childs="+getChildCount()+",pageIndex="+getPageIndex());
+	}
 }
