@@ -1705,7 +1705,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				final float scrolledPos = (float) mScrollX / screenWidth;
 				// int newScreen = -1;
 
-				if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0) {
+				if (velocityX > SNAP_VELOCITY && mCurrentScreen >= 0) {
 					// Fling hard enough to move left.
 					// Don't fling across more than one screen at a time.
 					// if (mCurrentScreen == 0) {
@@ -1725,7 +1725,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 					snapToScreen(newScreen, velocityX, false);
 					// }
 				} else if (velocityX < -SNAP_VELOCITY
-						&& mCurrentScreen < getChildCount() - 1) {
+						&& mCurrentScreen < getChildCount()) {
 					// Fling hard enough to move right
 					// Don't fling across more than one screen at a time.
 					final int bound = scrolledPos > whichScreen ? mCurrentScreen + 1
