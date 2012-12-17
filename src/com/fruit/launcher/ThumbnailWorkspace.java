@@ -86,12 +86,14 @@ public class ThumbnailWorkspace extends ViewGroup {
 		} else if (pageIndex > currPos) {
 			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
 			mWorkspace.changChildWhenScrollRight(pageIndex - currPos);
+		} else {
+			//do nothing
 		}
 
 		// pos = SettingUtils.mFixedScreenIndex; //yfzhao
 		// int index = getIndexByPos(pos);
 		// mWorkspace.getCurrentScreen() = SettingUtils.mHomeScreenIndex;//pos;
-		Launcher.setScreen(childIndex);
+		Launcher.setScreen(mWorkspace.getCurrentScreen());
 		// mWorkspace.snapToScreen(index);
 		mWorkspace.moveToScreen(mWorkspace.getCurrentScreen());
 		// mWorkspace.setmTouchDirection(0);

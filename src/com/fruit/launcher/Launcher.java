@@ -1350,9 +1350,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			if (!mWorkspace.isDefaultScreenShowing()) {
 				mWorkspace
 						.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
-				// CellLayout next =
-				// (CellLayout)mWorkspace.getChildAt(mWorkspace.getChildIndexByPos(mWorkspace.getDefaultScreen())/*mWorkspace.getCurrentScreen()*/);
-				// mScreenIndicator.setCurrentScreen(next.getPageIndex());
+				 CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
+				 mScreenIndicator.setCurrentScreen(next.getPageIndex());
 				// mScreenIndicator.setCurrentScreen(mWorkspace.getCurrentScreen());
 			}
 			closeAllApps(alreadyOnHome && allAppsVisible);
