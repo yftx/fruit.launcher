@@ -32,15 +32,15 @@ public class CueNumber {
 			+ "launchFlags=0x10200000;"
 			+ "component=com.android.contacts/.DialtactsActivity" + ";end";
 
-	public void drawCueNumber(Canvas canvas, Paint mPaint, int w,
+	public void drawCueNumber(Canvas canvas, Paint mPaint, int w, int h,
 			Bitmap mCueBitmap) {
 		final Paint paint = mPaint;
 		final Bitmap cueIcon = mCueBitmap;
 		final String cueText = mCueNum;
 
 		if (cueText != null && cueIcon != null) {
-			int top = 0;
-			int left = w - cueIcon.getWidth();
+			int top = h - cueIcon.getHeight()*15/8;
+			int left = w - cueIcon.getWidth()*11/8;
 			float textWidth = paint.measureText(cueText);
 
 			canvas.drawBitmap(cueIcon, left, top, null);

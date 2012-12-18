@@ -62,7 +62,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 		super.draw(canvas);
 
 		if (mCueNumber.mbNumber) {
-			mCueNumber.drawCueNumber(canvas, mPaint, this.getWidth(),
+			mCueNumber.drawCueNumber(canvas, mPaint, this.getWidth(), this.getHeight(),
 					mCueBitmap);
 		}
 	}
