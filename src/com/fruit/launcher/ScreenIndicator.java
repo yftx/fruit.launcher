@@ -40,7 +40,7 @@ public class ScreenIndicator extends ViewGroup {
 		setFocusable(false);
 		setWillNotDraw(false);
 
-		mDotSeparate = 0;
+		mDotSeparate = 10;
 		mThemeMgr = ThemeManager.getInstance();
 	}
 
