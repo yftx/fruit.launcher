@@ -1340,6 +1340,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		if (Intent.ACTION_MAIN.equals(intent.getAction())) {
 			// also will cancel mWaitingForResult.
 			if (mThumbnailWorkspace.isVisible()) {
+				mThumbnailWorkspace.setmCurSelectedScreenIndex(mWorkspace.getDefaultScreen());
 				closeThumbnailWorkspace(true);
 			}
 			closeFolderWithoutAnim();
@@ -1350,8 +1351,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			if (!mWorkspace.isDefaultScreenShowing()) {
 				mWorkspace
 						.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
-				 CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
-				 mScreenIndicator.setCurrentScreen(next.getPageIndex());
+				 //CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
+				 //mScreenIndicator.setCurrentScreen(next.getPageIndex());
 				// mScreenIndicator.setCurrentScreen(mWorkspace.getCurrentScreen());
 			}
 			closeAllApps(alreadyOnHome && allAppsVisible);

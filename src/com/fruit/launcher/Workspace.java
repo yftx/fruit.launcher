@@ -496,7 +496,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		clearVacantCache();
 //		mCurrentScreen = Math.max(0,
 //				Math.min(currentScreen, getChildCount() - 1));
-		CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
+		CellLayout next = (CellLayout) getChildAt(currentScreen);
 		// mScreenIndicator.setCurrentScreen(mCurrentScreen);		
 		mScreenIndicator.setCurrentScreen(next.getPageIndex());
 		scrollTo(mCurrentScreen * getWidth(), 0);
@@ -1011,7 +1011,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		if (mFirstLayout) {
 			setHorizontalScrollBarEnabled(false);
-			CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
+			//CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
 			scrollTo(mCurrentScreen * width, 0);
 			setHorizontalScrollBarEnabled(true);
 			updateWallpaperOffset(width * (getChildCount() - 1));
@@ -4479,14 +4479,25 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	void moveToDefaultScreen(boolean animate) {
 		int defaultChild = getChildIndexByPageIndex(mDefaultScreen);
+		//int childIndex = getChildIndexByPageIndex(getCurrentScreen());
+		int currPos = ((CellLayout)getChildAt(getCurrentScreen())).getPageIndex();
+		
+		Log.d(TAG, "setFocusScreen,currPos="+currPos+",defaultChild=" + defaultChild);
 
-		if (animate) {
-			setCurrentScreen(defaultChild);// snapToScreen(mDefaultScreen);
+		if (mDefaultScreen < currPos) {
+			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
+			changChildWhenScrollLeft(currPos - mDefaultScreen);
+		} else if (mDefaultScreen > currPos) {
+			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
+			changChildWhenScrollRight(mDefaultScreen - currPos);
 		} else {
-			// snapToScreen(defaultChild);
-			setCurrentScreen(defaultChild);// (mDefaultScreen);
+			//do nothing
 		}
-		getChildAt(defaultChild).requestFocus();
+		
+		Launcher.setScreen(getCurrentScreen());
+		
+		moveToScreen(getCurrentScreen());		
+
 	}
 
 	void moveToScreen(int screen, boolean animate) {
