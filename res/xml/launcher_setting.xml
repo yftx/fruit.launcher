@@ -18,9 +18,14 @@
     <Preference
         android:key="settings_theme"
         android:title="@string/settings_theme" />
+    
     <Preference
-        android:key="settings_multiscreenwallpaper"
-        android:title="@string/settings_multiscreenwallpaper" />
+        android:key="settings_manage_apps"
+        android:title="@string/settings_manage_apps" />
+        
+<!--     <Preference -->
+<!--         android:key="settings_multiscreenwallpaper" -->
+<!--         android:title="@string/settings_multiscreenwallpaper" /> -->
 
     <!--
         <CheckBoxPreference

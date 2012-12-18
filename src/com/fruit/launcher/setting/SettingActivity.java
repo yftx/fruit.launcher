@@ -8,6 +8,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -21,6 +22,7 @@ public class SettingActivity extends PreferenceActivity implements
 
 	private static final String KEY_SCREEN_EFFECT = "settings_key_screen_switcheffects";
 	private static final String KEY_THEME = "settings_theme";
+    private static final String KEY_MANAGE_APPS = "settings_manage_apps";
 	private static final String KEY_HELP = "settings_key_help";
 	private static final String KEY_ABOUT = "settings_key_about";
 	private static final String KEY_EXIT = "settings_key_exit";
@@ -41,9 +43,11 @@ public class SettingActivity extends PreferenceActivity implements
 		findPreference(KEY_ABOUT).setSummary(getVersionName());
 
 		PreferenceScreen screen = getPreferenceScreen();
-
 		removePreferenceByConfig(screen, KEY_THEME,
-				Configurator.CONFIG_HIDETHEME);
+				Configurator.CONFIG_HIDETHEME, "com.fruit.thememanager");
+		
+		removePreferenceByConfig(screen, KEY_MANAGE_APPS,
+				Configurator.CONFIG_HIDEMANAGEAPPS, "com.android.settings");
 	}
 
 	private String getVersionName() {
@@ -69,14 +73,9 @@ public class SettingActivity extends PreferenceActivity implements
 
 		Intent intent;
 		if (key.equals(KEY_THEME)) {
-			intent = new Intent();
-			intent.setAction("com.fruit.action.THEME");
-			try {
-				startActivity(intent);
-			} catch (ActivityNotFoundException e) {
-				Toast.makeText(this, R.string.activity_not_found,
-						Toast.LENGTH_SHORT).show();
-			}
+			callOtherActivity("com.fruit.action.THEME");
+        } else if (key.equals(KEY_MANAGE_APPS)) {        	
+        	callOtherActivity(android.provider.Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);			
 		} else if (key.equals(KEY_HELP)) {
 
 		} else if (key.equals(KEY_ABOUT)) {
@@ -90,6 +89,21 @@ public class SettingActivity extends PreferenceActivity implements
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @throws NotFoundException
+	 */
+	private void callOtherActivity(String action) throws NotFoundException {
+		Intent intent;
+		intent = new Intent();		
+		intent.setAction(action);
+		try {
+			startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			Toast.makeText(this, R.string.activity_not_found,
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override
@@ -112,10 +126,9 @@ public class SettingActivity extends PreferenceActivity implements
 	}
 
 	private boolean removePreferenceByConfig(PreferenceGroup preferenceGroup,
-			String preference, String name) {
-		boolean bHide = Configurator.getBooleanConfig(this, name, false);
-		boolean bUnInstall = !Utilities.isPackageInstall(this,
-				"com.fruit.thememanager");
+			String preference, String name, String pkgName) {
+		boolean bHide = Configurator.getBooleanConfig(this, name, false);		
+		boolean bUnInstall = !Utilities.isPackageInstall(this, pkgName);
 
 		if (bHide || bUnInstall) {
 			// Property is missing so remove preference from group

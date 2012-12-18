@@ -71,6 +71,7 @@
     <string name="settings_high_quality">"高品质绘图"</string>
     <string name="settings_high_quality_summary">"开启有可能影响滑屏性能"</string>
     <string name="settings_theme">"桌面主题"</string>
+    <string name="settings_manage_apps">管理应用程序</string>
     <string name="settings_multiscreenwallpaper">"多屏壁纸"</string>
     <string name="settings_lockscreen">锁屏</string>
     <string name="settings_lockscreen_summary">体验芒果锁屏</string>

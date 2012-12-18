@@ -158,6 +158,7 @@
     <string name="settings_high_quality">High quality drawing</string>
     <string name="settings_high_quality_summary">enable high quality drawing may reduce performance</string>
     <string name="settings_theme">Desktop Theme</string>
+    <string name="settings_manage_apps">Manage Apps</string>    
     <string name="settings_multiscreenwallpaper">"Multiscreen Wallpaper"</string>
     <string name="settings_lockscreen">Lock Screen</string>
     <string name="settings_lockscreen_summary">Use Mango Lock Screen</string>

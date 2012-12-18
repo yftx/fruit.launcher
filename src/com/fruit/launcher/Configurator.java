@@ -52,6 +52,7 @@ public final class Configurator {
 	public static final String CONFIG_DEFAULTTHME = "config_defalt_theme";
 
 	public static final String CONFIG_HIDETHEME = "config_hideTheme";
+	public static final String CONFIG_HIDEMANAGEAPPS = "config_hideManageApps";
 	public static final String CONFIG_HIDELOCKSCREEN = "config_hideLockscreen";
 
 	private static Resources mConfigResources = null;
