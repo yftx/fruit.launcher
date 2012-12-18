@@ -4210,9 +4210,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	@Override
 	public void scrollLeft() {
 		clearVacantCache();
-		//mTouchDirection = TOUCH_STATE_SCROLLING_LEFT;
+		
 		if (mScroller.isFinished()) {
-			if (mCurrentScreen > 0) {                
+			if (mCurrentScreen > 0) {               
+				mTouchDirection = TOUCH_STATE_SCROLLING_LEFT;
 				snapToScreen(mCurrentScreen - 1);
 			}
 		} else {
@@ -4225,9 +4226,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	@Override
 	public void scrollRight() {
 		clearVacantCache();
-		//mTouchDirection = TOUCH_STATE_SCROLLING_RIGHT;
+		
 		if (mScroller.isFinished()) {
-			if (mCurrentScreen < getChildCount() - 1) {                
+			if (mCurrentScreen < getChildCount() - 1) {   
+				mTouchDirection = TOUCH_STATE_SCROLLING_RIGHT;
 				snapToScreen(mCurrentScreen + 1);
 			}
 		} else {
@@ -4771,7 +4773,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		this.printChildCount();
 		
 		//update db
-		exchangeDatabase(screenIndex, getChildCount()); //? necessarily?
+		exchangeDatabase(screenIndex, getChildCount()); //?? necessarily
 		
 		// When current screen be deleted, set new current screen to the first screen
 		if (childIndex == mCurrentScreen) {
