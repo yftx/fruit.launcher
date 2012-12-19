@@ -159,6 +159,8 @@
     <string name="settings_high_quality_summary">enable high quality drawing may reduce performance</string>
     <string name="settings_theme">Desktop Theme</string>
     <string name="settings_manage_apps">Manage Apps</string>    
+    <string name="settings_screen_info">Screen Info</string>   
+    <string name="settings_apps_info">Apps Info</string>
     <string name="settings_multiscreenwallpaper">"Multiscreen Wallpaper"</string>
     <string name="settings_lockscreen">Lock Screen</string>
     <string name="settings_lockscreen_summary">Use Mango Lock Screen</string>
@@ -184,6 +186,7 @@
     <string name="app_fun_new_folder_app_title">Select the applications to be added in folder</string>
     <string name="finish">Finish</string>
     <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
     <string name="edit_folder">Edit folder</string>
     <string name="new_folder">Create new folder</string>
     <string name="new_folder_title">New folder</string>
@@ -203,5 +206,15 @@
     <string name="lenovo_set">Configure</string>
     <string name="lenovo_del">Delete</string>
     <string name="widget_clean_memory_alert">Not clean,Users in the best condition</string>
-
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="px">pixels</string>
+    <string name="density">Density</string>
+    <string name="dpi">DPI</string>
+    <string name="exhigh">exHigh</string>
+	<string name="high">High</string>
+	<string name="medium">Medium</string>
+	<string name="low">Low</string>
+	<string name="colon">": "</string>
+	<string name="desktopiconnumber">Desktop Items</string>
 </resources>
