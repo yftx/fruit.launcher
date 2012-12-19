@@ -23,6 +23,15 @@
         android:key="settings_manage_apps"
         android:title="@string/settings_manage_apps" />
         
+    
+    <Preference
+        android:key="settings_screen_info"
+        android:title="@string/settings_screen_info" />
+    
+    <Preference
+        android:key="settings_apps_info"
+        android:title="@string/settings_apps_info" />
+    
 <!--     <Preference -->
 <!--         android:key="settings_multiscreenwallpaper" -->
 <!--         android:title="@string/settings_multiscreenwallpaper" /> -->

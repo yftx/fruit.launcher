@@ -110,6 +110,19 @@ class ApplicationInfo extends ItemInfo {
 					+ info.titleBitmap + " iconBitmap=" + info.iconBitmap);
 		}
 	}
+	
+	public static String dumpApplicationInfoList2String(String tag, String label,
+			ArrayList<ApplicationInfo> list){
+		String str = new String("");
+		int i = 1;
+				
+		str += list.size()+"\n";
+		for (ApplicationInfo info : list) {
+			str += "  " + i +"   "+ info.title  +"\n";
+			i++;
+		}
+		return str;		
+	}
 
 	public ShortcutInfo makeShortcut() {
 		return new ShortcutInfo(this);

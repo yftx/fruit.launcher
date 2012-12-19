@@ -33,7 +33,7 @@ class AllAppsList {
 
 	public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
 
-	/** The list off all apps. */
+	/** The list of all apps. */
 	public ArrayList<ApplicationInfo> data = new ArrayList<ApplicationInfo>(
 			DEFAULT_APPLICATIONS_NUMBER);
 	/** The list of apps that have been added since the last notify() call. */

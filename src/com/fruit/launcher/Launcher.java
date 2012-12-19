@@ -149,8 +149,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
-	static final int SCREEN_COUNT = 5;
-	static final int DEFAULT_SCREEN = 0;// 2;
+	//static final int SCREEN_COUNT = 5;
+	//static final int DEFAULT_SCREEN = 0;// 2;
 	static final int NUMBER_CELLS_X = 4;
 	static final int NUMBER_CELLS_Y = 4;
 
@@ -195,7 +195,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	static final int APPWIDGET_HOST_ID = 1024;
 
 	private static final Object sLock = new Object();
-	private static int sScreen = DEFAULT_SCREEN;
+	private static int sScreen = SettingUtils.DEFAULT_HOME_SCREEN_INDEX;//DEFAULT_SCREEN;
 
 	private final BroadcastReceiver mCloseSystemDialogsReceiver = new CloseSystemDialogsIntentReceiver();
 	private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
@@ -205,12 +205,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	// yfzhao
 	private final BroadcastReceiver mSCReceiver = new InstallShortcutReceiver();;
 
-	public static int mScreenWidth;// 480;
-	public static int mScreenHeight;// 800;
+	public static int mScreenWidth;
+	public static int mScreenHeight;
 
 	// public int mItemWidth;
 	// public int mItemHeight;
-
+	public static String mDumpString;
+	
 	private LayoutInflater mInflater;
 
 	private DragLayer mDragLayer;
@@ -308,14 +309,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		checkForLocaleChange();
 		setWallpaperDimension();
-
-		// yfzhao
-		// set width and height
-		DisplayMetrics dm = new DisplayMetrics();
-		Display display = getWindowManager().getDefaultDisplay();
-		display.getMetrics(dm);
-		mScreenWidth = dm.widthPixels;
-		mScreenHeight = dm.heightPixels;
+		
+		getScreenSize();
 
 		setContentView(R.layout.launcher);
 		setupViews();
@@ -373,6 +368,18 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);// (InstallShortcutReceiver.class.getName());
 		this.registerReceiver(mSCReceiver, sc_filter);
 
+	}
+
+	/**
+	 * 
+	 */
+	private void getScreenSize() {
+		// set width and height
+		DisplayMetrics dm = new DisplayMetrics();
+		Display display = getWindowManager().getDefaultDisplay();
+		display.getMetrics(dm);
+		mScreenWidth = dm.widthPixels;
+		mScreenHeight = dm.heightPixels;
 	}
 
 	@Override
@@ -499,9 +506,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
-	void getScreenWidth() {
-
-	}
 
 	// Note: This doesn't do all the client-id magic that BrowserProvider does
 	// in Browser. (http://b/2425179)
@@ -1592,6 +1596,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			return true;
 		}
 
+		mDumpString = "";
+		mDumpString = dumpState2String();
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -3493,6 +3499,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@Override
 	public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
 		removeDialog(DIALOG_CREATE_SHORTCUT);
+		//mWorkspace.removeItems(apps);//add shortcut here
 		mAllAppsGrid.addApps(apps);
 	}
 
@@ -3636,6 +3643,17 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		mModel.dumpState();
 		mAllAppsGrid.dumpState();
 		Log.d(TAG, "END launcher2 dump state");
+	}
+	
+	public String dumpState2String(){
+		String str = new String("");
+		
+		str += getString(R.string.desktopiconnumber) + getString(R.string.colon) + mDesktopItems.size()+"\n";
+		str += getString(R.string.folder_name) + getString(R.string.colon) + mFolders.size()+"\n";
+		str += getString(R.string.all_apps_button_label) + getString(R.string.colon);
+		str += mModel.dumpState2String();
+		
+		return str;		
 	}
 
 	final void switchScreenMode(boolean bIsFullScreen) {
