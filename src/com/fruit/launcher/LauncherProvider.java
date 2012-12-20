@@ -441,7 +441,6 @@ public class LauncherProvider extends ContentProvider {
 
 		private static final boolean DEBUG_LOADERS_REORDER = false;
 
-		// modify by guo
 		static ArrayList<TopPackage> mTopPackages;
 
 		private static class TopPackage {
@@ -484,7 +483,7 @@ public class LauncherProvider extends ContentProvider {
 				Log.d(TAG, "creating new launcher database");
 			}
 
-			db.execSQL("CREATE TABLE favorites (" + "_id INTEGER PRIMARY KEY,"
+			db.execSQL("CREATE TABLE " + TABLE_FAVORITES + " (" + "_id INTEGER PRIMARY KEY,"
 					+ "title TEXT," + "intent TEXT," + "container INTEGER,"
 					+ "screen INTEGER," + "cellX INTEGER," + "cellY INTEGER,"
 					+ "spanX INTEGER," + "spanY INTEGER," + "orderId INTEGER,"
@@ -517,7 +516,7 @@ public class LauncherProvider extends ContentProvider {
 				// Populate favorites table with initial favorites
 				loadFavorites(db);
 			}
-			// modify by guo 2011.11.21
+			
 			loadTopPackage(mContext);
 			loadAllApps(db);
 		}
