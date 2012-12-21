@@ -17,89 +17,30 @@
 
 <toppackages xmlns:launcher="http://schemas.android.com/apk/res/com.fruit.launcher" >
 
-    <app
-        launcher:topClassName="com.mediatek.StkSelection.StkSelection"
-        launcher:topOrder="0"
-        launcher:topPackageName="com.mediatek.StkSelection" />
-    <app
-        launcher:topClassName="com.android.providers.downloads.ui.DownloadList"
-        launcher:topOrder="1"
-        launcher:topPackageName="com.android.providers.downloads.ui" />
-    <app
-        launcher:topClassName="com.android.mms.ui.ConversationList"
-        launcher:topOrder="2"
-        launcher:topPackageName="com.android.mms" />
-    <app
-        launcher:topClassName="com.android.soundrecorder.SoundRecorder"
-        launcher:topOrder="4"
-        launcher:topPackageName="com.android.soundrecorder" />
-    <app
-        launcher:topClassName="com.android.contacts.DialtactsActivity"
-        launcher:topOrder="5"
-        launcher:topPackageName="com.android.contacts" />
-    <app
-        launcher:topClassName="com.android.quicksearchbox.SearchActivity"
-        launcher:topOrder="6"
-        launcher:topPackageName="com.android.quicksearchbox" />
-    <app
-        launcher:topClassName="com.mediatek.FMRadio.FMRadioActivity"
-        launcher:topOrder="7"
-        launcher:topPackageName="com.mediatek.FMRadio" />
-    <app
-        launcher:topClassName="com.android.calendar.LaunchActivity"
-        launcher:topOrder="9"
-        launcher:topPackageName="com.android.calendar" />
-    <app
-        launcher:topClassName="com.android.deskclock.DeskClock"
-        launcher:topOrder="10"
-        launcher:topPackageName="com.android.deskclock" />
-    <app
-        launcher:topClassName="com.android.browser.BrowserActivity"
-        launcher:topOrder="11"
-        launcher:topPackageName="com.android.browser" />
-    <app
-        launcher:topClassName="com.android.email.activity.Welcome"
-        launcher:topOrder="12"
-        launcher:topPackageName="com.android.email" />
-    <app
-        launcher:topClassName="com.mediatek.camera.Camera"
-        launcher:topOrder="13"
-        launcher:topPackageName="com.mediatek.camera" />
-    <app
-        launcher:topClassName="com.android.contacts.DialtactsContactsEntryActivity"
-        launcher:topOrder="14"
-        launcher:topPackageName="com.android.contacts" />
-    <app
-        launcher:topClassName="com.android.calculator2.Calculator"
-        launcher:topOrder="15"
-        launcher:topPackageName="com.android.calculator2" />
-    <app
-        launcher:topClassName="com.android.settings.Settings"
-        launcher:topOrder="16"
-        launcher:topPackageName="com.android.settings" />
-    <app
-        launcher:topClassName="com.android.contacts.DialtactsCallLogEntryActivity"
-        launcher:topOrder="17"
-        launcher:topPackageName="com.android.contacts" />
-    <app
-        launcher:topClassName="com.android.music.MusicBrowserActivity"
-        launcher:topOrder="18"
-        launcher:topPackageName="com.android.music" />
-    <app
-        launcher:topClassName="com.fruit.thememanager.ThemeSettingActivity"
-        launcher:topOrder="19"
-        launcher:topPackageName="com.fruit.thememanager" />
-    <app
-        launcher:topClassName="com.uc.browser.ActivityUpdate"
-        launcher:topOrder="20"
-        launcher:topPackageName="com.uc.browser" />
-    <app
-        launcher:topClassName="com.sina.weibo.SplashActivity"
-        launcher:topOrder="21"
-        launcher:topPackageName="com.sina.weibo" />
-    <app
-        launcher:topClassName="com.tencent.qq.SplashActivity"
-        launcher:topOrder="22"
-        launcher:topPackageName="com.tencent.qq" />
+<!--     <app -->
+<!--         launcher:topClassName="com.mediatek.StkSelection.StkSelection" -->
+<!--         launcher:topOrder="0" -->
+<!--         launcher:topPackageName="com.mediatek.StkSelection" /> -->
+<!--     <app -->
+<!--         launcher:topClassName="com.android.providers.downloads.ui.DownloadList" -->
+<!--         launcher:topOrder="1" -->
+<!--         launcher:topPackageName="com.android.providers.downloads.ui" /> -->
+<!--     <app -->
+<!--         launcher:topClassName="com.android.mms.ui.ConversationList" -->
+<!--         launcher:topOrder="2" -->
+<!--         launcher:topPackageName="com.android.mms" /> -->
+<!--     <app -->
+<!--         launcher:topClassName="com.android.soundrecorder.SoundRecorder" -->
+<!--         launcher:topOrder="4" -->
+<!--         launcher:topPackageName="com.android.soundrecorder" /> -->
+<!--     <app -->
+<!--         launcher:topClassName="com.android.contacts.DialtactsActivity" -->
+<!--         launcher:topOrder="5" -->
+<!--         launcher:topPackageName="com.android.contacts" /> -->
+<!--     <app -->
+<!--         launcher:topClassName="com.android.quicksearchbox.SearchActivity" -->
+<!--         launcher:topOrder="6" -->
+<!--         launcher:topPackageName="com.android.quicksearchbox" /> -->
+
 
 </toppackages>
