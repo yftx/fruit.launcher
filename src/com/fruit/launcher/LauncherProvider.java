@@ -47,11 +47,13 @@ import android.util.Log;
 import android.util.Xml;
 import android.util.AttributeSet;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.provider.BaseColumns;
 import android.provider.Settings;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -59,6 +61,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.*;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -67,6 +70,8 @@ import com.fruit.launcher.LauncherSettings.Applications;
 import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
 import com.fruit.launcher.theme.ThemeUtils;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 public class LauncherProvider extends ContentProvider {
 
@@ -442,6 +447,7 @@ public class LauncherProvider extends ContentProvider {
 		private static final boolean DEBUG_LOADERS_REORDER = false;
 
 		static ArrayList<TopPackage> mTopPackages;
+		//private Logger mLogger;
 
 		private static class TopPackage {
 			public TopPackage(String packagename, String classname, int order) {
@@ -797,6 +803,42 @@ public class LauncherProvider extends ContentProvider {
 				loop2++;
 			}
 		}
+		
+//		void runtime_log4j(){
+//			LogConfigurator logConfigurator = new LogConfigurator();   
+//			   
+//			  
+//            logConfigurator.setFileName(Environment.getExternalStorageDirectory()  
+//
+//
+//                            + File.separator + "launcher" + File.separator  
+//
+//
+//                           + "log4j.txt");  
+//
+//
+//            logConfigurator.setRootLevel(Level.DEBUG);  
+//
+//
+//            logConfigurator.setLevel("org.apache", Level.ERROR);  
+//
+//
+//            logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");  
+//
+//
+//            logConfigurator.setMaxFileSize(1024 * 1024 * 5);  
+//
+//
+//            logConfigurator.setImmediateFlush(true);  
+//
+//
+//            logConfigurator.configure();  
+//
+//
+//            mLogger = Logger.getLogger(LauncherProvider.class);  
+//
+//
+//		}
 
 		private void loadAllApps(SQLiteDatabase db) {
 			// TODO Auto-generated method stub
@@ -806,14 +848,36 @@ public class LauncherProvider extends ContentProvider {
 			final PackageManager packageManager = mContext.getPackageManager();
 			List<ResolveInfo> apps = null;
 			apps = packageManager.queryIntentActivities(mainIntent, 0);
-
+			
 			if (apps.size() == 0) {
 				return;
-			}
+			} /*else {
+				//runtime_log4j();
+				String str = new String();
+				//String str2 = Environment.getExternalStorageDirectory() + File.separator + "launcher"+ File.separator+"log4j.properties";
+				//PropertyConfigurator.configure(str2); 
+				//Logger logger = Logger.getLogger(TAG);
+				
+				for (int i = 0; i < apps.size(); i++){
+					ResolveInfo info = apps.get(i);	
+					str="";
+					str+= i+ "::ResolveInfo="+info.resolvePackageName+","
+					+info.activityInfo.name+","+info.activityInfo.packageName+","
+					+info.activityInfo.processName+","+info.activityInfo.applicationInfo.className+","
+					+info.activityInfo.applicationInfo.name+","+info.activityInfo.applicationInfo.packageName+","
+					+info.activityInfo.applicationInfo.processName+","+info.activityInfo.applicationInfo.manageSpaceActivityName+","
+					+info.activityInfo.applicationInfo.backupAgentName+","+info.activityInfo.applicationInfo.installLocation+","
+					+info.activityInfo.applicationInfo.dataDir+"\n";
+					
+					//mLogger.info(str);
+					Log.d(TAG,str);
+				}
+			}*/
 
 			Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
 					packageManager));
 
+			
 			List<ResolveInfo> data = reorderApplist(apps);
 			int position = 0;
 			int position2 = 0;
@@ -874,16 +938,16 @@ public class LauncherProvider extends ContentProvider {
 				String actInfoName = info.activityInfo.name;
 
 				if (!(actInfoName
-						.equals("com.android.contacts.DialtactsActivity")
+						.equals("com.android.contacts.activities.DialtactsActivity")
 						|| actInfoName
-								.equals("com.android.contacts.DialtactsContactsEntryActivity")
+								.equals("com.android.contacts.activities.PeopleActivity")
 						|| actInfoName
-								.equals("com.android.mms.ui.ConversationList")
+								.equals("com.android.mms.ui.BootActivity")
 						|| actInfoName
 								.equals("com.android.browser.BrowserActivity")
 
 						|| actInfoName
-								.equals("com.android.contacts.DialtactsCallLogEntryActivity")
+								.equals("com.fruit.thememanager.ThemeSettingActivity")
 						|| actInfoName
 								.equals("com.android.calculator2.Calculator")
 						|| actInfoName
@@ -896,19 +960,22 @@ public class LauncherProvider extends ContentProvider {
 						|| actInfoName
 								.equals("com.android.email.activity.Welcome")
 						|| actInfoName
-								.equals("com.android.calendar.LaunchActivity")
+								.equals("com.android.calendar.AllInOneActivity")
 						|| actInfoName
 								.equals("com.android.deskclock.DeskClock")
 
-						|| actInfoName.equals("com.mediatek.camera.Camera")
-
+						|| actInfoName.equals("com.android.camera.Camera")
+						|| actInfoName.equals("com.mapbar.android.mapbarmap.MapViewActivity")
 						|| actInfoName
 								.equals("com.android.music.MusicBrowserActivity")
 						|| actInfoName
-								.equals("com.mediatek.mtkvideoplayer.GalleryPicker")
-
+								.equals("com.mediatek.videoplayer.MovieListActivity")
+								
+						|| actInfoName.equals("com.android.gallery3d.app.Gallery")
+						|| actInfoName.equals("com.mediatek.filemanager.FileManagerOperationActivity")
 						|| actInfoName
-								.equals("com.android.providers.downloads.ui.DownloadList") || actInfoName
+								.equals("com.android.providers.downloads.ui.DownloadList") 
+					    || actInfoName
 							.equals("com.android.settings.Settings")
 
 				)) {
@@ -939,7 +1006,7 @@ public class LauncherProvider extends ContentProvider {
 					values2.put(Favorites.CONTAINER,
 							Favorites.CONTAINER_DESKTOP);
 					// values2.put(Favorites.POSITION, position);
-					values2.put(Favorites.SCREEN, position2 / 16 + 2);
+					values2.put(Favorites.SCREEN, position2 / 16 + 3);
 					relativePosition = position2 % 16;
 					values2.put(Favorites.CELLX, relativePosition % 4);
 					values2.put(Favorites.CELLY, relativePosition / 4);
