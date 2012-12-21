@@ -96,6 +96,9 @@ import java.io.IOException;
 import java.io.DataInputStream;
 import java.lang.reflect.Method;
 
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.PropertyConfigurator;
+
 import com.fruit.launcher.LauncherSettings.Applications;
 import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
@@ -106,6 +109,7 @@ import com.fruit.launcher.theme.ThemeUtils;
 import com.fruit.launcher.widgets.LockScreenActivity;
 import com.fruit.launcher.widgets.TaskManagerUtil;
 
+
 /**
  * Default launcher application.
  */
@@ -113,8 +117,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		OnLongClickListener, LauncherModel.Callbacks, AllAppsView.Watcher {
 
 	static final String TAG = "Launcher";
-	static final boolean LOGD = false;
-
+	static final boolean LOGD = false;	
+	
 	static final boolean PROFILE_STARTUP = false;
 	static final boolean DEBUG_WIDGETS = false;
 	static final boolean DEBUG_USER_INTERFACE = false;
@@ -367,7 +371,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		IntentFilter sc_filter = new IntentFilter(
 				InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);// (InstallShortcutReceiver.class.getName());
 		this.registerReceiver(mSCReceiver, sc_filter);
-
 	}
 
 	/**
