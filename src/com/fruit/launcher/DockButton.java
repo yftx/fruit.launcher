@@ -218,7 +218,10 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 			 */{
 				dockIteminfo.cellX = deskItemInfo.cellX;
 				dockIteminfo.cellY = deskItemInfo.cellY;
-				dockIteminfo.screen = workspace.getOriLayout().getPageIndex();// deskItemInfo.screen;
+                if(source instanceof DockButton)
+                	dockIteminfo.screen = -1;
+                else
+                	dockIteminfo.screen = workspace.getOriLayout().getPageIndex();// deskItemInfo.screen;
 			}
 
 			dockIteminfo.container = deskItemInfo.container;
