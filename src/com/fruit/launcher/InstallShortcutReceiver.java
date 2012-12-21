@@ -38,7 +38,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 			return;
 		}
 
-		int screen = 0;
+		int screen = SettingUtils.mHomeScreenIndex;
 		int i = 0;
 
 		if (!installShortcut(context, data, screen)) {

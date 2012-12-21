@@ -38,7 +38,7 @@
     <appwidget
         launcher:className="com.vollo.mwvplayer.MWVPlayerAppWidget"
         launcher:packageName="com.vollo.mwvplayer"
-        launcher:screen="4"
+        launcher:screen="5"
         launcher:spanX="4"
         launcher:spanY="3"
         launcher:x="0"

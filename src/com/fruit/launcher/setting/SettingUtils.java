@@ -21,7 +21,7 @@ public class SettingUtils {
 	public static boolean mHighQuality;
 	public static boolean mPermanentMemory;
 
-	public static final int DEFAULT_SCREEN_COUNT = 5;
+	public static final int DEFAULT_SCREEN_COUNT = 6;
 	public static final int DEFAULT_HOME_SCREEN_INDEX = 2;
 
 	public static int mScreenCount = DEFAULT_SCREEN_COUNT;
