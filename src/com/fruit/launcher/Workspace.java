@@ -60,6 +60,7 @@ import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fruit.launcher.CellLayout.LayoutParams;
 import com.fruit.launcher.LauncherSettings.Applications;
 import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
@@ -841,6 +842,45 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
+	// check if this shortcut is existed in workspace view
+	boolean hasShortcut(Intent data) {
+		//local variables
+		//boolean result = false;	
+		
+		//body
+		try {
+			//String shortClassName = data.getComponent().getShortClassName();
+			String className = data.getComponent().getClassName();
+			//String packageName = data.getComponent().getPackageName();
+		
+			for (int i = 0; i < getChildCount(); i++){
+				CellLayout cellLayout = (CellLayout) getChildAt(i);
+				for(int j = 0; j < cellLayout.getChildCount(); j++){
+					View v = cellLayout.getChildAt(j);
+					Object tag = v.getTag();
+					if(tag instanceof ShortcutInfo){
+						final Intent eachIntent = ((ShortcutInfo) tag).intent;
+						//String eachShortClassName = eachIntent.getComponent().getShortClassName();
+						String eachClassName = eachIntent.getComponent().getClassName();
+						//String eachPackageName = eachIntent.getComponent().getPackageName();
+						
+						if (className.equals(eachClassName)) {
+							return true;
+						} 
+					} 			
+				}
+			}
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		} 
+		
+		
+		return false;
+
+	}
+	
 	@Override
 	public void scrollTo(int x, int y) {
 		super.scrollTo(x, y);

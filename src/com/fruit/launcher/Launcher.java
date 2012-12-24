@@ -83,6 +83,7 @@ import android.widget.Toast;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
@@ -985,61 +986,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
-	// //检测是否存在快捷方式
-	// boolean hasShortcut(String title, Intent intent)
-	// {
-	// boolean isInstallShortcut = false;
-	//
-	// final ContentResolver cr = getContentResolver();
-	//
-	// //2.2版本的是launcher2，不然无效，网上有的是launcher,我试验了2.2不能用
-	// //final Uri CONTENT_URI =
-	// Uri.parse("content://com.fruit.launcher.settings/favorites?notify=true");//保持默认
-	// //Cursor c = cr.query(CONTENT_URI,new String[] {"title","iconResource"
-	// },"title=?", //保持默认
-	// //getString(R.string.app_name)是获取string配置文件中的程序名字，这里用一个String的字符串也可以
-	// //new String[] {title.trim()}, null);
-	// //if(c!=null && c.getCount()>0){
-	// // isInstallShortcut = true ;
-	// //}
-	// //return isInstallShortcut ;
-	//
-	//
-	//
-	//
-	// Cursor c = cr.query(Favorites.CONTENT_URI,
-	// new String[] { "title" }, "title=?",
-	// new String[] { title }, null);
-	// boolean result = false;
-	// try {
-	// if (c!=null && c.getCount()>0) {
-	// result = true;
-	// }
-	// } finally {
-	// c.close();
-	// }
-	// return result;
-	//
-	//
-	// }
 
-	// boolean hasShortcutById(int id)
-	// {
-	// boolean isInstallShortcut = false;
-	// final ContentResolver cr = getContentResolver();
-	// //2.2版本的是launcher2，不然无效，网上有的是launcher,我试验了2.2不能用
-	// final Uri CONTENT_URI =
-	// Uri.parse("content://com.fruit.launcher.settings/favorites?notify=true");//保持默认
-	// Cursor c = cr.query(CONTENT_URI,new String[] {"id","iconResource"
-	// },"_id=?", //保持默认
-	// //getString(R.string.app_name)是获取string配置文件中的程序名字，这里用一个String的字符串也可以
-	// new String[] {}, null);
-	// if(c!=null && c.getCount()>0){
-	// isInstallShortcut = true ;
-	// }
-	// return isInstallShortcut ;
-	// }
-
+	boolean hasShortcut(Context context, String title, Intent data) {
+		return (mModel.hasShortcut(context, title, data) && mWorkspace.hasShortcut(data));
+	}
+	
+	
 	/**
 	 * Add an application shortcut to the workspace.
 	 * 
@@ -1059,11 +1011,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				context.getPackageManager(), data, context);
 
 		if (info != null) {
-
-			// yfzhao
-			// if (mModel.shortcutExists(context, info.title.toString().trim(),
-			// data)) {
-			if (mModel.hasShortcut(context, info.title.toString(), data)) {
+			
+			if (hasShortcut(context, info.title.toString(), data)) {
 				Toast.makeText(this, getString(R.string.duplicate_shortcut),
 						Toast.LENGTH_SHORT).show();
 				return;
@@ -1097,10 +1046,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		if (info != null) {
 
-			// yfzhao
-			// if (mModel.shortcutExists(context, info.title.toString().trim(),
-			// data)) {
-			if (mModel.hasShortcut(context, info.title.toString(), data)) {
+			if (hasShortcut(context, info.title.toString(), data)) {
 				Toast.makeText(this, getString(R.string.duplicate_shortcut),
 						Toast.LENGTH_SHORT).show();
 				return;
@@ -1156,17 +1102,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			Toast.makeText(this, getString(R.string.duplicate_shortcut),
 					Toast.LENGTH_SHORT).show();
 			return;
-		}
-		// if (info != null) {
-		// //yfzhao
-		// //if (mModel.shortcutExists(mCtx, info.title.toString().trim(),
-		// data)) {
-		// if (hasShortcut(info.title.toString().trim(), data)){
-		// Toast.makeText(this, getString(R.string.duplicate_shortcut),
-		// Toast.LENGTH_SHORT).show();
-		// return;
-		// }
-		// }
+		}		
 
 		if (!mRestoring) {
 			final View view = createShortcut(info);
@@ -1195,16 +1131,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		// if (info != null) {
-		// //yfzhao
-		// //if (mModel.shortcutExists(context, info.title.toString().trim(),
-		// data)) {
-		// if (hasShortcut(info.title.toString().trim(), data)){
-		// Toast.makeText(this, getString(R.string.duplicate_shortcut),
-		// Toast.LENGTH_SHORT).show();
-		// return;
-		// }
-		// }
 
 		info.screen = dockItemInfo.screen;
 		info.container = dockItemInfo.container;
@@ -1224,6 +1150,24 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
+//    int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight, int[] spanXY) {
+//        if (spanXY == null) {
+//            spanXY = new int[2];
+//        }
+//
+//        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(this, component, null);
+//        // We want to account for the extra amount of padding that we are adding to the widget
+//        // to ensure that it gets the full amount of space that it has requested
+//        int requiredWidth = minWidth + padding.left + padding.right;
+//        int requiredHeight = minHeight + padding.top + padding.bottom;
+//        return CellLayout.rectToCell(getResources(), requiredWidth, requiredHeight, null);
+//    }
+//
+//    int[] getSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
+//        return getSpanForWidget(info.provider, info.minWidth, info.minHeight, spanXY);
+//    }
+
+    
 	/**
 	 * Add a widget to the workspace.
 	 * 
@@ -1248,6 +1192,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
 		int[] spans = layout.rectToCell(appWidgetInfo.minWidth,
 				appWidgetInfo.minHeight);
+//		int[] spans = layout.getSpanForWidget(appWidgetInfo, null);
 
 		// Try finding open space on Launcher screen
 		final int[] xy = mCellCoordinates;
@@ -1262,11 +1207,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				appWidgetId);
 		launcherInfo.spanX = spans[0];
 		launcherInfo.spanY = spans[1];
-
-		// yfzhao
-		// if (mModel.hasShortcut(context, title, data)) {
-		// return;
-		// }
 
 		LauncherModel.addItemToDatabase(this, launcherInfo,
 				Favorites.CONTAINER_DESKTOP, layout.getPageIndex()/*
@@ -1643,16 +1583,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				return;
 			}
 
-			// if (info != null) {
-			// //yfzhao
-			// //if (mModel.shortcutExists(context,
-			// info.title.toString().trim(), data)) {
-			// if (hasShortcut(info.toString().trim(), data)){
-			// Toast.makeText(this, getString(R.string.duplicate_shortcut),
-			// Toast.LENGTH_SHORT).show();
-			// return;
-			// }
-			// }
 
 			if (!findSlot(mAddItemCellInfo, mCellCoordinates, info.spanX,
 					info.spanY)) {

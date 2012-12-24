@@ -2107,11 +2107,14 @@ public class LauncherModel extends BroadcastReceiver {
 	// check if shortcut is existed
 	boolean hasShortcut(Context context, String title, Intent data) {
 		final ContentResolver cr = context.getContentResolver();
-		String intentUri = "";
+		String intentUri = new String("");
 		Cursor c = null;
 		boolean result = false;
 		Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-
+//		String shortClassName = data.getComponent().getShortClassName();
+//		String className = data.getComponent().getClassName();
+//		String packageName = data.getComponent().getPackageName();
+		
 		if (intent == null) {
 			intentUri = data.toUri(0);
 			// Log.d(TAG, "yfzhao-1.1-" + intentUri);
