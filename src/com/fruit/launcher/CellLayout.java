@@ -1481,9 +1481,11 @@ public class CellLayout extends ViewGroup {
 		int smallerSize = Math.min(actualWidth, actualHeight);
 
 		// Always round up to next largest cell
-		int spanX = (width + smallerSize) / smallerSize;
-		int spanY = (height + smallerSize) / smallerSize;
-
+//		int spanX = (width + smallerSize) / smallerSize;
+//		int spanY = (height + smallerSize) / smallerSize;
+        int spanX = (int) Math.ceil(width / (float) smallerSize);
+        int spanY = (int) Math.ceil(height / (float) smallerSize);
+        
 		if (spanX > 4)
 			spanX = 4;
 		if (spanY > 4)
@@ -1491,6 +1493,38 @@ public class CellLayout extends ViewGroup {
 
 		return new int[] { spanX, spanY };
 	}
+	
+//    /**
+//     * Computes the required horizontal and vertical cell spans to always
+//     * fit the given rectangle.
+//     *
+//     * @param width Width in pixels
+//     * @param height Height in pixels
+//     * @param result An array of length 2 in which to store the result (may be null).
+//     */
+//    public int[] rectToCell(int width, int height, int[] result) {
+//        return rectToCell(getResources(), width, height, result);
+//    }
+//
+//    public static int[] rectToCell(Resources resources, int width, int height, int[] result) {
+//        // Always assume we're working with the smallest span to make sure we
+//        // reserve enough space in both orientations.
+//        int actualWidth = resources.getDimensionPixelSize(R.dimen.workspace_cell_width);
+//        int actualHeight = resources.getDimensionPixelSize(R.dimen.workspace_cell_height);
+//        int smallerSize = Math.min(actualWidth, actualHeight);
+//
+//        // Always round up to next largest cell
+//        int spanX = (int) Math.ceil(width / (float) smallerSize);
+//        int spanY = (int) Math.ceil(height / (float) smallerSize);
+//
+//        if (result == null) {
+//            return new int[] { spanX, spanY };
+//        }
+//        result[0] = spanX;
+//        result[1] = spanY;
+//        return result;
+//    }
+
 
 	/**
 	 * Find the first vacant cell, if there is one.

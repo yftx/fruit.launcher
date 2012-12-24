@@ -40,7 +40,7 @@
     <dimen name="allapp_horizontal_margin">5.0dip</dimen>
     <dimen name="allapp_left_padding">1dip</dimen>
     <dimen name="allapp_right_padding">1dip</dimen>
-    <dimen name="workspace_cell_width">88dip</dimen>
+    <dimen name="workspace_cell_width">86dip</dimen>
     <dimen name="workspace_cell_height">116dip</dimen>
     <dimen name="workspace_cell_icon_size">116px</dimen>
 
