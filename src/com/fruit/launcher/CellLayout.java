@@ -352,6 +352,10 @@ public class CellLayout extends ViewGroup {
 		}
 		return true;
 	}
+	
+	int cellToNumberEx(int cellX, int cellY) {
+		return getPageIndex()*getCountX()*getCountY()+cellY * getCountX() + cellX;
+	}
 
 	int cellToNumber(int cellX, int cellY) {
 		return cellY * getCountX() + cellX;

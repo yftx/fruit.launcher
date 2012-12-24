@@ -86,7 +86,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	 * The velocity at which a fling gesture will cause us to snap to the next
 	 * screen
 	 */
-	private static final int SNAP_VELOCITY = 600;
+	private static final int SNAP_VELOCITY = 300;//600;
 
 	private final WallpaperManager mWallpaperManager;
 
@@ -214,7 +214,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	// private CellLayout currentLayout;
 	private CellLayout oriLayout = null;
 	private CellLayout lastLayout = null;
-	private boolean mIsOverFinished = true;
+	//private boolean mIsOverFinished = true;
 	private boolean mIsNeedPreMove = false;
 
 	private Bitmap mCueBitmap;
@@ -1244,9 +1244,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				}
 			}
 			if (mMultiTouch) {
-				if (Math.abs(spacing(ev) - mDistance) > 60f) {
-					mLauncher.showThumbnailWorkspace(true);
-					mMultiTouch = false;
+				try {
+					if (Math.abs(spacing(ev) - mDistance) > 60f) {
+						mLauncher.showThumbnailWorkspace(true);
+						mMultiTouch = false;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 
@@ -1988,9 +1993,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			// Only support max_count screens
 			return 0;
 		}
-		int offsetX = (mCellWidth - mViewWidth) / 2;
+		int offsetX = (mCellWidth - mViewWidth) / 2 - 1;
 		int pos = thumbWidth * (index % mColCount) + mWidthStartPadding
-				+ offsetX;// - 3;
+				+1;//+ offsetX;// - 3;
 		Log.d(TAG, "moveitem,xpos=" + pos);
 		return pos;
 	}
@@ -2002,7 +2007,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 		int offsetY = (mCellHeight - mViewHeight) / 2 + 1;
 		int pos = thumbHeight * (index / mRowCount) + mHeightStatusBar
-				+ offsetY + mHeightStartPadding;// + 12;//39; //magic number :
+				 + mHeightStartPadding + offsetY;// + 12;//39; //magic number :
 												// 200 - 39 = 161;
 		Log.d(TAG, "moveitem,ypos=" + pos + ",mHeightStatusBar="
 				+ mHeightStatusBar);
@@ -3490,9 +3495,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		final View cell = mDragInfo.cell;
 		// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
 
-		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
-				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
-		cellLayout.onDropChild(cell, mTargetCell);
+//		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+//				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
+//		cellLayout.onDropChild(cell, mTargetCell);
 
 		final ItemInfo info = (ItemInfo) cell.getTag();
 		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
@@ -3506,13 +3511,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	public void onDrop(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
 
-		Log.d(TAG, "drag sequence,workspace onDrop, mItemAnimate.animateEnd="
-				+ mItemAnimate.animateEnd);
-		if (mItemAnimate.animateEnd) {
-	
-		}
-
-		// mOldScreen = INVALID_SCREEN;
 		final CellLayout cellLayout = getCurrentDropLayout();
 
 		if (source != this) {
@@ -3793,19 +3791,19 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	}
 
-	private void start2drag(CellLayout current, int x, int y) {
+	private void start2drag(CellLayout current, int x, int y, int xOffset, int yOffset) {
 		int[] overCell = new int[2];
 		current.pointToCellExact(x, y, overCell);
 		mToPos = current.cellToNumber(overCell);
-		Log.d(TAG, "914,(x,y)=" + x + "," + y + "cell(" + overCell[0] + ","
-				+ overCell[1] + ")fromPos=" + mFromPos + ",toPos=" + mToPos);
-
+		Log.d(TAG, "start2drag,(x,y)=" + x + "," + y + "cell(" + overCell[0] + ","
+				+ overCell[1] + ")fromPos=" + mFromPos + ",toPos=" + mToPos+",offset("+xOffset+","+yOffset+")");
+			
 		int newIndex = current.cellToIndex(overCell);
 
 		if (newIndex >= 0) {
 			if (isViewSpan1x1(current.getChildAt(newIndex))) {
 				if (!current.getChildAt(newIndex).equals(mDragInfo.cell)) {
-					Log.d(TAG, "914,overCell is not empty,move the item in it "
+					Log.d(TAG, "start2drag,overCell is not empty,move the item in it "
 							+ mFromPos + "-" + mToPos);
 					// move to give space for new item
 					if (mIsNeedPreMove) {
@@ -3815,17 +3813,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 					// start to drag
 					startDrag(current, mDragInfo, mFromPos, mToPos);
-					Log.d(TAG, "914,async or sync?");
+					Log.d(TAG, "start2drag,async or sync?");
 					mFromPos = mToPos;
 					updateDragInfo(mDragInfo, overCell, current.getPageIndex());
 				} else {
 					mFromPos = mToPos;
 					updateDragInfo(mDragInfo, overCell, current.getPageIndex());
-					Log.d(TAG, "914, move in its own place, update for mistake");
+					Log.d(TAG, "start2drag, move in its own place, update for mistake");
 				}
 			}
 		} else {
-			Log.d(TAG, "914,overCell is empty, update info and go ahead");
+			Log.d(TAG, "start2drag,overCell is empty, update info and go ahead");
 			mFromPos = mToPos;
 			updateDragInfo(mDragInfo, overCell, current.getPageIndex());
 		}
@@ -3836,40 +3834,33 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	@Override
 	public void onDragOver(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
-		Log.d(TAG, "drag sequence,workspace onDragOver");
+		//Log.d(TAG, "drag sequence,workspace onDragOver");
 
-		// yfzhao
 		// double check
 		if (mDragInfo == null || mDragInfo.cell == null)
 			return;
 
+		//pass if span over 1x1
 		if (!isViewSpan1x1(dragInfo))
 			return;
 
-		CellLayout current = null;
+		//CellLayout current = null;
 		// int screen = -1;
 
-		if (mIsOverFinished) {
-
-			mIsOverFinished = false;
-
-			assert (mCurrentScreen == SettingUtils.mHomeScreenIndex);
-
-			current = (CellLayout) getChildAt(mCurrentScreen);
-			assert (current != null);
-
-			// int index = mScroller.isFinished() ? mCurrentScreen :
-			// mNextScreen;
-			// Log.d(TAG, "scroll:"+mCurrentScreen+","+mNextScreen+","+index);
-
-			// if (index != mCurrentScreen || mNextScreen == -1) {
+		Log.d(TAG, "drag sequence,workspace onDragOver, animateEnd="
+				+ mItemAnimate.animateEnd);
+		
+		mIsNeedPreMove = false;
+		
+		if (mItemAnimate.animateEnd) {
+			CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
+			
 			if (lastLayout.getPageIndex() != current.getPageIndex()) {
 				exchangeAllCells(this.getChildIndexByPageIndex(lastLayout
 						.getPageIndex()));
 				lastLayout = current;
 
 				if (current.isFull()) {
-					mIsOverFinished = true;
 					return;
 				} else {
 					mIsNeedPreMove = true;
@@ -3877,31 +3868,21 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			} else {
 				if (lastLayout == oriLayout) {
 					if (source != this) {
-						if (current.isFull()) {
-							mIsOverFinished = true;
+						if (current.isFull()) {							
 							return;
 						} else {
 							mIsNeedPreMove = true;
 						}
 					}
 				} else {
-					if (current.isFull()) {
-						mIsOverFinished = true;
+					if (current.isFull()) {						
 						return;
 					}
 				}
 			}
-
-			Log.d(TAG, "drag sequence,workspace onDragOver, animateEnd="
-					+ mItemAnimate.animateEnd);
-			if (mItemAnimate.animateEnd) {
-				start2drag(current, x, y);
-			}
-
-			mIsNeedPreMove = false;
-			mIsOverFinished = true;
+			
+			start2drag(current, x, y, xOffset, yOffset);			
 		}
-
 	}
 
 	@Override
