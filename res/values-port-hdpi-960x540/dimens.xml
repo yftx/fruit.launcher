@@ -53,7 +53,7 @@
     <dimen name="thumbnail_height">189.0dip</dimen>
     <dimen name="thumbnail_padding">2.0dip</dimen>
     <dimen name="thumbnail_bg_padding">6.0dip</dimen>
-    <dimen name="thumbnail_delete_padding">4.0dip</dimen>
-    <dimen name="thumbnail_home_padding">5.0dip</dimen>
+    <dimen name="thumbnail_delete_padding">6.0dip</dimen>
+    <dimen name="thumbnail_home_padding">8.0dip</dimen>
 
 </resources>
