@@ -194,4 +194,13 @@ public class BubbleTextView extends TextView {
 	public void setDrawShadow(boolean shadow) {
 		mIsDrawShadow = shadow;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString()+":"+this.getText().toString();
+	}
 }
