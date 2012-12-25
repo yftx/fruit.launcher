@@ -655,7 +655,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 	}
 
 	private void startAnimate() {
-		Log.d(TAG, "startAnimate mFromPos=" + mFromPos + " mToPos=" + mToPos);
+		Log.d(TAG, "startAnimate mFromPos=" + mFromPos + " mToPos=" + mToPos + "counts:"+getChildCount());
 		if (mFromPos < mToPos) {
 			for (int init = mFromPos + 1; init < mToPos; init++) {
 				View child = getChildAt(init - 1);

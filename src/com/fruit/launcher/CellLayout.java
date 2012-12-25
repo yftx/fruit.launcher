@@ -303,6 +303,7 @@ public class CellLayout extends ViewGroup {
 			return cellToIndex(cellXY[0], cellXY[1]);
 	}
 
+
 	// int numberToIndex(int number){
 	// checkCellLayout();
 	// return getaMap(number);
@@ -320,20 +321,20 @@ public class CellLayout extends ViewGroup {
 
 	}
 
-	private int[] numberIndexArray = null;
-
-	void setNumberIndexLastTime() {
-		if (numberIndexArray == null) {
-			numberIndexArray = new int[getMaxCount()];
-		}
-		for (int i = 0; i < getMaxCount(); i++) {
-			numberIndexArray[i] = numberToIndex(i);
-		}
-	}
-
-	int numberToIndexLastTime(int number) {
-		return numberIndexArray[number];
-	}
+//	private int[] numberIndexArray = null;
+//
+//	void setNumberIndexLastTime() {
+//		if (numberIndexArray == null) {
+//			numberIndexArray = new int[getMaxCount()];
+//		}
+//		for (int i = 0; i < getMaxCount(); i++) {
+//			numberIndexArray[i] = numberToIndex(i);
+//		}
+//	}
+//
+//	int numberToIndexLastTime(int number) {
+//		return numberIndexArray[number];
+//	}
 
 	// int[] getNumberIndexLastTime(){
 	// return numberIndexArray;
@@ -846,9 +847,10 @@ public class CellLayout extends ViewGroup {
 		lp.cellX = cellX;
 		lp.cellY = cellY;
 
-		lp.x = x;
-		lp.y = y;// -39;
+		//lp.x = x;
+		//lp.y = y;// -39;
 
+		Log.d(TAG, "changeCellXY::"+ lp.toString());
 	}
 
 	int findNearestVacantCellBetween(int oldPlace, int newPlace) {
@@ -1248,6 +1250,8 @@ public class CellLayout extends ViewGroup {
 				child.layout(childLeft, childTop, childLeft + lp.width,
 						childTop + lp.height);
 
+				Log.d(TAG, "onLayout,(X,Y),(W,H)="+childLeft+","+childTop+","+lp.width+","+lp.height);
+				
 				if (lp.dropped) {
 					lp.dropped = false;
 
@@ -1339,6 +1343,15 @@ public class CellLayout extends ViewGroup {
 		}
 	}
 
+	void onDropChild(View child) {
+		if (child != null) {
+			LayoutParams lp = (LayoutParams) child.getLayoutParams();
+			lp.isDragging = false;
+			lp.dropped = true;
+			mDragRect.setEmpty();
+		}
+	}
+	
 	/**
 	 * Drop a child at the specified position
 	 * 

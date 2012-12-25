@@ -340,7 +340,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mHeightEndPadding = (int) r
 				.getDimension(R.dimen.workspace_cell_bottom_padding);
 
-		mHeightStatusBar = (int) r.getDimension(R.dimen.status_bar_height);
+		mHeightStatusBar = (int) r.getDimension(R.dimen.status_bar_height)+1;
 
 		mCueNumber = new CueNumber();
 		mCueNumber.mbNumber = false;
@@ -1993,9 +1993,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			// Only support max_count screens
 			return 0;
 		}
-		int offsetX = (mCellWidth - mViewWidth) / 2 - 1;
+		int offsetX = (mCellWidth - mViewWidth) / 2;
 		int pos = thumbWidth * (index % mColCount) + mWidthStartPadding
-				+1;//+ offsetX;// - 3;
+				+ offsetX;
 		Log.d(TAG, "moveitem,xpos=" + pos);
 		return pos;
 	}
@@ -2005,10 +2005,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			// Only support max_count screens
 			return 0;
 		}
-		int offsetY = (mCellHeight - mViewHeight) / 2 + 1;
-		int pos = thumbHeight * (index / mRowCount) + mHeightStatusBar
-				 + mHeightStartPadding + offsetY;// + 12;//39; //magic number :
-												// 200 - 39 = 161;
+		int offsetY = (mCellHeight - mViewHeight) / 2;
+		int pos = thumbHeight * (index / mRowCount) 
+				 + mHeightStartPadding + offsetY;
+		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
+			pos+=mHeightStatusBar;
 		Log.d(TAG, "moveitem,ypos=" + pos + ",mHeightStatusBar="
 				+ mHeightStatusBar);
 		return pos;
@@ -2018,11 +2019,21 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	public void startItemAnimate(int x1, int y1, int x2, int y2, int w, int h,
 			View child) {
 		ItemAnimate itemAnimate = new ItemAnimate(x1, x2, y1, y2, child);
-		itemAnimate.stop();
+		//itemAnimate.stop();
 		// itemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
 		itemAnimate.setDuration(600);
 		itemAnimate.setSquare(w, h);
 		itemAnimate.start();
+	}
+	
+	public void startItemAnimateEx(int x1, int y1, int x2, int y2, int w, int h,
+			View child) {
+		mItemAnimate.stop();
+		mItemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
+		// itemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
+		mItemAnimate.setDuration(600);
+		mItemAnimate.setSquare(w, h);
+		mItemAnimate.start();
 	}
 
 	public void startItemAnimate(int x1, int y1, int x2, int y2, View child) {
@@ -2032,11 +2043,22 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			startItemAnimate(x1, y1, x2, y2, mCellWidth, mCellHeight, child);
 			// startItemAnimate(x1, y1, x2, y2, mViewWidth, mViewWidth, child);
 		} else {
-			Log.d(TAG, "child == null");
+			Log.d(TAG, "startItemAnimate, child == null");
 		}
 
 	}
 
+	public void startItemAnimateEx(int x1, int y1, int x2, int y2, View child) {
+		if (child != null) {
+			// startItemAnimate(x1, y1, x2, y2, child.getWidth(),
+			// child.getHeight(), child);
+			startItemAnimateEx(x1, y1, x2, y2, mCellWidth, mCellHeight, child);
+			// startItemAnimate(x1, y1, x2, y2, mViewWidth, mViewWidth, child);
+		} else {
+			Log.d(TAG, "startItemAnimate, child == null");
+		}
+
+	}
 	// private void startAnimate(int fromPos, int toPos, boolean only1x1){
 	//
 	// }
@@ -2349,105 +2371,157 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	//
 	// }
 
-	void startAnimate(CellLayout current, int fromPos, int toPos) {
-		// CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
+//	void startAnimate(CellLayout current, int fromPos, int toPos) {
+//		// CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
+//
+//		// if (aMap == null) {
+//		// aMap = new int[current.getMaxCount()];
+//		// current.checkCellLayout();
+//		// System.arraycopy(current.aMap, 0, aMap, 0, aMap.length);
+//		// }
+//		if (current == null)
+//			return;
+//
+//		int offset = 1;
+//
+//		current.setNumberIndexLastTime();
+//
+//		if (fromPos < toPos) { // move forward
+//
+//			// for (int init = mFromPos + 1; init < mToPos; init++) {
+//			for (int init = toPos; init > fromPos; init -= offset) {
+//
+//				View child = current.getChildAt(current
+//						.numberToIndexLastTime(init));// (current.numberToIndex(init));
+//				View temp = current.getChildAt(current
+//						.numberToIndexLastTime(init - 1));
+//
+//				if (child == null) {
+//					break;
+//				} else {
+//					if (temp == null) {
+//						moveItem(init, offset * (-1), child, current);
+//						break;
+//					} else {
+//						CellLayout.LayoutParams lp = (CellLayout.LayoutParams) temp
+//								.getLayoutParams();
+//						if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
+//							offset = 1;
+//						} else {
+//							while (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
+//								offset++;
+//								temp = current.getChildAt(current
+//										.numberToIndexLastTime(init - offset));
+//								if (temp == null) {
+//									moveItem(init, offset * (-1), child,
+//											current);
+//									break;
+//								} else {
+//									lp = (CellLayout.LayoutParams) temp
+//											.getLayoutParams();
+//								}
+//							}
+//						}
+//						moveItem(init, offset * (-1), child, current);
+//					}
+//				}
+//			}
+//
+//		} else {
+//			for (int init = toPos; init < fromPos; init += offset) {
+//				View child = current.getChildAt(current
+//						.numberToIndexLastTime(init));// (current.numberToIndex(init));
+//				View temp = current.getChildAt(current
+//						.numberToIndexLastTime(init + 1));
+//
+//				if (child == null) {
+//					break;
+//				} else {
+//					if (temp == null) {
+//						moveItem(init, offset, child, current);
+//						break;
+//					} else {
+//						CellLayout.LayoutParams lp = (CellLayout.LayoutParams) temp
+//								.getLayoutParams();
+//						if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
+//							offset = 1;
+//						} else {
+//							while (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
+//								offset++;
+//								temp = current.getChildAt(current
+//										.numberToIndexLastTime(init + offset));
+//								if (temp == null) {
+//									moveItem(init, offset, child, current);
+//									break;
+//								} else {
+//									lp = (CellLayout.LayoutParams) temp
+//											.getLayoutParams();
+//								}
+//							}
+//						}
+//						moveItem(init, offset, child, current);
+//					}
+//				}
+//			}
+//
+//		}
+//
+//		Log.d(TAG, "914,one move sesion finished");
+//
+//	}
 
-		// if (aMap == null) {
-		// aMap = new int[current.getMaxCount()];
-		// current.checkCellLayout();
-		// System.arraycopy(current.aMap, 0, aMap, 0, aMap.length);
-		// }
+	void startAnimateEx(CellLayout current, int fromPos, int toPos) {
+
 		if (current == null)
 			return;
 
 		int offset = 1;
 
-		current.setNumberIndexLastTime();
-
+//		current.setNumberIndexLastTime();
+		
+		View child = null;
+		View temp = null;
+		
+		int fromPosValid = current.findNearestVacantCellBetween(fromPos, toPos);
+		
 		if (fromPos < toPos) { // move forward
-
-			// for (int init = mFromPos + 1; init < mToPos; init++) {
-			for (int init = toPos; init > fromPos; init -= offset) {
-
-				View child = current.getChildAt(current
-						.numberToIndexLastTime(init));// (current.numberToIndex(init));
-				View temp = current.getChildAt(current
-						.numberToIndexLastTime(init - 1));
-
-				if (child == null) {
-					break;
-				} else {
-					if (temp == null) {
-						moveItem(init, offset * (-1), child, current);
-						break;
-					} else {
-						CellLayout.LayoutParams lp = (CellLayout.LayoutParams) temp
-								.getLayoutParams();
-						if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
-							offset = 1;
-						} else {
-							while (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
-								offset++;
-								temp = current.getChildAt(current
-										.numberToIndexLastTime(init - offset));
-								if (temp == null) {
-									moveItem(init, offset * (-1), child,
-											current);
-									break;
-								} else {
-									lp = (CellLayout.LayoutParams) temp
-											.getLayoutParams();
-								}
-							}
-						}
-						moveItem(init, offset * (-1), child, current);
-					}
+			
+			for(int init = fromPosValid+1; init < toPos; init++){
+				child = current.getChildAt(current.numberToIndex(init));
+				CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+				if (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
+					offset++;
+					continue;
 				}
+				moveItem(init, offset * (-1), child, current);
+				offset=1;
 			}
 
+			child = current.getChildAt(current.numberToIndex(toPos));
+			moveItemEx(toPos, offset * (-1), child, current);
+			
 		} else {
-			for (int init = toPos; init < fromPos; init += offset) {
-				View child = current.getChildAt(current
-						.numberToIndexLastTime(init));// (current.numberToIndex(init));
-				View temp = current.getChildAt(current
-						.numberToIndexLastTime(init + 1));
-
-				if (child == null) {
-					break;
-				} else {
-					if (temp == null) {
-						moveItem(init, offset, child, current);
-						break;
-					} else {
-						CellLayout.LayoutParams lp = (CellLayout.LayoutParams) temp
-								.getLayoutParams();
-						if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
-							offset = 1;
-						} else {
-							while (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
-								offset++;
-								temp = current.getChildAt(current
-										.numberToIndexLastTime(init + offset));
-								if (temp == null) {
-									moveItem(init, offset, child, current);
-									break;
-								} else {
-									lp = (CellLayout.LayoutParams) temp
-											.getLayoutParams();
-								}
-							}
-						}
-						moveItem(init, offset, child, current);
-					}
+		
+			for(int init = fromPosValid-1; init > toPos; init--){
+				child = current.getChildAt(current.numberToIndex(init));
+				CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+				if (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
+					offset++;
+					continue;
 				}
+				moveItem(init, offset, child, current);
+				offset=1;
 			}
 
+			child = current.getChildAt(current.numberToIndex(toPos));
+			moveItemEx(toPos, offset, child, current);
 		}
 
-		Log.d(TAG, "914,one move sesion finished");
+		Log.d(TAG, "startAnimateEx,one move sesion finished");
 
 	}
 
+	
 	void moveItem(int init, int offset, View child, CellLayout current) {
 
 		if (child == null)
@@ -2466,14 +2540,42 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		startItemAnimate(x1, y1, x2, y2, child);
 
 		current.numberToCell(init + offset, newCell);
-		current.changeCellXY(child, newCell[0], newCell[1], x2, y2
-				- mHeightStatusBar);
+		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
+			y2-=mHeightStatusBar;
+		current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
 		// current.changeCellXY(child, newCell[0], newCell[1]);
 
 		// child.layout(x2, y2, x2+mCellWidth, y2+mCellHeight);
 		// current.numberToCell(init, newCell);
 	}
 
+	void moveItemEx(int init, int offset, View child, CellLayout current) {
+
+		if (child == null)
+			return;
+		if (current == null)
+			return;
+
+		int x1 = getXPos(init, mCellWidth);
+		int y1 = getYPos(init, mCellHeight);
+		int x2 = getXPos(init + offset, mCellWidth);
+		int y2 = getYPos(init + offset, mCellHeight);
+
+		Log.d(TAG, "moveItemEx,(x1,y1)=(" + x1 + "," + y1 + "),(x2,y2)=(" + x2
+				+ "," + y2 + ")");
+
+		startItemAnimateEx(x1, y1, x2, y2, child);
+
+		current.numberToCell(init + offset, newCell);
+		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
+			y2-=mHeightStatusBar;
+		current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
+		// current.changeCellXY(child, newCell[0], newCell[1]);
+
+		// child.layout(x2, y2, x2+mCellWidth, y2+mCellHeight);
+		// current.numberToCell(init, newCell);
+	}
+	
 	// private void startAnimation(View child, int pos, int[] cellXY){
 	// //CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
 	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
@@ -2597,7 +2699,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// if (view!=cellInfo.cell) {
 		// startAnimate(current, current.cellToNumber(cellInfo.cellX,
 		// cellInfo.cellY), current.cellToNumber(newCell));
-		startAnimate(current, fromPos, toPos);
+		startAnimateEx(current, fromPos, toPos);
 		// mDragController.startDrag(mDragInfo.cell, this,
 		// mDragInfo.cell.getTag(), DragController.DRAG_ACTION_MOVE);
 		// }
@@ -2790,13 +2892,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// mViewHeight =
 		// v.getHeight()>0?v.getHeight():mLauncher.mItemHeight;//v.getMeasuredHeight();
 
-		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v
-				.getLayoutParams();
-		Log.d(TAG, "moveitem,lp=" + lp.toString());
-		if (lp.width <= 0)
-			lp.width = mViewWidth;
-		if (lp.height <= 0)
-			lp.height = mViewHeight;
+//		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) v
+//				.getLayoutParams();
+//		Log.d(TAG, "moveitem,lp=" + lp.toString());
+//		if (lp.width <= 0)
+//			lp.width = mViewWidth;
+//		if (lp.height <= 0)
+//			lp.height = mViewHeight;
 
 		Log.d(TAG, "moveitem,getMeasuredWidth=" + getMeasuredWidth()
 				+ ", getMeasuredHeight=" + getMeasuredHeight());
@@ -3498,7 +3600,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 //		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
 //				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
 //		cellLayout.onDropChild(cell, mTargetCell);
-
+		cellLayout.onDropChild(cell);
+		
 		final ItemInfo info = (ItemInfo) cell.getTag();
 		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
 				.getLayoutParams();
