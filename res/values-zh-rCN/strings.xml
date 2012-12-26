@@ -90,7 +90,7 @@
     <string name="widget_kill_task">"确定关闭空闲程序，释放内存？"</string>
     <string name="task_manager_title">"正在运行 "</string>
     <string name="task_manager_meminfo"><xliff:g id="format">空闲/总内存：%1$dM/%2$dM</xliff:g></string>
-    <string name="delete_screen_error_one">"桌面至少要保留一个屏幕"</string>
+    <string name="delete_screen_error_one">"桌面至少要保留5个屏幕"</string>
     <string name="delete_screen_error_home">"该屏幕为默认主屏幕，不能删除"</string>
     <string name="delete_screen_confirm_title">"警告"</string>
     <string name="delete_screen_confirm_msg">"屏幕中包含图标，不能删除。"</string>

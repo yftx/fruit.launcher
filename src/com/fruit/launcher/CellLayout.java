@@ -428,9 +428,20 @@ public class CellLayout extends ViewGroup {
 
 	boolean isFull() {
 		boolean result = false;
-
+		int i=0;
+		
 		if (getChildCount() >= getMaxCount()) {
 			result = true;
+		} else {
+			for (i=0; i<getMaxCount();i++){
+				int index = numberToIndex(i);
+				if (index<0){
+					result=false;
+					break;
+				}
+			}
+			if(i>=getMaxCount())
+				result=true;
 		}
 
 		return result;

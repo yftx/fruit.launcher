@@ -162,8 +162,8 @@ public class ThumbnailWorkspace extends ViewGroup {
 				CellLayout child = (CellLayout) mWorkspace
 						.getChildAt(childIndex);
 
-				View newScreenThumb = generateThumbView(child,
-						child.getPageIndex(), childIndex);
+				View newScreenThumb = generateEmptyThumbView();
+				//View newScreenThumb = generateThumbView(null, child.getPageIndex(), childIndex);
 
 				Log.d(TAG, "add,pageIndex=" + child.getPageIndex()
 						+ ",childIndex" + childIndex);
@@ -191,7 +191,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 				// TODO Auto-generated method stub
 				int deleteScreenIndex = -1;// 0;
 
-				if (mWorkspace.getChildCount() == 1) {
+				if (mWorkspace.getChildCount() <= SettingUtils.MIN_SCREEN_COUNT) {
 					Toast.makeText(mContext, R.string.delete_screen_error_one,
 							Toast.LENGTH_SHORT).show();
 					return;
@@ -493,6 +493,61 @@ public class ThumbnailWorkspace extends ViewGroup {
 		return view;
 	}
 
+	private View generateEmptyThumbView() {
+//		Log.d(TAG, "generateThumbView,cell has " + cell.getChildCount()
+//				+ " childs,pageIndex=" + pageIndex + ",childIndex="
+//				+ childIndex);
+
+		View view = mInflater.inflate(R.layout.thumbnail_item, null);
+		ImageView thumb = (ImageView) view
+				.findViewById(R.id.thumbnail_imageview);
+		ImageView home = (ImageView) view
+				.findViewById(R.id.thumbnail_home_indicator);
+		ImageView delete = (ImageView) view
+				.findViewById(R.id.thumbnail_delete_screen);
+
+		Log.d(TAG, "generateThumbView,getMeasuredWidth=" + getMeasuredWidth()
+				+ ",getMeasuredHeight=" + getMeasuredHeight());
+		Log.d(TAG, "generateThumbView,getLeft=" + getLeft() + ",getRight="
+				+ getRight() + ",getTop=" + getTop() + ",getBottom="
+				+ getBottom());
+
+		mThumbWidth = (getMeasuredWidth() - mWidthStartPadding - mWidthEndPadding)
+				/ COL_NUM;
+		mThumbHeight = (getMeasuredHeight() - mHeightStartPadding - mHeightEndPadding)
+				/ ROW_NUM;
+
+		Log.d(TAG, "generateThumbView,mThumbWidth=" + mThumbWidth
+				+ ",mThumbWidth=" + mThumbWidth);
+
+//		if (thumb != null && cell != null) {
+//			// Force set transformation to false
+//			// for drawing cell layout without any transformations
+//			cell.setStaticTransformationsEnabled(false);
+//			thumb.setImageBitmap(getThumbnail(cell));
+//			cell.setStaticTransformationsEnabled(true);
+//		}
+
+		view.setOnClickListener(mThumbClickListener);
+
+		// Set getCurrentScreen() as focus
+		Log.d(TAG, "generateThumbView,mWorkspace.getCurrentScreen()="
+				+ mWorkspace.getCurrentScreen());
+//		view.setSelected((childIndex == /* cell.getPageIndex() */mWorkspace
+//				.getCurrentScreen()));
+
+		// Set mHomeScreenIndex indicator
+		home.setOnClickListener(mHomeClickListener);
+		Log.d(TAG, "generateThumbView,home is " + SettingUtils.mHomeScreenIndex);
+//		if (pageIndex/* cell.getPageIndex() */== SettingUtils.mHomeScreenIndex) {
+//			home.setImageResource(R.drawable.ic_homescreen_on);
+//		}
+
+		delete.setOnClickListener(mDeleteScreenClickListener);
+		view.setOnLongClickListener(mLongClickListener);
+		return view;
+	}
+	
 	private Bitmap getThumbnail(View view) {
 		float scaleWidth = ((float) mThumbWidth) / ((float) view.getWidth());
 		float scaleHeight = ((float) mThumbHeight) / ((float) view.getHeight());

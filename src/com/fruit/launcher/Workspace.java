@@ -3591,15 +3591,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	// }
 	// }
 
-	public void onDropOri(CellLayout cellLayout, int x, int y, int xOffset,
+	public void onDropOri1x1(CellLayout cellLayout, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
 
 		final View cell = mDragInfo.cell;
 		// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
 
-//		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
-//				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
-//		cellLayout.onDropChild(cell, mTargetCell);
 		cellLayout.onDropChild(cell);
 		
 		final ItemInfo info = (ItemInfo) cell.getTag();
@@ -3610,6 +3607,28 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				lp.cellX, lp.cellY);
 	}
 
+	public void onDropOri(CellLayout cellLayout, int x, int y, int xOffset,
+			int yOffset, DragView dragView, Object dragInfo) {
+
+		final View cell = mDragInfo.cell;
+		// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
+
+		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
+		if (mTargetCell==null){
+			dragView.setmCallbackFlag(false);			
+			return;
+		}
+		cellLayout.onDropChild(cell, mTargetCell);
+		
+		final ItemInfo info = (ItemInfo) cell.getTag();
+		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
+				.getLayoutParams();
+		LauncherModel.moveItemInDatabase(mLauncher, info,
+				Favorites.CONTAINER_DESKTOP, cellLayout.getPageIndex(),
+				lp.cellX, lp.cellY);
+	}
+	
 	@Override
 	public void onDrop(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
@@ -3639,8 +3658,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 					}
 				}
 
-				onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
-						dragInfo);
+				if(isViewSpan1x1(mDragInfo.cell))
+					onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
+							dragInfo);
+				else
+					onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
+							dragInfo);
 				return;
 
 				// first, check if drop target can

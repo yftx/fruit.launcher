@@ -42,6 +42,15 @@
         launcher:spanX="4"
         launcher:spanY="3"
         launcher:x="0"
+        launcher:y="0" />
+        
+    <appwidget
+        launcher:className="com.vollo.album.AblumWidgetProvide"
+        launcher:packageName="com.vollo.album"
+        launcher:screen="6"
+        launcher:spanX="4"
+        launcher:spanY="2"
+        launcher:x="0"
         launcher:y="1" />
         
     <!-- Dockbar -->

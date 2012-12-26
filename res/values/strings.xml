@@ -177,7 +177,7 @@
     <string name="widget_kill_task">Are you sure to kill all background applications to free memory?</string>
     <string name="task_manager_title">Running </string>
     <string name="task_manager_meminfo"><xliff:g id="format">Free/Total memory : %1$dM/%2$dM</xliff:g></string>
-    <string name="delete_screen_error_one">Launcher must have at least one screen</string>
+    <string name="delete_screen_error_one">Launcher must have at least 5 screen</string>
     <string name="delete_screen_error_home">You can not delete a default home screen</string>
     <string name="delete_screen_confirm_title">Warning</string>
     <string name="delete_screen_confirm_msg">The screen contains icon.Continue to delete?</string>
