@@ -78,7 +78,7 @@ public class ItemAnimate {
 
 	private class ScrollRunnable implements Runnable {
 
-		private static final String TAG = "ScrollRunnable";
+		private static final String TAG = "ItemAnimate>ScrollRunnable";
 
 		private Scroller mScroller;
 

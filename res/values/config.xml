@@ -19,6 +19,6 @@
 
     <integer name="config_lock_apps_num">0</integer>
 
-    <string name="config_defalt_theme">com.fruit.launcher.theme.fruit</string>
+    <string name="config_defalt_theme">com.fruit.launcher.theme.common</string>
 
 </resources>
