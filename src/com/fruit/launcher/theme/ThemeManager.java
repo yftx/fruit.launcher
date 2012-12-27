@@ -239,8 +239,9 @@ public final class ThemeManager {
 			return mAppBgIcons[0];
 		} else if (className == null) {
 			index = (new Random()).nextInt(length);
-		} else {
-			index = Math.max(0, className.hashCode() % length);
+		} else {			
+			index = Math.max(0, Math.abs(className.hashCode()) % length);
+			Log.d(TAG, "getAppBgIcon:hashcode="+className.hashCode()+",len="+length+",index="+index);
 		}
 
 		if (index < 0 || index > mAppBgIcons.length) {
