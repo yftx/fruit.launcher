@@ -69,7 +69,9 @@ public class SettingActivity extends PreferenceActivity implements
 		String versionName = null;
 		try {
 			versionName = getString(R.string.current_desk_version)
-					+ getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+					+ getPackageManager().getPackageInfo(getPackageName(), 0).versionName 
+					+ "."
+					+ getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
