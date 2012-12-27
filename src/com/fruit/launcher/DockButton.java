@@ -111,7 +111,9 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 
 		CellLayout current = (CellLayout) workspace.getChildAt(workspace
 				.getCurrentScreen());
-
+		if(workspace.getOriLayout()==null){
+			workspace.setOriLayout((CellLayout)workspace.getChildAt(workspace.getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
+		}
 		if (itemType == Applications.APPS_TYPE_APP
 				|| itemType == Applications.APPS_TYPE_FOLDERAPP) {
 			ApplicationInfoEx appInfo = (ApplicationInfoEx) dragInfo;
@@ -184,21 +186,19 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 					// Drag from user folder
 					// Remove this code block to add userfolder icon can
 					// exchange with dockbar
-					/*
-					 * mLauncher.removeItemFromFolder(deskItemInfo);
-					 * LauncherModel.deleteItemFromDatabase(mContext,
-					 * dockIteminfo);
-					 * 
-					 * deskItemInfo.cellX = index; deskItemInfo.cellY = -1;
-					 * deskItemInfo.container = Favorites.CONTAINER_DOCKBAR;
-					 * deskItemInfo.screen = -1;
-					 * LauncherModel.updateItemInDatabase(mLauncher,
-					 * deskItemInfo);
-					 * setImageBitmap(Utilities.createCompoundBitmapEx
-					 * (deskItemInfo.title.toString(),
-					 * deskItemInfo.getIcon(mLauncher.getIconCache())));
-					 * setTag(deskItemInfo); return;
-					 */
+					
+//					  mLauncher.removeItemFromFolder(deskItemInfo);
+//					  LauncherModel.deleteItemFromDatabase(mContext, dockIteminfo);
+//					  
+//					  deskItemInfo.cellX = index; deskItemInfo.cellY = -1;
+//					  deskItemInfo.container = Favorites.CONTAINER_DOCKBAR;
+//					  deskItemInfo.screen = -1;
+//					  LauncherModel.updateItemInDatabase(mLauncher,	deskItemInfo);
+//					  setImageBitmap(Utilities.createCompoundBitmapEx(deskItemInfo.title.toString(),
+//							  deskItemInfo.getIcon(mLauncher.getIconCache())));
+//					  setTag(deskItemInfo); 
+//					  return;
+					 
 				}
 			}
 
@@ -215,19 +215,38 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 			 * dockIteminfo.cellX = newCell[0];//deskItemInfo.cellX;
 			 * dockIteminfo.cellY = newCell[1];//deskItemInfo.cellY;
 			 * dockIteminfo.screen = scrn;//deskItemInfo.screen; } else
-			 */{
-				dockIteminfo.cellX = deskItemInfo.cellX;
-				dockIteminfo.cellY = deskItemInfo.cellY;
-                if(source instanceof DockButton)
-                	dockIteminfo.screen = -1;
-                else
-                	dockIteminfo.screen = workspace.getOriLayout().getPageIndex();// deskItemInfo.screen;
-			}
-
-			dockIteminfo.container = deskItemInfo.container;
+			 */
+			Log.d(TAG,"onDrop::source instanceof "+source.toString());
+     		if(source instanceof DockButton){
+    			dockIteminfo.cellX = deskItemInfo.cellX;
+    			dockIteminfo.cellY = -1;
+            	dockIteminfo.screen = -1;
+            	dockIteminfo.container = Favorites.CONTAINER_DOCKBAR;
+    		}else if (source instanceof UserFolder){
+    			dockIteminfo.cellX = deskItemInfo.cellX;
+    			dockIteminfo.cellY = deskItemInfo.cellY;
+            	FolderInfo folderInfo = ((Folder) source).mInfo;
+            	dockIteminfo.screen = folderInfo.screen;
+            	dockIteminfo.container = deskItemInfo.container;
+            } else{
+    			dockIteminfo.cellX = deskItemInfo.cellX;
+    			dockIteminfo.cellY = deskItemInfo.cellY;
+    			if(current.isFull()){
+	    			if (workspace.getOriLayout()!=null){
+	            		dockIteminfo.screen = workspace.getOriLayout().getPageIndex();// deskItemInfo.screen;
+	            	}else {
+	            		dockIteminfo.screen = -1;//current.getPageIndex();
+	            	}
+    			} else {
+    				dockIteminfo.screen = current.getPageIndex();
+            	}
+            	dockIteminfo.container = Favorites.CONTAINER_DESKTOP;
+            }			     		
+     		
 			dockIteminfo.orderId = deskItemInfo.orderId;
 			LauncherModel.updateItemInDatabase(mLauncher, dockIteminfo);
 
+			//deskItem
 			deskItemInfo.cellX = index;
 			deskItemInfo.cellY = -1;
 			deskItemInfo.container = Favorites.CONTAINER_DOCKBAR;
@@ -238,7 +257,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 					deskItemInfo.getIcon(mLauncher.getIconCache())));
 			setTag(deskItemInfo);
 
-			if (dockIteminfo.screen == -1) {
+			if (dockIteminfo.screen == -1 || dockIteminfo.container == Favorites.CONTAINER_DOCKBAR) {
 				// Switch dock button
 				final DockBar dockBar = (DockBar) getParent();
 				DockButton view = (DockButton) dockBar
@@ -253,7 +272,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 				// Drag from Folder to Dock bar
 				FolderInfo folderInfo = ((Folder) source).mInfo;
 				CellLayout cellLayout = (CellLayout) workspace
-						.getChildAt(folderInfo.screen);
+						.getChildAt(workspace.getChildIndexByPageIndex(folderInfo.screen));
 				for (int i = 0; i < cellLayout.getChildCount(); i++) {
 					ItemInfo itemInfo = (ItemInfo) cellLayout.getChildAt(i)
 							.getTag();
@@ -275,8 +294,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 						.createShortcut(
 								R.layout.application,
 								(ViewGroup) workspace.getChildAt(workspace
-										.getChildIndexByPageIndex(workspace
-												.getOriLayout().getPageIndex())/*
+										.getChildIndexByPageIndex(dockIteminfo.screen)/*
 																				 * workspace
 																				 * .
 																				 * getCurrentScreen
@@ -291,8 +309,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 				// Log.d(TAG,"dockbar, before addInScreen,current has "+
 				// ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
 				workspace.addInScreen(shortcut,
-						workspace.getChildIndexByPageIndex(workspace
-								.getOriLayout().getPageIndex())/*
+						workspace.getChildIndexByPageIndex(dockIteminfo.screen)/*
 																 * workspace.
 																 * getCurrentScreen
 																 * ()
@@ -323,6 +340,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 					.updateItemInDatabase(mLauncher, mBackupDockButtonInfo);
 		}
 		mBackupDockButtonInfo = null;
+		mLauncher.getWorkspace().cleanAfterDrop();
 	}
 
 	@Override
