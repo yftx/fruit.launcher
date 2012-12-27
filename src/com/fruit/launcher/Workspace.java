@@ -86,7 +86,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	 * The velocity at which a fling gesture will cause us to snap to the next
 	 * screen
 	 */
-	private static final int SNAP_VELOCITY = 300;//600;
+	private static final int SNAP_VELOCITY = 200;//600;
 
 	private final WallpaperManager mWallpaperManager;
 
@@ -156,7 +156,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			.log(SMOOTHING_SPEED));
 	private float mSmoothingTime;
 	private float mTouchX;
-
+	private int scrollX;
+	
 	private int mTransitionType;
 	private Camera mCamera;
 	// used for anti-alias
@@ -752,6 +753,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		updateWallpaperOffset(Launcher.mScreenWidth * getChildCount() - (mRight - mLeft));
 	}
 
+//	private void updateWallpaperOffset(int scrollRange) {
+//        IBinder token = getWindowToken();
+//        if (token != null) {
+//            mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0);
+//            mWallpaperManager.setWallpaperOffsets(getWindowToken(),
+//                    Math.max(0.0f, Math.min(scrollX / (float) scrollRange, 1.0f)), 0);
+//        }
+//    }
+
 	private void updateWallpaperOffset(int scrollRange) {
 		IBinder token = getWindowToken();
 		int tempScrollX = 0;
@@ -759,61 +769,62 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if (token != null) {
 			mWallpaperManager.setWallpaperOffsetSteps(
 					1.0f / (getChildCount() - 1), 0);
+			
 			if (mWallpaperIndex == INVALID_SCREEN) {
 				CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
 				mWallpaperIndex = current.getPageIndex();
 				tempScrollX = mWallpaperIndex * Launcher.mScreenWidth;
 			} else {
 				if (mNextScreen==-1){
-					if (mLastDirection==TOUCH_STATE_REST){
-						mLastDirection = mTouchDirection;
-					}		
+//					if (mLastDirection==TOUCH_STATE_REST){
+//						mLastDirection = mTouchDirection;
+//					} 
 					
 					if (mTouchDirection == TOUCH_STATE_SCROLLING_LEFT) {						
 						tempScrollX = (Launcher.mScreenWidth > 0) ? mWallpaperIndex * Launcher.mScreenWidth
-								- (Launcher.mScreenWidth - mScrollX % Launcher.mScreenWidth) : mScrollX;
-						if(mLastDirection==TOUCH_STATE_SCROLLING_RIGHT){
+								- (Launcher.mScreenWidth - scrollX % Launcher.mScreenWidth) : scrollX;
+						if(mLastDirection==TOUCH_STATE_SCROLLING_RIGHT && scrollX > mCurrentScreen * Launcher.mScreenWidth){
 							tempScrollX+=Launcher.mScreenWidth;
 						}
 					} else if (mTouchDirection == TOUCH_STATE_SCROLLING_RIGHT) {
 						tempScrollX = (Launcher.mScreenWidth > 0) ? mWallpaperIndex * Launcher.mScreenWidth
-								+ mScrollX % Launcher.mScreenWidth : mScrollX;
-						if(mLastDirection==TOUCH_STATE_SCROLLING_LEFT){
+								+ scrollX % Launcher.mScreenWidth : scrollX;
+						if(mLastDirection==TOUCH_STATE_SCROLLING_LEFT && scrollX < mCurrentScreen * Launcher.mScreenWidth){
 							tempScrollX-=Launcher.mScreenWidth;
 						}
 					} else {
-						tempScrollX = mScrollX;
+						tempScrollX = scrollX;
 					}
 					
 
 				} else {	
 //					if (mNextScreen>mCurrentScreen){
-//						tempScrollX = mScrollX + Launcher.mScreenWidth * (mWallpaperIndex-mCurrentScreen+1);
+//						tempScrollX = scrollX + Launcher.mScreenWidth * (mWallpaperIndex-mCurrentScreen+1);
 //					} else if(mNextScreen<mCurrentScreen) {
-//						tempScrollX = mScrollX - Launcher.mScreenWidth * (mCurrentScreen-mWallpaperIndex+1);;
+//						tempScrollX = scrollX - Launcher.mScreenWidth * (mCurrentScreen-mWallpaperIndex+1);;
 //					} else {
-//						tempScrollX = mScrollX;
+//						tempScrollX = scrollX;
 //					}
 					if (mTouchDirection == TOUCH_STATE_SCROLLING_LEFT) {
 						tempScrollX = (Launcher.mScreenWidth > 0) ? mWallpaperIndex * Launcher.mScreenWidth
-								- (Launcher.mScreenWidth - mScrollX % Launcher.mScreenWidth) : mScrollX;
-						if(mLastDirection==TOUCH_STATE_SCROLLING_RIGHT){
-							tempScrollX+=Launcher.mScreenWidth;
-						}								
+								- (Launcher.mScreenWidth - scrollX % Launcher.mScreenWidth) : scrollX;
+//						if(mLastDirection==TOUCH_STATE_SCROLLING_RIGHT && scrollX > mCurrentScreen * Launcher.mScreenWidth){
+//							tempScrollX+=Launcher.mScreenWidth;
+//						}								
 					} else if (mTouchDirection == TOUCH_STATE_SCROLLING_RIGHT) {
 						tempScrollX = (Launcher.mScreenWidth > 0) ? mWallpaperIndex * Launcher.mScreenWidth
-								+ mScrollX % Launcher.mScreenWidth : mScrollX;
-						if(mLastDirection==TOUCH_STATE_SCROLLING_LEFT){
-							tempScrollX-=Launcher.mScreenWidth;
-						}						
+								+ scrollX % Launcher.mScreenWidth : scrollX;
+//						if(mLastDirection==TOUCH_STATE_SCROLLING_LEFT && scrollX < mCurrentScreen * Launcher.mScreenWidth){
+//							tempScrollX-=Launcher.mScreenWidth;
+//						}						
 					} else {
-						tempScrollX = mScrollX;
+						tempScrollX = scrollX;
 					}
 				}				
 
 				if (mNextScreen != INVALID_SCREEN
 						&& mTouchState == TOUCH_STATE_REST
-						&& mScrollX % Launcher.mScreenWidth == 0) {
+						&& scrollX % Launcher.mScreenWidth == 0) {
 					CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
 					mWallpaperIndex = current.getPageIndex();
 					tempScrollX = mWallpaperIndex * getWidth();
@@ -823,9 +834,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 
 			Log.d(TAG, "updateWallpaperOffset, mWallpaperIndex="
-					+ mWallpaperIndex + ",mScrollX=" + mScrollX
+					+ mWallpaperIndex + ",scrollX=" + scrollX
 					+ ",tempScrollX=" + tempScrollX + ",mNextScreen="
-					+ mNextScreen + ",mTouchState=" + mTouchState+ ", mTouchDirection="+mTouchDirection);
+					+ mNextScreen + ",mTouchState=" + mTouchState+ ", mTouchDirection="+mTouchDirection
+					+",mLastDirection="+mLastDirection);
 //			if (tempScrollX > (float) scrollRange) {
 //				// tempScrollX -= scrollRange;
 //				int alpha = 255 - (int) (((tempScrollX - scrollRange) * 1.0
@@ -883,33 +895,44 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 	
 	@Override
-	public void scrollTo(int x, int y) {
+	public void scrollTo(int x, int y) {		
 		super.scrollTo(x, y);
 		mTouchX = x;
 		mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+		Log.d(TAG, "scrollTo>x="+x+",y="+y+",mTouchX="+mTouchX+",mSmoothingTime"+mSmoothingTime);
 	}
 
 	@Override
 	public void computeScroll() {
+		
+		Log.d(TAG, "computeScroll>mScroller.computeScrollOffset()="
+				+mScroller.computeScrollOffset()+",mNextScreen="+mNextScreen
+				+",mTouchState="+mTouchState);
+		
 		if (mScroller.computeScrollOffset()) {
-			mTouchX = mScrollX = mScroller.getCurrX();
-			// if (mScrollX >= getChildAt(getChildCount()-1).getRight()) {
-			// mScrollX -= getChildAt(getChildCount()-1).getRight();
-			// mTouchX = mScrollX;
-			// }
-
+			
+			//mTouchX = mScroller.getCurrX();      
+			mTouchX = scrollX = mScroller.getCurrX();			
+			      
 			mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-			mScrollY = mScroller.getCurrY();
-
+			
+			mScrollX = scrollX;
+			mScrollY = mScroller.getCurrY();		
+			
+			Log.d(TAG,"computeScroll>computeScrollOffset>scrollX="+scrollX
+					+",mTouchX="+mTouchX+",mSmoothingTime="+mSmoothingTime);
+			
 			updateWallpaperOffset();
 			postInvalidate();
+			
 		} else if (mNextScreen != INVALID_SCREEN) {
-			// mCurrentScreen = Math.max(0, Math.min(mNextScreen,
-			// getChildCount() - 1));
-			// if(mCurrentScreen)
+			
+			Log.d(TAG, "computeScroll>mNextScreen="+mNextScreen);
+
 			CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
-			mScreenIndicator.setCurrentScreen(next.getPageIndex());
 			// mScreenIndicator.setCurrentScreen(mCurrentScreen);
+			mScreenIndicator.setCurrentScreen(next.getPageIndex());
+			
 			Launcher.setScreen(mCurrentScreen);
 			mNextScreen = INVALID_SCREEN;
 			mWallpaperIndex = INVALID_SCREEN;
@@ -917,20 +940,24 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mLastDirection = TOUCH_STATE_REST;
 			sendBroadcast4Widget(next);
 			clearChildrenCache();
+			
 		} else if (mTouchState == TOUCH_STATE_SCROLLING) {
+			
 			final float now = System.nanoTime() / NANOTIME_DIV;
 			final float e = (float) Math.exp((now - mSmoothingTime)
 					/ SMOOTHING_CONSTANT);
-			final float dx = mTouchX - mScrollX;
-			mScrollX += dx * e;
+			final float dx = mTouchX - scrollX;
+			Log.d(TAG,"computeScroll>TOUCH_STATE_SCROLLING>scrollX="+scrollX
+					+",mTouchX="+mTouchX+",dx="+dx+",dx*e="+(dx*e)+",now="+now);
+			
+			scrollX += dx * e;
+			mScrollX = scrollX;
 			mSmoothingTime = now;
-
+			
 			// Keep generating points as long as we're more than 1px away from
 			// the target
-			if (dx > 1.0f || dx < -1.0f) {
-				//if (dx > 25.0f || dx < -25.0f) {
-					updateWallpaperOffset();
-				//}
+			if (dx > 1.0f || dx < -1.0f) {				
+				updateWallpaperOffset();				
 				postInvalidate();
 			}
 		}
@@ -1002,7 +1029,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
 		} else {
 			final long drawingTime = getDrawingTime();
-			final float scrollPos = (float) mScrollX / getWidth();
+			final float scrollPos = (float) scrollX / getWidth();
                final int leftScreen = (int) scrollPos;
                final int rightScreen = leftScreen + 1;
                final int childCount = getChildCount();
@@ -1169,6 +1196,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		final boolean workspaceLocked = mLauncher.isWorkspaceLocked();
 		final boolean allAppsVisible = mLauncher.isAllAppsVisible();
+		Log.d(TAG, "onInterceptTouchEvent>workspaceLocked="+workspaceLocked
+				+",allAppsVisible="+allAppsVisible);
 		if (workspaceLocked || allAppsVisible) {
 			return false; // We don't want the events. Let them fall through to
 			// the all apps view.
@@ -1185,6 +1214,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		 * and he is moving his finger. We want to intercept this motion.
 		 */
 		final int action = ev.getAction();
+		Log.d(TAG, "onInterceptTouchEvent>action="+action
+				+",mTouchState="+mTouchState);
 		if ((action == MotionEvent.ACTION_MOVE)
 				&& (mTouchState != TOUCH_STATE_REST)) {
 			return true;
@@ -1220,17 +1251,22 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			final int touchSlop = mTouchSlop;
 			boolean xMoved = xDiff > touchSlop;
 			boolean yMoved = yDiff > touchSlop;
-
+			
+			Log.d(TAG, "onInterceptTouchEvent>ACTION_MOVE>x="+x+",y="+y
+					+",pointerIndex="+pointerIndex+",xDiff="+xDiff
+					+",yDiff="+yDiff+",touchSlop="+touchSlop
+					+",xMoved="+xMoved+",yMoved="+yMoved);
+			
 			if (xMoved || yMoved) {
 				if (xMoved) {
-					// if (mDragInfo==null || mDragInfo.cell==null) {
 					// Scroll if the user moved far enough along the X axis
 					mTouchState = TOUCH_STATE_SCROLLING;
 					mLastMotionX = x;
-					mTouchX = mScrollX;
+					mTouchX = scrollX = mScrollX;
 					mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
+					Log.d(TAG,"onInterceptTouchEvent>ACTION_MOVE>scrollX="+scrollX
+							+",mTouchX="+mTouchX+",mSmoothingTime="+mSmoothingTime);
 					enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
-					// }
 				}
 				// Either way, cancel any pending longpress
 				if (mAllowLongPress) {
@@ -1256,24 +1292,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				}
 			}
 
-			// mPosMove[0] = (int) ev.getX();
-			// mPosMove[1] = (int) ev.getY();
-
-			// if (mDragInfo != null && isViewSpan1x1(mDragInfo.cell) &&
-			// mViewWidth > 0) {
-			// //CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-			// mStartDrag = true;
-			// startDrag(mDragInfo, (int) ev.getX(), (int) ev.getY());
-			// //startDrag((int) ev.getX(), (int) ev.getY());
-			// //mDragController.startDrag(mDragInfo.cell, this,
-			// mDragInfo.cell.getTag(), DragController.DRAG_ACTION_MOVE);
-			// }
-
 			break;
 		}
 		case MotionEvent.ACTION_POINTER_DOWN:
 			mDistance = spacing(ev);
 			mMultiTouch = true;
+			Log.d(TAG, "onInterceptTouchEvent>ACTION_POINTER_DOWN>mDistance="+mDistance);
 			break;
 		case MotionEvent.ACTION_DOWN: {
 			mMultiTouch = false;
@@ -1293,18 +1317,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mTouchState = mScroller.isFinished() ? TOUCH_STATE_REST
 					: TOUCH_STATE_SCROLLING;
 
-			// if (mDragInfo != null) {
-			// mPos[0] = (int) ev.getX();
-			// mPos[1] = (int) ev.getY();
-			// mPosMove[0] = mPos[0];
-			// mPosMove[1] = mPos[1];
-			// }
+			Log.d(TAG, "onInterceptTouchEvent>ACTION_DOWN>x="+x+",y="+y
+					+",mActivePointerId="+mActivePointerId);
 
 			break;
 		}
 
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
+			Log.d(TAG, "onInterceptTouchEvent>ACTION_CANCEL/ACTION_UP>pointerIndex="
+					+ev.findPointerIndex(mActivePointerId)
+					+",mTouchState="+mTouchState);
 			if (mTouchState != TOUCH_STATE_SCROLLING) {
 				final CellLayout currentScreen = (CellLayout) getChildAt(mCurrentScreen);
 				if (!currentScreen.lastDownOnOccupiedCell()) {
@@ -1340,19 +1363,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				mVelocityTracker = null;
 			}
 
-			// clearLongClickValues();
-
-			// if (mDragInfo != null) {
-			// if (isViewSpan1x1(mDragInfo.cell)) {
-			// mStartDrag = false;
-			// endDrag((int) ev.getX(), (int) ev.getY());
-			// }
-			// }
-
 			break;
 
 		case MotionEvent.ACTION_POINTER_UP:
 			onSecondaryPointerUp(ev);
+			Log.d(TAG, "onInterceptTouchEvent>ACTION_POINTER_UP>onSecondaryPointerUp");
 			break;
 		}
 
@@ -1360,6 +1375,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		 * The only time we want to intercept motion events is if we are in the
 		 * drag mode.
 		 */
+		Log.d(TAG, "onInterceptTouchEvent>result="+(mTouchState != TOUCH_STATE_REST));
+		
 		return mTouchState != TOUCH_STATE_REST;
 	}
 
@@ -1549,6 +1566,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	// delete tail and add to head by step
 	void changChildWhenScrollLeft(int step) {
+		Log.d(TAG, "changChildWhenScrollLeft");
 		for (int i = 0; i < step; i++) {
 			View lastChild = getChildAt(getChildCount() - 1);
 			removeViewAt(getChildCount() - 1);
@@ -1559,6 +1577,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	// delete head and add to tail by step
 	void changChildWhenScrollRight(int step) {
+		Log.d(TAG, "changChildWhenScrollRight");
 		for (int i = 0; i < step; i++) {
 			View firstChild = getChildAt(0);
 			removeViewAt(0);
@@ -1567,86 +1586,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
-	// void changeChildWhenScroll(int currPos, int newPos, int direction){
-	// if(direction==TOUCH_STATE_SCROLLING_LEFT){
-	// if(currPos>newPos){
-	//
-	// } else if (currPos<newPos){
-	//
-	// }
-	// } else if(direction==TOUCH_STATE_SCROLLING_RIGHT){
-	// if(currPos>newPos){
-	//
-	// } else if (currPos<newPos){
-	// View currChild=getChildAt(currPos);
-	//
-	// }
-	// }
-	// }
-
-	// void jointLast2First() {
-	// if (!mIsJointedRight) {
-	// changChildWhenScrollRight();
-	// mIsJointedRight = true;
-	// }
-	// }
-	//
-	// void dejointLast2First() {
-	// if (mIsJointedRight) {
-	// View lastChild = getChildAt(getChildCount()-1);
-	// removeViewAt(getChildCount()-1);
-	// removeViewAt(0);
-	// addView(lastChild, 0);
-	// mIsJointedRight = false;
-	// }
-	// }
-	//
-	// void jointFirst2Last() {
-	// if (!mIsJointedLeft) {
-	// changChildWhenScrollLeft();
-	// mIsJointedLeft = true;
-	// }
-	// }
-	//
-	// void dejointFirst2Last() {
-	// if (mIsJointedLeft) {
-	// View firstChild = getChildAt(0);
-	// removeViewAt(0);
-	// addView(firstChild);
-	// mIsJointedLeft = false;
-	// }
-	// }
-	//
-	// void reset2First() {
-	// reset2Special(0);
-	// }
-	//
-	// void reset2Last() {
-	// reset2Special(getChildCount()-1);
-	// }
-	//
-	// void reset2Special(int special) {
-	// // if (!mScroller.isFinished()) {
-	// // mScroller.abortAnimation();
-	// // }
-	// clearVacantCache();
-	// mCurrentScreen = special;
-	// mScreenIndicator.setCurrentScreen(mCurrentScreen);
-	// //scrollTo(mCurrentScreen * getWidth(), 0);
-	//
-	//
-	// mTouchX = mScrollX = special*getWidth();
-	//
-	// Launcher.setScreen(mCurrentScreen);
-	// mNextScreen = INVALID_SCREEN;
-	// clearChildrenCache();
-	// updateWallpaperOffset();
-	// // invalidate();
-	//
-	// }
-
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
+		Log.d(TAG, "onTouchEvent>workspaceLocked="+mLauncher.isWorkspaceLocked()
+				+",allAppsVisible="+mLauncher.isAllAppsVisible());
 		if (mLauncher.isWorkspaceLocked()) {
 			// We don't want the events. Let them fall through to the all apps
 			// view.
@@ -1669,7 +1612,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mVelocityTracker.addMovement(ev);
 
 		final int action = ev.getAction();
-
+		Log.d(TAG, "onTouchEvent>action="+action);
+		
 		switch (action & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
 			/*
@@ -1686,11 +1630,21 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			if (mTouchState == TOUCH_STATE_SCROLLING) {
 				enableChildrenCache(mCurrentScreen - 1, mCurrentScreen + 1);
 			}
+			
+			Log.d(TAG, "onTouchEvent>ACTION_DOWN>mLastMotionX="+mLastMotionX
+					+",mActivePointerId="+mActivePointerId+",mTouchState="+mTouchState);
+			
 			break;
+			
 		case MotionEvent.ACTION_POINTER_DOWN:
 			mMultiTouch = true;
+			Log.d(TAG, "onTouchEvent>ACTION_POINTER_DOWN");
 			break;
+			
 		case MotionEvent.ACTION_MOVE:
+			
+			Log.d(TAG, "onTouchEvent>ACTION_MOVE>mTouchState="+mTouchState);
+			
 			if (mTouchState == TOUCH_STATE_SCROLLING) {
 				// Scroll to follow the motion event
 				final int pointerIndex = ev.findPointerIndex(mActivePointerId);
@@ -1703,96 +1657,81 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				final float deltaX = mLastMotionX - x;
 				mLastMotionX = x;
 
-				if (deltaX < 0) {
+				Log.d(TAG, "onTouchEvent>ACTION_MOVE>pointerIndex="+pointerIndex
+						+",x="+x+",deltaX="+deltaX);
+				
+				if (deltaX < 0) {    
+					
+                    if (mTouchDirection!=TOUCH_STATE_SCROLLING_LEFT){
+                    	mLastDirection = mTouchDirection;
+                    }
 					mTouchDirection = TOUCH_STATE_SCROLLING_LEFT;
 					if (mTouchX > 0) {
 						mTouchX += Math.max(-mTouchX, deltaX);
 						mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
 						invalidate();
-					} /*
-					 * else if (mTouchX < 0) { mTouchX -=
-					 * getChildAt(getChildCount() - 1).getRight() + deltaX;
-					 * 
-					 * mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-					 * invalidate(); } else { mTouchX =
-					 * getChildAt(getChildCount() - 1).getRight(); //mTouchX =
-					 * getChildAt(getChildCount() - 1).getRight() + deltaX;
-					 * mTouchX += deltaX; //mTouchX +=
-					 * getChildAt(getChildCount() - 1).getRight() + deltaX;
-					 * //mScrollX = (int)mTouchX; mSmoothingTime =
-					 * System.nanoTime() / NANOTIME_DIV; invalidate(); } else {
-					 * changChildWhenScrollLeft(); //jointFirst2Last(); mTouchX
-					 * += getWidth()+deltaX; mScrollX = (int)mTouchX;
-					 * mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-					 * invalidate(); }
-					 */
-
+					} 
+					Log.d(TAG, "onTouchEvent>ACTION_MOVE>mTouchX="+mTouchX);
+					
 				} else if (deltaX > 0) {
+					
+					if (mTouchDirection!=TOUCH_STATE_SCROLLING_RIGHT){
+						mLastDirection = mTouchDirection;
+					}
 					mTouchDirection = TOUCH_STATE_SCROLLING_RIGHT;
-					final float availableToScroll = getChildAt(
-							getChildCount() - 1).getRight()
+					final float availableToScroll = Launcher.mScreenWidth*getChildCount()
 							- mTouchX - getWidth();
 					if (availableToScroll > 0) {
 						mTouchX += Math.min(availableToScroll, deltaX);
 						mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
 						invalidate();
-					} /*
-					 * else if (availableToScroll < 0) { mTouchX += deltaX; //if
-					 * (mTouchX >= getChildAt(getChildCount()-1).getRight()) //
-					 * mTouchX -= getChildAt(getChildCount()-1).getRight();
-					 * mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
-					 * invalidate(); } else { //mTouchX = deltaX; mTouchX =
-					 * 0.0f; //mScrollX = 0; mTouchX += deltaX; //if (mTouchX >=
-					 * getChildAt(getChildCount()-1).getRight()) // mTouchX -=
-					 * getChildAt(getChildCount()-1).getRight(); mSmoothingTime
-					 * = System.nanoTime() / NANOTIME_DIV; invalidate(); } else
-					 * { changChildWhenScrollRight(); //jointLast2First();
-					 * mTouchX += deltaX - getWidth(); mSmoothingTime =
-					 * System.nanoTime() / NANOTIME_DIV; invalidate(); }
-					 */
-
+					} 
+					
+					Log.d(TAG, "onTouchEvent>ACTION_MOVE>mTouchX="+mTouchX
+							+",availableToScroll="+availableToScroll);
+					
 				} else {
 					//mTouchDirection = TOUCH_STATE_REST;
 					awakenScrollBars();
 				}
-
-				//mScreenIndicator.scrollLayout(deltaX);//??
-
+				
 			}
 			break;
+			
 		case MotionEvent.ACTION_UP:
+			
+			Log.d(TAG, "onTouchEvent>ACTION_UP>mTouchState="+mTouchState);
+			
 			if (mTouchState == TOUCH_STATE_SCROLLING) {
 				final VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
-				final int velocityX = (int) velocityTracker
-						.getXVelocity(mActivePointerId);
-				final int screenWidth = getWidth();
-				final int whichScreen = (mScrollX + (screenWidth / 2))
-						/ screenWidth;
-				// if (whichScreen>getChildCount()-1) whichScreen =
-				// getChildCount()-1;
-				final float scrolledPos = (float) mScrollX / screenWidth;
-				// int newScreen = -1;
-
+				final int velocityX = (int) velocityTracker.getXVelocity(mActivePointerId);
+				
+				final int screenWidth = Math.max(getWidth(), Launcher.mScreenWidth);
+//				final int whichScreen = (scrollX + (screenWidth / 2)) / screenWidth;
+//				final float scrolledPos = (float) scrollX / screenWidth;
+				final int whichScreen = ((int)mTouchX + (screenWidth / 2)) / screenWidth;
+				final float scrolledPos = (float) mTouchX / screenWidth;
+				
+				Log.d(TAG, "onTouchEvent>ACTION_UP>scrollX="+scrollX
+						+",mTouchX="+mTouchX+",whichScreen="+whichScreen
+						+",scrolledPos="+scrolledPos+",velocityX="+velocityX
+						+",mCurrentScreen="+mCurrentScreen);
+				
 				if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0) {
 					// Fling hard enough to move left.
 					// Don't fling across more than one screen at a time.
-					// if (mCurrentScreen == 0) {
-					// newScreen = getChildCount() - 1;
-					// } else {
-					// newScreen = mCurrentScreen - 1;
-					// }
+					
 					final int bound = scrolledPos < whichScreen ? mCurrentScreen - 1
 							: mCurrentScreen;
 					// if (bound<0) bound = getChildCount() - 1;
 					int newScreen = Math.min(whichScreen, bound);
-					// if (newScreen < 0) {
-					// newScreen = 0;//getChildCount() - 1;
-					// moveToScreen(newScreen);
-					// } //else {
-					// whichScreen = newScreen;
+
+					Log.d(TAG, "onTouchEvent>ACTION_UP>bound="+bound
+							+",newScreen="+newScreen);
+					
 					snapToScreen(newScreen, velocityX, false);
-					// }
+					
 				} else if (velocityX < -SNAP_VELOCITY
 						&& mCurrentScreen < getChildCount() - 1) {
 					// Fling hard enough to move right
@@ -1801,49 +1740,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 							: mCurrentScreen;
 					// if (bound > getChildCount() - 1) bound = 0;
 					int newScreen = Math.max(whichScreen, bound);
-					// if (newScreen > getChildCount() - 1) {
-					// newScreen = 0;
-					// moveToScreen(newScreen);
-					// } //else {
-					// whichScreen = newScreen;
+
+					Log.d(TAG, "onTouchEvent>ACTION_UP>bound="+bound
+							+",newScreen="+newScreen);
 					snapToScreen(newScreen, velocityX, false);
-					// }
+					
 				} else {
-					// if (velocityX > 0 && velocityX <= SNAP_VELOCITY ) {
-					// dejointFirst2Last();
-					// whichScreen = 0;
-					// } else if (velocityX < 0 && velocityX >= -SNAP_VELOCITY)
-					// {
-					// dejointLast2First();
-					// }
 
 					snapToScreen(whichScreen, 0, false);
 				}
-
-				// if (whichScreen>mScreenCount-1) {
-				// mScreenIndicator.setCurrentScreen(0);
-				// }
-
-				// if (mIsJointedRight) {
-				// dejointLast2First();
-				// if (whichScreen==getChildCount() - 1) {
-				// reset2Last();
-				// } else {
-				// reset2First();
-				// }
-				// }
-				//
-				// if (mIsJointedLeft) {
-				// dejointFirst2Last();
-				// if (whichScreen==0) {
-				// reset2Last();
-				// } else {
-				// reset2First();
-				// }
-				// }
-
-				// int index = mScroller.isFinished() ? mCurrentScreen :
-				// mNextScreen;
 
 				if (mVelocityTracker != null) {
 					mVelocityTracker.recycle();
@@ -1858,9 +1763,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mTouchState = TOUCH_STATE_REST;
 			//mTouchDirection = TOUCH_STATE_REST;
 			mActivePointerId = INVALID_POINTER;
+			Log.d(TAG, "onTouchEvent>ACTION_CANCEL");
 			break;
 		case MotionEvent.ACTION_POINTER_UP:
 			onSecondaryPointerUp(ev);
+			Log.d(TAG, "onTouchEvent>ACTION_POINTER_UP>onSecondaryPointerUp");
 			break;
 		}
 
@@ -1896,7 +1803,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		enableChildrenCache(mCurrentScreen, whichScreen);
 
 		mNextScreen = whichScreen;
-		// mScreenIndicator.setCurrentScreen(mNextScreen);//??
+		//mScreenIndicator.setCurrentScreen(mNextScreen);//see below
 
 		View focusedChild = getFocusedChild();
 		if (focusedChild != null && whichScreen != mCurrentScreen
@@ -1922,27 +1829,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			changChildWhenScrollRight(step);
 		}
 
-		// if(mCurrentScreen<mNextScreen){
-		// this.changChildWhenScrollRight(mNextScreen-mCurrentScreen);
-		// }else if(mCurrentScreen>mNextScreen){
-		// this.changChildWhenScrollLeft(mCurrentScreen-mNextScreen);
-		// }
-
 		CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
 		mScreenIndicator.setCurrentScreen(next.getPageIndex());
 
-		/*
-		 * int screenDelta = 0; //final int screenDelta = Math.max(1,
-		 * Math.abs(whichScreen - mCurrentScreen)); int newX = whichScreen *
-		 * getWidth(); if ((mCurrentScreen == 0) && (mNextScreen ==
-		 * (getChildCount() - 1))) { screenDelta = 1; //mScrollX =
-		 * (getChildCount()-1)*getWidth(); //newX = whichScreen * getWidth(); }
-		 * else if ((mCurrentScreen == (getChildCount() - 1)) && (mNextScreen ==
-		 * 0)) { screenDelta = 1; //mScrollX = 0;// -1 * getWidth(); newX =
-		 * getChildCount()*getWidth(); } else { screenDelta = Math.max(1,
-		 * Math.abs(whichScreen - mCurrentScreen)); //newX = whichScreen *
-		 * getWidth(); }
-		 */
 
 		final int screenDelta = Math.max(1,
 				Math.abs(whichScreen - mCurrentScreen));
@@ -1950,13 +1839,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		if (mCurrentScreen < mNextScreen) {
 			newX -= getWidth();
-			mScrollX -= getWidth();
+			scrollX -= getWidth();
 		} else if (mCurrentScreen > mNextScreen) {
 			newX += getWidth();
-			mScrollX += getWidth();
+			scrollX += getWidth();
 		}
 
-		final int delta = newX - mScrollX;
+		mScrollX = scrollX;
+		
+		final int delta = newX - scrollX;
 		// int duration = (screenDelta + 1) * 100;
 		int duration = (int) (Math.abs(delta) / (float) getWidth() * 400);
 		if (!mScroller.isFinished()) {
@@ -1978,7 +1869,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 
 		awakenScrollBars(duration);
-		mScroller.startScroll(mScrollX, 0, delta, 0, duration);
+		mScroller.startScroll(scrollX, 0, delta, 0, duration);
 		invalidate();
 	}
 
@@ -2624,57 +2515,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		return null;
 	}
 
-	// private int getPosX(int x) {
-	// return x - mCellWidth / 2;
-	// }
-	//
-	// private int getPosY(int y) {
-	// return y - mCellHeight / 2;
-	// }
-
-	// void startDrag(int x, int y) {
-	// CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	//
-	// View view = pointToView(x, y);
-	// if (mItemAnimate.animateEnd && view != null) {
-	// if (view != mDragInfo.cell) {
-	// //CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// mDragInfo.cell.getLayoutParams();
-	// //int fromPos = current.cellToNumber(lp.cellX, lp.cellY);
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// view.getLayoutParams();
-	// mToPos = current.cellToNumber(lp.cellX, lp.cellY);
-	// startAnimate();
-	// } else if (view == mDragInfo.cell) {
-	//
-	// }
-	// }
-	// }
-
-	// private void startDrag(int x, int y) {
-	// View view = pointToView(x, y);
-	// CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	//
-	// if (mItemAnimate.animateEnd && view != null) {
-	// if (view != mDragView) {
-	// mToPos = findViewIndex(view, 0);
-	// if (mToPos >= mFromPos) {
-	// mToPos++;
-	// }
-	// startAnimate();
-	// } else if (view == mDragView) {
-	// int count = getChildCount();
-	// int pos = getPos(x, y); //current.pointToNumber(x, y);
-	// if (pos > count - 1 && mToPos != count - 1) {
-	// mToPos = count - 1;
-	// startAnimate();
-	// }
-	// }
-	// }
-	//
-	// mDragView.layout(getPosX(x), getPosY(y),
-	// getPosX(x) + mCellWidth, getPosY(y) + mCellHeight);
-	// }
 
 	void startDrag(CellLayout current, CellLayout.CellInfo cellInfo,
 			int fromPos, int toPos) {
@@ -2683,191 +2523,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if (toPos < 0 || toPos > current.getMaxCount() - 1)
 			return;
 
-		// View view = pointToView(current, x, y); //get the new view
-		//
-		// if (view == null) { //if x,y is empty
-		// view = current.getChildAt(current.numberToIndex(mToPos));
-		// if (view == null) {
-		// mFromPos = mToPos;
-		// cellInfo.cell.layout(getPosX(x), getPosY(y),
-		// getPosX(x) + mCellWidth, getPosY(y) + mCellHeight);
-		// return;
-		// }
-		// }
-
-		// View view = current.getChildAt(current.cellToIndex(newCell));
-		// if (mItemAnimate.animateEnd) {
-		// if (view!=cellInfo.cell) {
-		// startAnimate(current, current.cellToNumber(cellInfo.cellX,
-		// cellInfo.cellY), current.cellToNumber(newCell));
 		startAnimateEx(current, fromPos, toPos);
-		// mDragController.startDrag(mDragInfo.cell, this,
-		// mDragInfo.cell.getTag(), DragController.DRAG_ACTION_MOVE);
-		// }
-		// } else {
-		// Log.d(TAG, "914, animateEnd=false");
-		// }
-
-		// cellInfo.cell.layout(getPosX(x), getPosY(y),
-		// getPosX(x) + mCellWidth, getPosY(y) + mCellHeight);
 	}
 
-	// void startDrag(CellLayout.CellInfo cellInfo, int x, int y) {
-	//
-	// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
-	//
-	// CellLayout current = (CellLayout) getChildAt(mOldScreen);
-	//
-	// CellLayout newScreen = (CellLayout) getChildAt(index);
-	//
-	// if (index != mOldScreen) {
-	// //final CellLayout originalCellLayout = (CellLayout)
-	// getChildAt(mDragInfo.screen);
-	// if (current.indexOfChild(mDragInfo.cell) >= 0) {
-	// current.removeView(mDragInfo.cell);
-	// newScreen.addView(mDragInfo.cell);
-	// }
-	//
-	// mOldScreen = index;
-	//
-	// current = newScreen;
-	//
-	// current.pointToCellExact(x, y, newCell);
-	// int temp = current.cellToNumber(newCell[0], newCell[1]);
-	// temp = Math.abs(current.findFirstVacantCell()-temp) <
-	// Math.abs(current.findLastVacantCell()-temp) ?
-	// current.findFirstVacantCell() : current.findLastVacantCell();
-	// mFromPos = mToPos = mDragInitPos = temp;
-	//
-	// }
-	//
-	// current.pointToCellRounded(x, y, newCell); //pointToCellRounded
-	// //CellLayout.CellInfo vInfo = (CellLayout.CellInfo) view.getTag();
-	// mToPos = current.cellToNumber(newCell[0],
-	// newCell[1]);//findViewIndex(newCell[0], newCell[1]);//findViewIndex(view,
-	// 0);
-	// //int mToPos2 = getPos(x,y);
-	//
-	// //if (mToPos != mToPos2) {
-	// //Log.d(TAG, "error");
-	// //mToPos = mToPos2;
-	// //}
-	//
-	// if (mToPos == mFromPos) {
-	// Log.d(TAG, "mToPos = mFromPos");
-	// cellInfo.cell.layout(getPosX(x), getPosY(y),
-	// getPosX(x) + mCellWidth, getPosY(y) + mCellHeight);
-	// return;
-	// }
-	//
-	// View view = pointToView(current, x, y); //get the new view
-	//
-	// if (view == null) { //if x,y is empty
-	// view = current.getChildAt(current.numberToIndex(mToPos));
-	// if (view == null) {
-	// mFromPos = mToPos;
-	// cellInfo.cell.layout(getPosX(x), getPosY(y),
-	// getPosX(x) + mCellWidth, getPosY(y) + mCellHeight);
-	// return;
-	// }
-	// }
-	//
-	// // if (view instanceof DeleteZone) {
-	// // isDropOnDeleteZone = true;
-	// // return;
-	// // } else {
-	// // isDropOnDeleteZone = false;
-	// // }
-	// //
-	// // Log.d(TAG, "yfzhao-"+view.getClass().toString());
-	// //
-	// // if (view instanceof DockButton) {
-	// //
-	// //mLauncher.getWorkspace().exchangeAllCells(mLauncher.getWorkspace().getCurrentScreen());
-	// //yfzhao
-	// // } else {
-	// //
-	// //mLauncher.getWorkspace().exchangeAllCells(mLauncher.getWorkspace().getCurrentScreen());
-	// //yfzhao
-	// // }
-	//
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// view.getLayoutParams();
-	// if (lp.cellHSpan==1 && lp.cellVSpan==1) {
-	// isDropOnView1x1 = true;
-	// } else {
-	// isDropOnView1x1 = false;
-	// cellInfo.cell.layout(getPosX(x), getPosY(y),
-	// getPosX(x) + mCellWidth, getPosY(y) + mCellHeight);
-	// return;
-	// }
-	//
-	// if (mItemAnimate.animateEnd && view != null) {
-	// if (view != cellInfo.cell) {
-	// // if (mToPos >= mFromPos) {
-	// // mToPos++;
-	// // }
-	// current.numberToCell(mToPos, newCell);
-	// current.changeCellXY(mDragInfo.cell, newCell[0], newCell[1]);
-	// startAnimate(current);
-	// //mDragController.startDrag(mDragInfo.cell, this,
-	// mDragInfo.cell.getTag(), DragController.DRAG_ACTION_MOVE);
-	// } else if (view == cellInfo.cell) {
-	// // int count = current.getChildCount();
-	// // int pos = getPos(x, y);
-	// // if (pos > count - 1 && mToPos != count - 1) {
-	// // mToPos = count - 1;
-	// // startAnimate();
-	// // //mDragController.startDrag(mDragInfo.cell, this,
-	// mDragInfo.cell.getTag(), DragController.DRAG_ACTION_MOVE);
-	// // }
-	// }
-	// }
-	//
-	// cellInfo.cell.layout(getPosX(x), getPosY(y),
-	// getPosX(x) + mCellWidth, getPosY(y) + mCellHeight);
-	// }
-
-	// private int findViewIndex(View v, int viewId) {
-	// // TODO Auto-generated method stub
-	// int index = -1;
-	// CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	//
-	// for (int i = 0; i < current.getChildCount(); i++) {
-	// View child = (viewId == 0) ? current.getChildAt(i) :
-	// current.getChildAt(i).findViewById(viewId);
-	// if (child == v) {
-	// index = i;
-	// break;
-	// }
-	// }
-	// return index;
-	// }
-
-	// private int findViewNumber(CellLayout.CellInfo cellInfo) {
-	// //int index = -1; //empty
-	// //CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	//
-	// //checkCellLayout(current);
-	//
-	// //index = cellInfo.cellY*4+cellInfo.cellX;
-	// //getTheDropView(cellInfo.cellX, cellInfo.cellY);
-	//
-	// //return index;
-	// return findViewNumber(cellInfo.cellX, cellInfo.cellY);
-	//
-	// }
-	//
-	// private int findViewNumber(int x, int y) {
-	// int index = -1; //empty
-	// //CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	//
-	// //checkCellLayout(current);
-	//
-	// index = y*4+x; //getTheDropView(cellInfo.cellX, cellInfo.cellY);
-	//
-	// return index;
-	// }
 
 	public void setLongClickValues(CellLayout.CellInfo cellInfo) {
 		mStartDrag = true;
@@ -3030,407 +2688,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		onDropExternal(result[0], result[1], info, layout, insertAtFirst);
 	}
 
-	// private CellLayout.LayoutParams lps[] = null;
-	// private int[][] bMap = null;
-	// private int[] aMap = null;
-	//
-	// public void checkCellLayout(CellLayout cellLayout) {
-	// //
-	// int count = cellLayout.getChildCount();
-	// int countX = cellLayout.getCountX();
-	// int countY = cellLayout.getCountY();
-	//
-	// View child = null;
-	//
-	// //CellLayout.LayoutParams lp = null;
-	// if (lps == null) {
-	// lps = new CellLayout.LayoutParams[countX*countY];
-	// }
-	//
-	// if (bMap == null) {
-	// bMap = new int[countX][countY];
-	// }
-	//
-	// if (aMap == null) {
-	// aMap = new int[countX*countY];
-	// }
-	//
-	// for (int i = 0; i< countX; i++) {
-	// for (int j = 0;j<countY;j++) {
-	// bMap[i][j] = -1; //empty
-	// lps[i+j] = null;
-	// aMap[i+j] = -1;
-	// }
-	// }
-	//
-	// //
-	// for (int i = 0; i < count; i++) {
-	// child = cellLayout.getChildAt(i);
-	// lps[i] = (CellLayout.LayoutParams) child.getLayoutParams();
-	// if (lps[i].dropped || lps[i].isDragging) {
-	// bMap[lps[i].cellY][lps[i].cellX] = -1; //count as empty
-	// aMap[lps[i].cellY*countX+lps[i].cellX] = -1;
-	// } else {
-	// bMap[lps[i].cellY][lps[i].cellX] = i;
-	// aMap[lps[i].cellY*countX+lps[i].cellX] = i;
-	// for (int k = 0; k<lps[i].cellVSpan; k++) {
-	// for (int j = 0; j<lps[i].cellHSpan; j++) {
-	// bMap[lps[i].cellY+k][lps[i].cellX+j] = i; //0-max index
-	// aMap[(lps[i].cellY+k)*countX+(lps[i].cellX+j)] = i;
-	// }
-	// }
-	// }
-	// }
-	//
-	// }
-	//
-	// public int getTheDropView(int cellX, int cellY){
-	// return bMap[cellY][cellX];
-	// //return null;
-	// }
-	//
-	// public int getTheDropView(int index){
-	// return aMap[index];
-	// //return null;
-	// }
-
-	// public void moveTheCellView(DragSource source, Object dragInfo,
-	// CellLayout cellLayout, int[] oldCell, int[] newCell, int index) {
-	// //
-	// int countX = cellLayout.getCountX();
-	// //int countY = cellLayout.getCountY();
-	//
-	// int oldPlace = cellLayout.cellToNumber(oldCell[0], oldCell[1]);
-	// //oldCell[1]*countX+oldCell[0];
-	// int newPlace = cellLayout.cellToNumber(newCell[0], newCell[1]);
-	// //newCell[1]*countX+newCell[0];
-	//
-	// int tempCell[] = new int[2];
-	// tempCell[0] = oldCell[0];
-	// tempCell[1] = oldCell[1];
-	//
-	// View child = null;
-	//
-	// int row = newCell[1];
-	// int col = newCell[0];
-	//
-	// //
-	// if (newPlace < oldPlace) {
-	// for (int i = newPlace+1; i<oldPlace; i++) {
-	// col++;
-	// if (col>=countX){
-	// row++;
-	// col=0;
-	// }
-	// int pos = getTheDropView(col, row);
-	// if (pos<0){
-	// oldCell[0]=col;
-	// oldCell[1]=row;
-	// oldPlace = oldCell[1]*countX+oldCell[0];
-	// }
-	// }
-	//
-	// row = oldCell[1];
-	// col = oldCell[0];
-	//
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	//
-	// for (int i = oldPlace-1; i>=newPlace; i--) {
-	// //for (int row = oldCell[1]; row >= newCell[1]; row--) {
-	// // for (int col = oldCell[0]-1; col >= newCell[0]; col--) {
-	// col--;
-	// if (col<0) {
-	// row--;
-	// col=countX-1;
-	// }
-	//
-	// int pos = getTheDropView(col, row);
-	//
-	// if (pos >= 0) {
-	// if (lps[pos].cellHSpan == 1 && lps[pos].cellVSpan == 1) {
-	// child = cellLayout.getChildAt(pos);
-	// //for effect
-	// //this.mDragController.startDrag(child, source, dragInfo,
-	// DragController.DRAG_ACTION_MOVE);
-	// //cellLayout.onDragChild(child);
-	// //cellLayout.onDragOverChild(child, tempCell[0], tempCell[1]);
-	//
-	// // if (mItemAnimate.animateEnd && child != null) {
-	// // startAnimation(child, pos, tempCell);
-	// // }
-	// //
-	// // child.layout(lps[pos].x, lps[pos].y,
-	// // lps[pos].x + mCellWidth, lps[pos].y + mCellHeight);
-	//
-	// cellLayout.onDropChild(child, tempCell);
-	// //this.mDragController.cancelDrag();
-	// //ItemInfo info = (ItemInfo) child.getTag();
-	// //LauncherModel.moveItemInDatabase(mLauncher, info,
-	// // Favorites.CONTAINER_DESKTOP, index, tempCell[0], tempCell[1]);
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	// } else {
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	//
-	// // }
-	// //}
-	// }
-	// } else if (newPlace > oldPlace) {
-	// for (int i = newPlace-1; i>oldPlace; i--) {
-	// col--;
-	// if (col<0){
-	// row--;
-	// col=countX-1;
-	// }
-	// int pos = getTheDropView(col, row);
-	// if (pos<0){
-	// oldCell[0]=col;
-	// oldCell[1]=row;
-	// oldPlace = oldCell[1]*countX+oldCell[0];
-	// }
-	// }
-	//
-	// row = oldCell[1];
-	// col = oldCell[0];
-	//
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	//
-	// for (int i = oldPlace+1; i<=newPlace; i++) {
-	// //for (int row = oldCell[1]; row >= newCell[1]; row--) {
-	// // for (int col = oldCell[0]-1; col >= newCell[0]; col--) {
-	// col++;
-	// if (col>countX-1) {
-	// row++;
-	// col=0;
-	// }
-	//
-	// int pos = getTheDropView(col, row);
-	//
-	// if (pos >= 0) {
-	// if (lps[pos].cellHSpan == 1 && lps[pos].cellVSpan == 1) {
-	// child = cellLayout.getChildAt(pos);
-	// cellLayout.onDropChild(child, tempCell);
-	// //ItemInfo info = (ItemInfo) child.getTag();
-	// //LauncherModel.moveItemInDatabase(mLauncher, info,
-	// // Favorites.CONTAINER_DESKTOP, index, tempCell[0], tempCell[1]);
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	// } else {
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	//
-	// // }
-	// //}
-	// }
-	// }
-	//
-	// }
-
-	// public void moveTheCellView(CellLayout cellLayout, int screen, View cell,
-	// int oldPlace, int newPlace) {
-	//
-	// int countX = cellLayout.getCountX();
-	//
-	// oldPlace = cellLayout.findNearestVacantCellBetween(oldPlace, newPlace);
-	//
-	// int tempCell[] = new int[2];
-	// cellLayout.numberToCell(oldPlace, tempCell);
-	//
-	// int row = tempCell[1];
-	// int col = tempCell[0];
-	//
-	// //
-	// if (newPlace < oldPlace) {
-	//
-	// for (int i = oldPlace-1; i>=newPlace; i--) {
-	//
-	// col--;
-	// if (col<0) {
-	// row--;
-	// col=countX-1;
-	// }
-	//
-	// int index = cellLayout.cellToIndex(col, row);
-	//
-	// if (index >= 0) {
-	// if (cellLayout.getCellSpanX(index) == 1 && cellLayout.getCellSpanY(index)
-	// == 1) {
-	// View child = cellLayout.getChildAt(index);
-	// cellLayout.onDropChild(child, tempCell);
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	// } else {
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	// }
-	// } else if (newPlace > oldPlace) {
-	//
-	// for (int i = oldPlace+1; i<=newPlace; i++) {
-	//
-	// col++;
-	// if (col>countX-1) {
-	// row++;
-	// col=0;
-	// }
-	//
-	// int index = cellLayout.cellToIndex(col, row);
-	//
-	// if (index >= 0) {
-	// if (cellLayout.getCellSpanX(index) == 1 && cellLayout.getCellSpanY(index)
-	// == 1) {
-	// View child = cellLayout.getChildAt(index);
-	// cellLayout.onDropChild(child, tempCell);
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	// } else {
-	// tempCell[0] = col;
-	// tempCell[1] = row;
-	// }
-	//
-	// }
-	// }
-	//
-	//
-	// cellLayout.numberToCell(newPlace, tempCell);
-	// if (cellLayout.indexOfChild(cell)<0) {
-	// cellLayout.addView(cell);
-	// }
-	// cellLayout.onDropChild(cell, tempCell);
-	//
-	// exchangeAllCells(screen);
-	//
-	// }
-
-	// private void onDropDifferentScreen(View view, int srcScreen, int
-	// destScreen) {
-	// if (cellLayout.getChildCount() >= cellLayout.getMaxCount()) {
-	// if (index < mDragInfo.screen) {
-	// for (int i = index+1; i <= mDragInfo.screen; i++) {
-	// CellLayout cl = (CellLayout) getChildAt(i);
-	// if (cl.getChildCount() >= cellLayout.getMaxCount()) {
-	// continue;
-	// }
-	// CellLayout cl2 = (CellLayout) getChildAt(i-1);
-	// View lastCellView = ;
-	// for (int j = 0; j < cl.getChildCount(); j++) {
-	// if
-	// }
-	//
-	// break;
-	// }
-	//
-	// } else if (index > mDragInfo.screen) {
-	//
-	// }
-	//
-	// int i = index + 1;
-	//
-	//
-	// }
-	//
-	// }
-
-	// private void onDropSameScreen(CellLayout cellLayout) {
-	//
-	// boolean isSelfMoveable = false;
-	// final View cell = mDragInfo.cell;
-	// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
-	// if (index != mDragInfo.screen) {
-	// if (mDragInfo.spanX == 1 && mDragInfo.spanY == 1) {
-	//
-	//
-	// } else {
-	// final CellLayout originalCellLayout = (CellLayout)
-	// getChildAt(mDragInfo.screen);
-	// originalCellLayout.removeView(cell);
-	// cellLayout.addView(cell);
-	// isSelfMoveable = false;
-	// }
-	// } else {
-	// if (mDragInfo.spanX == 1 && mDragInfo.spanY == 1) {
-	// isSelfMoveable = true;
-	// } else {
-	// isSelfMoveable = false;
-	// }
-	// }
-	//
-	// onDropInternal(x, y , xOffset, yOffset, cell, cellLayout, index);
-	// return;
-	// //isSelfMoveable = false; //yfzhao!!
-	//
-	// //move next to next
-	// {
-	//
-	//
-	//
-	// checkCellLayout(cellLayout);
-	//
-	// int dropIndex = getTheDropView(newCell[0], newCell[1]);
-	// if (dropIndex >= 0) {
-	// if ((lps[dropIndex].cellHSpan == 1) && (lps[dropIndex].cellVSpan == 1)) {
-	// View dropView = cellLayout.getChildAt(dropIndex);
-	// if (dropView instanceof Folder) {
-	// isSelfMoveable = false;
-	// } else {
-	// isSelfMoveable = true;
-	// }
-	// } else {
-	// isSelfMoveable = false;
-	// }
-	// } else {
-	// isSelfMoveable = false;
-	// }
-	//
-	// if (!isSelfMoveable) {
-	// onDropInternal(x, y , xOffset, yOffset, cell, cellLayout, index);
-	// return;
-	// } else {
-	// //child = cellLayout.getChildAt(dropIndex);
-	// int[] oldCell = new int[2];
-	// oldCell[0] = mDragInfo.cellX;
-	// oldCell[1] = mDragInfo.cellY;
-	//
-	// moveTheCellView(source, dragInfo, cellLayout, oldCell, newCell, index);
-	//
-	// if (mTargetCell==null) {
-	// mTargetCell = new int[2];
-	// }
-	// mTargetCell[0] = newCell[0];
-	// mTargetCell[1] = newCell[1];
-	//
-	// cellLayout.onDropChild(cell, mTargetCell);
-	//
-	// //final ItemInfo info2 = (ItemInfo) cell.getTag();
-	// //CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// cell.getLayoutParams();
-	// //LauncherModel.moveItemInDatabase(mLauncher, info2,
-	// // Favorites.CONTAINER_DESKTOP, index, mTargetCell[0], mTargetCell[1]);
-	// exchangeAllCells(index);
-	// if (index != mDragInfo.screen) {
-	// exchangeAllCells(mDragInfo.screen);
-	// }
-	//
-	// return;
-	//
-	// }
-	// } else {
-	// onDropInternal(x, y , xOffset, yOffset, cell, cellLayout, index);
-	// return;
-	// }
-	//
-	//
-	// }
-	// }
 
 	boolean isViewSpan1x1(View v) {
 		if (v == null)
@@ -3489,108 +2746,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			}
 		}
 	}
-
-	// void onDropScreen(CellLayout.CellInfo cellInfo, int fromScreen, int
-	// toScreen, int newCellX, int newCellY){
-	// int emptyNumber = -1;
-	// int newNumber = -1;
-	// View child = null;
-	//
-	// if (fromScreen != toScreen) {
-	// CellLayout fromLayout = (CellLayout) getChildAt(fromScreen);
-	// fromLayout.removeView(cellInfo.cell);
-	// if (fromScreen > toScreen) {
-	// CellLayout toLayout = (CellLayout) getChildAt(toScreen);
-	// if (toLayout.isFull()) {
-	// CellLayout tempLayout = null;
-	// int emptyScreen = toScreen;
-	// do {
-	// emptyScreen++;
-	// tempLayout = (CellLayout) getChildAt(emptyScreen);
-	// } while (tempLayout.isFull());
-	//
-	// for (int i = emptyScreen; i>toScreen; i--) {
-	// tempLayout = (CellLayout) getChildAt(i);
-	// toLayout = (CellLayout) getChildAt(i-1);
-	// child = toLayout.getLastChild1x1();
-	// toLayout.removeView(child);
-	// emptyNumber = tempLayout.findFirstVacantCell();
-	// moveTheCellView(tempLayout, i, child, emptyNumber, 0);
-	// }
-	// }
-	//
-	// toLayout = (CellLayout) getChildAt(toScreen);
-	// emptyNumber = toLayout.findFirstVacantCell();
-	// newNumber = toLayout.cellToNumber(newCellX, newCellY);
-	// moveTheCellView(toLayout, toScreen, cellInfo.cell, emptyNumber,
-	// newNumber);
-	//
-	// } else {
-	//
-	// CellLayout toLayout = (CellLayout) getChildAt(toScreen);
-	// if (toLayout.isFull()) {
-	// CellLayout tempLayout = null;
-	// int emptyScreen = toScreen;
-	// do {
-	// emptyScreen++;
-	// if (emptyScreen >= getChildCount()) {
-	// emptyScreen = 0;
-	// }
-	// tempLayout = (CellLayout) getChildAt(emptyScreen);
-	// } while (tempLayout.isFull());
-	//
-	// if (emptyScreen > toScreen) {
-	// for (int i = emptyScreen; i>toScreen; i--) {
-	// tempLayout = (CellLayout) getChildAt(i);
-	// toLayout = (CellLayout) getChildAt(i-1);
-	// child = toLayout.getLastChild1x1();
-	// toLayout.removeView(child);
-	// emptyNumber = tempLayout.findFirstVacantCell();
-	// moveTheCellView(tempLayout, i, child, emptyNumber, 0);
-	// }
-	// } else {
-	// for (int i = emptyScreen; i>0; i--) {
-	// tempLayout = (CellLayout) getChildAt(i);
-	// toLayout = (CellLayout) getChildAt(i-1);
-	// child = toLayout.getLastChild1x1();
-	// toLayout.removeView(child);
-	// emptyNumber = tempLayout.findFirstVacantCell();
-	// moveTheCellView(tempLayout, i, child, emptyNumber, 0);
-	// }
-	//
-	// tempLayout = (CellLayout) getChildAt(0);
-	// toLayout = (CellLayout) getChildAt(getChildCount()-1);
-	// child = toLayout.getLastChild1x1();
-	// toLayout.removeView(child);
-	// emptyNumber = tempLayout.findFirstVacantCell();
-	// moveTheCellView(tempLayout, 0, child, emptyNumber, 0);
-	//
-	// for (int i = getChildCount()-1; i>toScreen; i--) {
-	// tempLayout = (CellLayout) getChildAt(i);
-	// toLayout = (CellLayout) getChildAt(i-1);
-	// child = toLayout.getLastChild1x1();
-	// toLayout.removeView(child);
-	// emptyNumber = tempLayout.findFirstVacantCell();
-	// moveTheCellView(tempLayout, i, child, emptyNumber, 0);
-	// }
-	// }
-	//
-	// }
-	//
-	// toLayout = (CellLayout) getChildAt(toScreen);
-	// //toLayout.addView(cellInfo.cell);
-	// emptyNumber = toLayout.findFirstVacantCell();
-	// newNumber = toLayout.cellToNumber(newCellX, newCellY);
-	// moveTheCellView(toLayout, toScreen, cellInfo.cell, emptyNumber,
-	// newNumber);
-	// }
-	// } else {
-	// CellLayout cellLayout = (CellLayout) getChildAt(toScreen);
-	// moveTheCellView(cellLayout, toScreen, cellInfo.cell,
-	// cellLayout.cellToNumber(cellInfo.cellX, cellInfo.cellY),
-	// cellLayout.cellToNumber(newCellX, newCellY));
-	// }
-	// }
 
 	public void onDropOri1x1(CellLayout cellLayout, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
@@ -3670,39 +2825,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 								dragInfo);
 					return;
 
-					// first, check if drop target can
-					// if (!isViewSpan1x1(dragInfo)){
-					// // onDropInternal(x, y, xOffset, yOffset, cell,
-					// // cellLayout, cellLayout.getPageIndex());
-					// onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
-					// dragInfo);
-					// return;
-					// } else {
-					// // int index = mScroller.isFinished() ? mCurrentScreen :
-					// // mNextScreen;
-					// assert (dragInfo != null);
-					// // if(dragInfo != null){
-					// ItemInfo itemInfo = (ItemInfo) dragInfo;
-					// // }
-					//
-					// // if (cellLayout.isOverFull()) {
-					// // dragView.setmCallbackFlag(false);
-					// // invalidate();
-					// // return;
-					// // }
-					//
-					// CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-					// .getLayoutParams();
-					// newCell[0] = lp.cellX;
-					// newCell[1] = lp.cellY;
-					// cellLayout.onDropChild(cell, newCell);
-					//
-					// //invalidate();
-					//
-					// exchangeAllCells(mCurrentScreen);
-					//
-					// return;
-					// }
+
 				} else {
 					invalidate();
 					Log.d(TAG, "mDragInfo == null");
@@ -3821,15 +2944,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if (current == null)
 			return;
 		shortcutInfo.screen = index;
-		current.pointToCellExact(x, y, newCell);// newCell?? pay attention to
-												// this
-												// if
-												// (current.cellToIndex(newCell)
-												// >= 0) {
-		// int asPos = current.findNearestVacantCellIn(current
-		// .cellToNumber(newCell));
-		// current.numberToCell(asPos, newCell);
-		// }
+		current.pointToCellExact(x, y, newCell);
 
 		shortcutInfo.cellX = newCell[0];
 		shortcutInfo.cellY = newCell[1];
@@ -4375,10 +3490,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	@Override
 	public void scrollLeft() {
+		Log.d(TAG, "scrollLeft");
 		clearVacantCache();
 		
 		if (mScroller.isFinished()) {
-			if (mCurrentScreen > 0) {               
+			if (mCurrentScreen > 0) { 
+                mLastDirection = mTouchDirection;
 				mTouchDirection = TOUCH_STATE_SCROLLING_LEFT;
 				snapToScreen(mCurrentScreen - 1);
 			}
@@ -4391,10 +3508,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	@Override
 	public void scrollRight() {
+		Log.d(TAG, "scrollRight");
 		clearVacantCache();
 		
 		if (mScroller.isFinished()) {
-			if (mCurrentScreen < getChildCount() - 1) {   
+			if (mCurrentScreen < getChildCount() - 1) { 
+                mLastDirection = mTouchDirection;
 				mTouchDirection = TOUCH_STATE_SCROLLING_RIGHT;
 				snapToScreen(mCurrentScreen + 1);
 			}
@@ -4738,9 +3857,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 
 	public float getCurrentScrollRatio(View view) {
+		//Log.d(TAG,"getCurrentScrollRatio");
 		float workspaceWidth = getMeasuredWidth();
 		float viewWidth = view.getMeasuredWidth();
-		float workspaceOffset = mScrollX + workspaceWidth / 2.0f;
+		float workspaceOffset = scrollX + workspaceWidth / 2.0f;
 		float viewOffset = view.getLeft() + viewWidth / 2.0f;
 		float ratio = (workspaceOffset - viewOffset)
 				/ (workspaceWidth + viewWidth) * 2.0f;
