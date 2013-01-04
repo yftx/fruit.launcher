@@ -1029,6 +1029,43 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
+//	void completeAddApplicationEx(Context context, Intent data) {
+//		CellLayout.CellInfo cell = new CellLayout.CellInfo();
+//		cell.cellX = mCellCoordinates[0];
+//		cell.cellY = mCellCoordinates[1];
+//		cell.screen = screen;
+//		
+//		final int[] xy = mCellCoordinates;
+//		if (!findSlot(cellInfo, xy, spans[0], spans[1])) {
+//			if (appWidgetId != -1)
+//				mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+//			return;
+//		}
+//		
+//
+//
+//		final ShortcutInfo info = mModel.getShortcutInfo(
+//				context.getPackageManager(), data, context);
+//
+//		if (info != null) {
+//			
+//			if (hasShortcut(context, info.title.toString(), data)) {
+//				Toast.makeText(this, getString(R.string.duplicate_shortcut),
+//						Toast.LENGTH_SHORT).show();
+//				return;
+//			}
+//
+//			info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK
+//					| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//			info.container = ItemInfo.NO_ID;
+//			mWorkspace.addApplicationShortcut(info, cell,
+//					isWorkspaceLocked());
+//		} else {
+//			Log.e(TAG, "Couldn't find ActivityInfo for selected application: "
+//					+ data);
+//		}
+//	}
+	
 	/**
 	 * Add an application shortcut to the dock bar.
 	 * 
@@ -1442,22 +1479,22 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		super.onCreateOptionsMenu(menu);
 
 		menu.add(MENU_GROUP_ADD, MENU_ADD, 0, R.string.menu_add)
-				.setIcon(android.R.drawable.ic_menu_add)
+				.setIcon(R.drawable.ic_menu_add)
 				.setAlphabeticShortcut('A');
 		menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0,
 				R.string.menu_wallpaper)
-				.setIcon(android.R.drawable.ic_menu_gallery)
+				.setIcon(R.drawable.ic_menu_gallery)
 				.setAlphabeticShortcut('W');
 		menu.add(0, MENU_SEARCH, 0, R.string.menu_search)
-				.setIcon(android.R.drawable.ic_search_category_default)
+				.setIcon(R.drawable.ic_menu_search)
 				.setAlphabeticShortcut(SearchManager.MENU_KEY);
 		menu.add(MENU_GROUP_THUMBNAIL, MENU_THUMBNAIL, 0,
-				R.string.menu_thumbnail).setIcon(R.drawable.ic_menu_thumbnail)
+				R.string.menu_thumbnail).setIcon(R.drawable.ic_menu_edit)
 				.setAlphabeticShortcut('N');
 
 		final Intent desktop = new Intent(this, SettingActivity.class);
 		menu.add(0, MENU_DESKTOP, 0, R.string.menu_desktop)
-				.setIcon(R.drawable.ic_menu_desktop).setIntent(desktop);
+				.setIcon(R.drawable.ic_menu_home).setIntent(desktop);
 
 		final Intent settings = new Intent(
 				android.provider.Settings.ACTION_SETTINGS);
@@ -1465,7 +1502,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
 		menu.add(0, MENU_SETTINGS, 0, R.string.menu_settings)
-				.setIcon(android.R.drawable.ic_menu_preferences)
+				.setIcon(R.drawable.ic_menu_preferences)
 				.setAlphabeticShortcut('P').setIntent(settings);
 
 		// new folder
@@ -2827,6 +2864,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
+	public boolean isThumbnailWorkspaceVisible(){
+		return mThumbnailWorkspace.isVisible();		
+	}
+	
 	void thumbnailShowed(boolean shown) {
 		mDockBarEnable = true;
 		if (!shown) {
