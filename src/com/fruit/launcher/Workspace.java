@@ -169,6 +169,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	private static final float BASELINE_FLING_VELOCITY = 2500.0f;
 	private static final float FLING_VELOCITY_INFLUENCE = 0.4f;
 	private boolean mMultiTouch = false;
+	private boolean mMultiTouchState = false;
+	
 	private float mDistance = 0f;
 
 	private ItemAnimate mItemAnimate; // yfzhao
@@ -222,6 +224,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	private Bitmap mCueBitmap;
 	private CueNumber mCueNumber;
 
+	int delayer = 0;
+	final int DELAY_OUT = 100;
+	
 	private final String ACTION_SCROLLER_SCREEN = "vollo.BACK_TO_MAINMENU_OR_MOVE_IN_MAINMENU";
 
 	private static class WorkspaceOvershootInterpolator implements Interpolator {
@@ -751,7 +756,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	private void updateWallpaperOffset() {
 //		updateWallpaperOffset(getChildAt(getChildCount() - 1).getRight()
 //				- (mRight - mLeft));
-		updateWallpaperOffsetEx(Launcher.mScreenWidth * getChildCount() - (mRight - mLeft));
+		updateWallpaperOffset(Launcher.mScreenWidth * getChildCount() - (mRight - mLeft));
 	}
 
 	private void updateWallpaperOffsetEx(int scrollRange) {
@@ -1276,7 +1281,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			}
 			if (mMultiTouch) {
 				try {
-					if (Math.abs(spacing(ev) - mDistance) > 60f) {
+					if (Math.abs(spacing(ev) - mDistance) > 60f) {						
 						mLauncher.showThumbnailWorkspace(true);
 						mMultiTouch = false;
 					}
@@ -1291,10 +1296,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		case MotionEvent.ACTION_POINTER_DOWN:
 			mDistance = spacing(ev);
 			mMultiTouch = true;
-			Log.d(TAG, "onInterceptTouchEvent>ACTION_POINTER_DOWN>mDistance="+mDistance);
+			mMultiTouchState = true;
+			Log.d(TAG, "onInterceptTouchEvent>ACTION_POINTER_DOWN>mDistance="+mDistance);			
 			break;
 		case MotionEvent.ACTION_DOWN: {
 			mMultiTouch = false;
+			mMultiTouchState = false;
 			final float x = ev.getX();
 			final float y = ev.getY();
 			// Remember location of down touch
@@ -1632,6 +1639,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			
 		case MotionEvent.ACTION_POINTER_DOWN:
 			mMultiTouch = true;
+			mMultiTouchState = true;
 			Log.d(TAG, "onTouchEvent>ACTION_POINTER_DOWN");
 			break;
 			
@@ -1694,9 +1702,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			
 		case MotionEvent.ACTION_UP:
 			
-			Log.d(TAG, "onTouchEvent>ACTION_UP>mTouchState="+mTouchState);
+			Log.d(TAG, "onTouchEvent>ACTION_UP>mTouchState="+mTouchState+",mMultiTouch="+mMultiTouch+",mMultiTouchState="+mMultiTouchState);
 			
-			if (mTouchState == TOUCH_STATE_SCROLLING) {
+			if (mTouchState == TOUCH_STATE_SCROLLING && !mMultiTouchState) {
 				final VelocityTracker velocityTracker = mVelocityTracker;
 				velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
 				final int velocityX = (int) velocityTracker.getXVelocity(mActivePointerId);
@@ -1746,6 +1754,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mTouchState = TOUCH_STATE_REST;
 			//mTouchDirection = TOUCH_STATE_REST;
 			mActivePointerId = INVALID_POINTER;
+			mMultiTouchState = false;
 			break;
 		case MotionEvent.ACTION_CANCEL:
 			mTouchState = TOUCH_STATE_REST;
@@ -2569,6 +2578,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// v.getParent().bringChildToFront(v);
 		// v.layout(getPosX(mPos[0]), getPosY(mPos[1]), getPosX(mPos[0]) +
 		// mCellWidth, getPosY(mPos[1]) + mCellHeight);
+		delayer = 0;
 	}
 
 	public void clearLongClickValues() {
@@ -2583,6 +2593,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mCellHeight = 0;
 		mViewWidth = 0;
 		mViewHeight = 0;
+		delayer = 0;
 	}
 
 	void startDrag(CellLayout.CellInfo cellInfo) {
@@ -2797,8 +2808,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				if (mDragInfo != null && mDragInfo.cell != null) {
 
 					final View cell = mDragInfo.cell;
-
-					// exchangeAllCells(mCurrentScreen);
+					
 					if (oriLayout != null) {
 						if (cellLayout.getPageIndex() != oriLayout.getPageIndex()) {
 							// final CellLayout originalCellLayout = (CellLayout)
@@ -3038,7 +3048,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	private void start2drag(CellLayout current, int x, int y, int xOffset, int yOffset) {
 		int[] overCell = new int[2];
-		current.pointToCellExact(x, y, overCell);
+		current.pointToCellExact(x, y, overCell);//important//pointToCellExact//pointToCellRounded
 		mToPos = current.cellToNumber(overCell);
 		Log.d(TAG, "start2drag,(x,y)=" + x + "," + y + "cell(" + overCell[0] + ","
 				+ overCell[1] + ")fromPos=" + mFromPos + ",toPos=" + mToPos+",offset("+xOffset+","+yOffset+")");
@@ -3088,7 +3098,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		//pass if span over 1x1
 		if (!isViewSpan1x1(dragInfo))
 			return;
-
+		
+		while (delayer < DELAY_OUT) {
+			//SystemClock.sleep(5);
+			delayer++;
+			return;
+		}
+		
 		//CellLayout current = null;
 		// int screen = -1;
 
@@ -3104,8 +3120,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				lastLayout = oriLayout;
 			}
 			if (lastLayout.getPageIndex() != current.getPageIndex()) {
-				exchangeAllCells(this.getChildIndexByPageIndex(lastLayout
-						.getPageIndex()));
+				//exchangeAllCells(this.getChildIndexByPageIndex(lastLayout
+				//		.getPageIndex()));
 				lastLayout = current;
 
 				if (current.isFull()) {
@@ -3139,7 +3155,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		Log.d(TAG, "drag sequence,workspace onDragExit");
 		clearVacantCache();
 
-		exchangeAllCells(getCurrentScreen());
+		//exchangeAllCells(getCurrentScreen());
 		// (mDragInfo.cell).requestLayout();
 		// CellLayout layout = (CellLayout)getChildAt(getCurrentScreen());
 		// layout.requestLayout();
@@ -3427,7 +3443,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				// final CellLayout cellLayout = (CellLayout)
 				// getChildAt(SettingUtils.mHomeScreenIndex);//
 				// (mDragInfo.screen);
-				oriLayout.removeView(mDragInfo.cell);
+				if (oriLayout != null)
+					oriLayout.removeView(mDragInfo.cell);
 				if (mDragInfo.cell instanceof DropTarget) {
 					mDragController
 							.removeDropTarget((DropTarget) mDragInfo.cell);
@@ -3471,6 +3488,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		cleanAfterDrop();
 
+		exchangeAllCells();
+		
 	}
 
 	/**
@@ -3767,15 +3786,21 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		
 		Log.d(TAG, "setFocusScreen,currPos="+currPos+",defaultChild=" + defaultChild);
 
-		if (mDefaultScreen < currPos) {
-			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-			changChildWhenScrollLeft(currPos - mDefaultScreen);
-		} else if (mDefaultScreen > currPos) {
-			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-			changChildWhenScrollRight(mDefaultScreen - currPos);
-		} else {
-			//do nothing
+		if(mCurrentScreen < defaultChild){
+			changChildWhenScrollRight(defaultChild-mCurrentScreen);
+		} else if (mCurrentScreen > defaultChild){
+			changChildWhenScrollLeft(mCurrentScreen-defaultChild);
 		}
+		
+//		if (mDefaultScreen < currPos) {
+//			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
+//			changChildWhenScrollLeft(currPos - mDefaultScreen);
+//		} else if (mDefaultScreen > currPos) {
+//			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
+//			changChildWhenScrollRight(mDefaultScreen - currPos);
+//		} else {
+//			//do nothing
+//		}
 		
 		Launcher.setScreen(getCurrentScreen());
 		
@@ -4337,6 +4362,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 
 		// current.onLayout(true, 0, 0, 0, 0);
+		invalidate();
 	}
 
 	public void exchangeAllCells(int index) {
