@@ -445,37 +445,6 @@ public final class Utilities {
 		return out.toByteArray();
 	}
 
-	// public static Bitmap scaleBitmap4Launcher(Bitmap b) {
-	// if (b == null) {
-	// return null;
-	// } else {
-	// float sxo = 1.0f;
-	// float syo = 1.0f;
-	// float base = 1.0f;
-	// Bitmap oldIcon = b;
-	// int width = oldIcon.getWidth();
-	// int height = oldIcon.getHeight();
-	//
-	// //if (DisplayMetrics.DENSITY_DEVICE <= 120) {
-	// base = 0.86f;//160.0f / DisplayMetrics.DENSITY_DEVICE;
-	// //}
-	//
-	// if (width > 96)
-	// sxo = base / (width/85.0f); //0.86f;
-	//
-	// if (height > 96)
-	// syo = base / (height/85.0f); //0.86f;
-	//
-	// Bitmap theIcon = Utilities.scaleBitmap(oldIcon, sxo, syo);
-	//
-	// Log.d(TAG, theIcon.getWidth() + " " + theIcon.getHeight());
-	//
-	// return theIcon;
-	// }
-	//
-	//
-	// }
-
 	public static Bitmap scaleBitmapAfterInstalled(Bitmap b) {
 		if (b == null) {
 			return null;
@@ -504,62 +473,6 @@ public final class Utilities {
 			return theIcon;
 		}
 
-	}
-
-	/*
-	 * public static Bitmap changeBitmap(Bitmap b) { //return b; if (true) {//
-	 * (b.getWidth() == 96 && b.getHeight() == 96) { return b; }
-	 * 
-	 * final ThemeManager mThemeMgr = ThemeManager.getInstance();
-	 * 
-	 * Bitmap theIcon = Utilities.scaleBitmap4Launcher(b);
-	 * 
-	 * Bitmap mBitmap =
-	 * Utilities.createCompoundBitmap(mThemeMgr.getRandomAppBgIcon(),
-	 * theIcon);//b;
-	 * 
-	 * return mBitmap; }
-	 */
-
-	// public static Bitmap createBitmap4Launcher(Bitmap b) {
-	// if (b == null)
-	// return null;
-	//
-	// int w = b.getWidth();
-	// int h = b.getHeight();
-	//
-	// if ((w == 96) && (h == 96)) {
-	// return b;
-	// }
-	//
-	// final ThemeManager mThemeMgr = ThemeManager.getInstance();
-	//
-	// Bitmap theIcon = b;//Utilities.scaleBitmapAfterInstalled(b);
-	//
-	// Bitmap mBitmap =
-	// Utilities.createCompoundBitmap(mThemeMgr.getRandomAppBgIcon(b),
-	// theIcon);//b;
-	//
-	// return mBitmap;
-	// }
-
-	public static Bitmap changeBitmap4Launcher(Bitmap b) {
-		return b;
-		/*
-		 * if (b == null) return null;
-		 * 
-		 * int w = b.getWidth(); int h = b.getHeight();
-		 * 
-		 * if ((w == 96) && (h == 96)) { return b; }
-		 * 
-		 * final ThemeManager mThemeMgr = ThemeManager.getInstance();
-		 * 
-		 * Bitmap mBitmap =
-		 * Utilities.createCompoundBitmap(mThemeMgr.getRandomAppBgIcon(b),
-		 * b);//b;
-		 * 
-		 * return mBitmap;
-		 */
 	}
 
 	static public Bitmap createCompoundBitmapEx(String title, Bitmap icon) {
@@ -671,23 +584,6 @@ public final class Utilities {
 		return false;
 	}
 
-	// public static Bitmap drawable2bmp(Drawable d) {
-	// if (d == null)
-	// return null;
-	//
-	// Bitmap b = null;
-	//
-	// if (d instanceof FastBitmapDrawable) {
-	// b = ((FastBitmapDrawable) d).getBitmap();
-	// } else if (d instanceof BitmapDrawable) {
-	// b = ((BitmapDrawable)d).getBitmap(); //yfzhao
-	// } /*else if (d instanceof LayerDrawable) {
-	// b = ((LayerDrawable)d).getBitmap(); //yfzhao
-	// } */
-	//
-	// return b;
-	// }
-
 	public static Bitmap drawable2bmp(Drawable d) {
 		if (d == null) {
 			return null;
@@ -697,8 +593,18 @@ public final class Utilities {
 	}
 
 	public static Drawable bmp2drawable(Bitmap b) {
-		BitmapDrawable bd = new BitmapDrawable(b);
-		return bd;
+		if (b == null) {
+			return null;
+		} else {
+			BitmapDrawable bd = null;
+			try {
+				bd = new BitmapDrawable(b);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return bd;
+		}
 	}
 
 	public static Bitmap drawableToBitmap(Drawable drawable) {
