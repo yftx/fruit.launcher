@@ -75,20 +75,24 @@ public class ThumbnailWorkspace extends ViewGroup {
 		// first scoll screen
 		// then set the screen
 		int childIndex = mWorkspace.getChildIndexByPageIndex(pageIndex);
-		
-		Log.d(TAG, "setFocusScreen,childIndex="+childIndex+",pageIndex=" + pageIndex);
-
 		int currPos = getWorkspaceFocusIndex();
-
-		if (pageIndex < currPos) {
-			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-			mWorkspace.changChildWhenScrollLeft(currPos - pageIndex);
-		} else if (pageIndex > currPos) {
-			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-			mWorkspace.changChildWhenScrollRight(pageIndex - currPos);
-		} else {
-			//do nothing
+		Log.d(TAG, "setFocusScreen,childIndex="+childIndex+",pageIndex=" + pageIndex+",currPos="+currPos);
+		
+		if (mWorkspace.getCurrentScreen() < childIndex) {
+			mWorkspace.changChildWhenScrollRight(childIndex - mWorkspace.getCurrentScreen());
+		} else if (mWorkspace.getCurrentScreen() > childIndex) {
+			mWorkspace.changChildWhenScrollLeft(mWorkspace.getCurrentScreen() - childIndex);
 		}
+		
+//		if (pageIndex < currPos) {
+//			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
+//			mWorkspace.changChildWhenScrollLeft(currPos - pageIndex);
+//		} else if (pageIndex > currPos) {
+//			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
+//			mWorkspace.changChildWhenScrollRight(pageIndex - currPos);
+//		} else {
+//			//do nothing
+//		}
 
 		// pos = SettingUtils.mFixedScreenIndex; //yfzhao
 		// int index = getIndexByPos(pos);
