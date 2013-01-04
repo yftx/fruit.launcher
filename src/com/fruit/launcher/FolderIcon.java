@@ -76,30 +76,8 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 
 		IconCache iconCache = ((LauncherApplication) launcher
 				.getApplicationContext()).getIconCache();
-
-		// int w = 0;
-		// int h = 0;
-
 		icon.mCloseIcon = iconCache.getFolderLocalIcon(true);
-		// Bitmap closeicon = iconCache.getFolderLocalIcon(true);
-		// w = closeicon.getWidth();
-		// h = closeicon.getHeight();
-		// if (w!=96 && h!=96) {
-		// icon.mCloseIcon = Utilities.scaleBitmap(closeicon, 96.0f/w, 96.0f/h);
-		// } else {
-		// icon.mCloseIcon = closeicon;
-		// }
-
 		icon.mOpenIcon = iconCache.getFolderLocalIcon(false);
-		// Bitmap openicon = iconCache.getFolderLocalIcon(false);
-		// w = openicon.getWidth();
-		// h = openicon.getHeight();
-		// if (w!=96 && h!=96) {
-		// icon.mOpenIcon = Utilities.scaleBitmap(closeicon, 96.0f/w, 96.0f/h);
-		// } else {
-		// icon.mOpenIcon = openicon;
-		// }
-
 		icon.updateFolderIcon();
 		icon.setCompoundDrawablesWithIntrinsicBounds(null, icon.mFolderIcon,
 				null, null);
