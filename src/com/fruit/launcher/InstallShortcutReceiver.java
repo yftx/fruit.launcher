@@ -27,18 +27,19 @@ import com.fruit.launcher.LauncherSettings.Favorites;
 import com.fruit.launcher.setting.SettingUtils;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
-
+	
 	public static final String ACTION_INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
 
 	private final int[] mCoordinates = new int[2];
 
 	@Override
-	public void onReceive(Context context, Intent data) {
+	public void onReceive(Context context, Intent data) {		
 		if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
+		//if (!Intent.ACTION_CREATE_SHORTCUT.equals(data.getAction()) ){
 			return;
 		}
 
-		int screen = SettingUtils.mHomeScreenIndex;
+		int screen = SettingUtils.MIN_SCREEN_COUNT-1;//SettingUtils.mHomeScreenIndex;
 		int i = 0;
 
 		if (!installShortcut(context, data, screen)) {
@@ -77,7 +78,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 				boolean duplicate = data.getBooleanExtra(
 						Launcher.EXTRA_SHORTCUT_DUPLICATE, true);
 				if (duplicate
-						|| !LauncherModel.shortcutExists(context, name, intent)) {
+						|| !LauncherModel.hasShortcut(context, name, intent)) { //shortcutExists
 					((LauncherApplication) context.getApplicationContext())
 							.getModel().addShortcut(context, data, cell, true);
 //					Toast.makeText(
