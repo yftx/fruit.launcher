@@ -16,5 +16,5 @@ public class ThemeUtils {
 	public static final String SLECTION_LAUNCHER = "category='launcherIcon'";
 	public static final String SLECTION_WALLPAPER = "category='wallpaper'";
 
-	public final static int APP_ICON_BG_MAX_COUNT = 10;
+	public final static int APP_ICON_BG_MAX_COUNT = 20;
 }
