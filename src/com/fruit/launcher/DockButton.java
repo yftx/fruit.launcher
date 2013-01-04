@@ -341,6 +341,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 		}
 		mBackupDockButtonInfo = null;
 		mLauncher.getWorkspace().cleanAfterDrop();
+		mLauncher.getWorkspace().exchangeAllCells();
 	}
 
 	@Override
