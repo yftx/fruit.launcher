@@ -206,7 +206,7 @@ public class LauncherModel extends BroadcastReceiver {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Find a folder in the db, creating the FolderInfo if necessary, and adding
 	 * it to folderList.
@@ -341,12 +341,10 @@ public class LauncherModel extends BroadcastReceiver {
 		mLoader.stopLoader();
 	}
 
-	public void createShortcutEx(Context context, Intent intent) {
+	public void createShortcutEx(Context context, Intent intent, String packageName) {
+		LauncherApplication app = (LauncherApplication) context;	
 		final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-		String packageName = intent.getData().getSchemeSpecificPart();
-
+		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);		
 		final PackageManager packageManager = context.getPackageManager();
 		List<ResolveInfo> apps = null;
 		apps = packageManager.queryIntentActivities(mainIntent, 0);
@@ -358,104 +356,67 @@ public class LauncherModel extends BroadcastReceiver {
 		Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
 				packageManager));
 
-		// int position = 0;
-		int position2 = 0;
-		int relativePosition = 0;
-
-		// final String selfPkgName = mContext.getPackageName();
-		// ContentValues values2 = new ContentValues();
-
 		for (int j = 0; j < apps.size(); j++) {
 			// This builds the icon bitmaps.
 			ResolveInfo info = apps.get(j);
 
 			final android.content.pm.ApplicationInfo appInfo = info.activityInfo.applicationInfo;
-			// Do not add custom theme package to all application
-			// if
-			// (appInfo.packageName.startsWith(ThemeUtils.THEME_PACKAGE_TOKEN)
-			// ||
-			// appInfo.packageName.equals(selfPkgName)) {
-			// continue;
-			// }
-			// appInfo.icon = R.drawable.mainmenu_icon_maps;
-			// info.loadIcon(packageManager);
 
-			String intentInfo = "";
+			//String intentInfo = "";
 			String infoName = info.activityInfo.name;
-
-			// yfzhao.start
 
 			if (!appInfo.packageName.equals(packageName))
 				continue;
+			
+			Intent shortcutIntent = new Intent(InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);
 
-			// if ((infoName.indexOf(appInfo.packageName)) >= 0){
-			// intentInfo =
-			// "#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component="
-			// + appInfo.packageName + "/" +
-			// infoName.substring(infoName.indexOf(appInfo.packageName)+appInfo.packageName.length())
-			// + ";end";
-			//
-			// } else {
-			// intentInfo =
-			// "#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component="
-			// + appInfo.packageName + "/" + infoName + ";end";
-			// }
+			shortcutIntent.putExtra("duplicate", false);
 
-			// values2.put(Favorites.ITEM_TYPE,
-			// Favorites.ITEM_TYPE_APPLICATION);
-			// values2.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
-
-			Intent shortcutintent = new Intent(
-					"com.android.launcher.action.INSTALL_SHORTCUT");
-
-			shortcutintent.putExtra("duplicate", false);
-
-			shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME,
-					info.loadLabel(packageManager).toString());
-
-			Drawable da = info.activityInfo.loadIcon(packageManager);// info.loadIcon(packageManager);
-
-			// Drawable da2 = packageManager.getDefaultActivityIcon();
-
-			// Bitmap bmp = mApp.getIconCache().getIcon(intent);
-			Bitmap bmp = Utilities.drawable2bmp(da);
-			// Bitmap bmp2 = Utilities.scaleBitmapAfterInstalled(bmp);
-			// Bitmap bmp3 = Utilities.createBitmap4Launcher(bmp2);
-			// Parcelable icon =
-			// Intent.ShortcutIconResource.fromContext(context.getApplicationContext(),
-			// info.getIconResource());
-			// shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-			// bmp2);
-			shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bmp);
-
-			// shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-			// ddk);
+			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME,	info.loadLabel(packageManager).toString());
+			
+			ComponentName cn = new ComponentName(appInfo.packageName, infoName);
+			final IconCache ic = app.getIconCache();
+			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, ic.getIcon(cn, info));
+			//shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, ic.getIcon(cn, info));			
+			
 			Intent intent2 = new Intent();
-			intent2.setComponent(new ComponentName(appInfo.packageName,
-					infoName));
+			intent2.setComponent(cn);
 			intent2.setAction("android.intent.action.MAIN");
 			intent2.addCategory("android.intent.category.LAUNCHER");
 			intent2.setFlags(0x10200000);
 			// intent2.setAction(intentInfo);
 
-			shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent2);
-			//
-			// Intent intent3 =
-			// intent.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-			// String name = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-			// Parcelable bitmap =
-			// intent.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-			//
+			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent2);
 
-			context.sendBroadcast(shortcutintent);
-			// context.getApplicationContext().sendBroadcast(shortcutintent);
-			// ((LauncherApplication)
-			// context.getApplicationContext()).sendBroadcast(shortcutintent);
-
+			context.sendBroadcast(shortcutIntent);
 			break;
 		}
 	}
 
+//	public void createShortcutEx2(Context context, Intent intent, String packageName) {
+//		LauncherApplication app = (LauncherApplication) context;		
+//		PackageManager pm = context.getPackageManager();
+//
+//		//Intent shortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
+//		Intent shortcutIntent = new Intent(InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);
+//		//Intent shortcutIntent = intent;
+//		//intent.setAction(InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);
+//		//shortcutIntent.putExtra("duplicate", false);
+//		
+//		Intent intent2 = new Intent();
+//		intent2.setComponent(new ComponentName(packageName, packageName));
+//		intent2.setAction("android.intent.action.MAIN");
+//		intent2.addCategory("android.intent.category.LAUNCHER");
+//		intent2.setFlags(0x10200000);
+//		
+//		shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent2);
+//		shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, packageName);
+//		shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, app.getIconCache().getIcon(intent));
+//		//shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
+//		
+//		context.sendBroadcast(shortcutIntent);
+//	}
+	
 	/**
 	 * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED
 	 * and ACTION_PACKAGE_CHANGED.
@@ -555,7 +516,7 @@ public class LauncherModel extends BroadcastReceiver {
 							callbacks.addPackage(addedFinal);
 						}
 					});
-					createShortcutEx(context, intent); // yfzhao
+					createShortcutEx(context, intent, packageName); // yfzhao
 				}
 				if (modified != null) {
 					final ArrayList<ApplicationInfo> modifiedFinal = modified;
@@ -565,6 +526,7 @@ public class LauncherModel extends BroadcastReceiver {
 							callbacks.bindAppsUpdated(modifiedFinal);
 						}
 					});
+					createShortcutEx(context, intent, packageName); // yfzhao
 					// createShortcutEx(context, intent); //yfzhao
 					// Toast.makeText(context,
 					// context.getString(R.string.app_updated),
@@ -2104,7 +2066,8 @@ public class LauncherModel extends BroadcastReceiver {
 	}
 
 	// check if shortcut is existed
-	boolean hasShortcut(Context context, String title, Intent data) {
+	static boolean hasShortcut(Context context, String title, Intent data) {
+		
 		final ContentResolver cr = context.getContentResolver();
 		String intentUri = new String("");
 		Cursor c = null;
@@ -2116,31 +2079,26 @@ public class LauncherModel extends BroadcastReceiver {
 		
 		if (intent == null) {
 			intentUri = data.toUri(0);
-			// Log.d(TAG, "yfzhao-1.1-" + intentUri);
-			// intentUri = "%" +
-			// intentUri.substring(intentUri.indexOf("component="));
 		} else {
 			intentUri = intent.toUri(0);
-			// Log.d(TAG, "yfzhao-1.2-" + intentUri);
-			// intentUri = intentUri.substring(0, intentUri.indexOf("#")) + "%";
 		}
 
 		if (intentUri.indexOf("component=") > 0) {
 			intentUri = "%"
 					+ intentUri.substring(intentUri.indexOf("component="));
+			intentUri = intentUri.substring(0, intentUri.indexOf(";")) + "%";
 		} else if (intentUri.indexOf("#") > 0) {
 			intentUri = intentUri.substring(0, intentUri.indexOf("#")) + "%";
 		} else {
 			// don't change it.
 		}
 
-		// Log.d(TAG, "yfzhao-2-" + intentUri);
-
 		c = cr.query(Favorites.CONTENT_URI, new String[] { "title", "intent" },
 				"title=? and intent like ?", new String[] { title, intentUri },
 				null);
 
 		try {
+			//result = c.moveToFirst();
 			if (c != null && c.getCount() > 0) {
 				result = true;
 			}
