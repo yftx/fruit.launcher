@@ -28,42 +28,12 @@ class FastBitmapDrawable extends Drawable {
 	private int mHeight;
 
 	FastBitmapDrawable(Bitmap b) {
-		if (b == null) {
-			mWidth = mHeight = 0;
-			mBitmap = null;
-		} else {
-			// if (b.getWidth() == 96 && b.getHeight() == 96) {
-			// mBitmap = b;
-			// mBitmap =
-			// Utilities.createCompoundBitmap(IconCache.getAppBgIcon(), b);//b;
-			// } else {
-			// final ThemeManager mThemeMgr;
-			// mThemeMgr = ThemeManager.getInstance();
-			// //mBitmap =
-			// Utilities.createCompoundBitmap(mThemeMgr.getAppBgIcon(Integer.toString(b.hashCode())),
-			// b);//b;
-			//
-			// float sxo = 1.0f;
-			// float syo = 1.0f;
-			// Bitmap oldIcon = b;//entry.icon;
-			// if (oldIcon != null) {
-			// if (oldIcon.getWidth() > 85)
-			// sxo = 1.0f / (oldIcon.getWidth()/85.0f); //0.86f;
-			//
-			// if (oldIcon.getHeight() > 85)
-			// syo = 1.0f / (oldIcon.getWidth()/85.0f);//0.86f;
-			// }
-			// Bitmap theIcon = Utilities.scaleBitmap(oldIcon, sxo, syo);
-
-			// mBitmap =
-			// Utilities.createCompoundBitmap(mThemeMgr.getRandomAppBgIcon(),
-			// theIcon);//b;
-			mBitmap = b;// Utilities.createBitmap4Launcher(b);//Utilities.changeBitmap4Launcher(b);
-			// }
-
+			mBitmap = b;
+        if (b != null) {
 			mWidth = mBitmap.getWidth();
 			mHeight = mBitmap.getHeight();
-
+        } else {
+            mWidth = mHeight = 0;
 		}
 	}
 
