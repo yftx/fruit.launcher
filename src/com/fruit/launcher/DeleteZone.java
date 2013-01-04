@@ -122,53 +122,53 @@ public class DeleteZone extends ImageView implements DropTarget,
 
 		if (item instanceof UserFolderInfo) {
 			if (((UserFolderInfo) item).contents.size() > 0) {
-				dragView.setmCallbackFlag(false); // yfzhao
+				dragView.setmCallbackFlag(false); 
 			} else {
-				dragView.setmCallbackFlag(true); // yfzhao
+				dragView.setmCallbackFlag(true); 
 			}
 			deleteFromWorkspace(source, item);
 			return;
-		}
-
-		// if (mLauncher.isAllAppsVisible()) {
-		if ((item.itemType == 0) || (item.itemType == 1)) {
-			boolean isSysApp = false;
-
-			// deleteFromAllApps(item);
-			ComponentName cn = ((ShortcutInfo) item).intent.getComponent();
-			// Intent it =
-			// data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-
-			if (cn == null) {
-				dragView.setmCallbackFlag(true); // yfzhao
-				deleteFromWorkspace(source, item);
-				return;
+		} else if (item instanceof ShortcutInfo || item instanceof ApplicationInfo || item instanceof ApplicationInfoEx) {
+	
+			// if (mLauncher.isAllAppsVisible()) {
+			if ((item.itemType == 0) || (item.itemType == 1)) {
+				boolean isSysApp = false;
+	
+				// deleteFromAllApps(item);
+				ComponentName cn = ((ShortcutInfo) item).intent.getComponent();
+				// Intent it =
+				// data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+	
+				if (cn == null) {
+					dragView.setmCallbackFlag(true);
+					deleteFromWorkspace(source, item);
+					return;
+				}
+	
+				String pkgName = cn.getPackageName();
+	
+				if (Utilities.isSystemApplication(mLauncher, pkgName)) {
+					isSysApp = true;
+				}
+	
+				if (isSysApp) {
+					dragView.setmCallbackFlag(false); 
+					Toast.makeText(mLauncher, R.string.delete_error_system_app,
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+	
+				Uri uri = Uri.parse("package:" + pkgName);
+				Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	
+				mLauncher.startActivity(intent);
+				mLauncher.switchScreenMode(false);
+	
+				dragView.setmCallbackFlag(false); 
 			}
-
-			String pkgName = cn.getPackageName();
-
-			if (Utilities.isSystemApplication(mLauncher, pkgName)) {
-				isSysApp = true;
-			}
-
-			if (isSysApp) {
-				dragView.setmCallbackFlag(false); // yfzhao
-				Toast.makeText(mLauncher, R.string.delete_error_system_app,
-						Toast.LENGTH_SHORT).show();
-				return;
-			}
-
-			Uri uri = Uri.parse("package:" + pkgName);
-			Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-			mLauncher.startActivity(intent);
-			mLauncher.switchScreenMode(false);
-
-			dragView.setmCallbackFlag(false); // yfzhao
-
 		} else {
-			dragView.setmCallbackFlag(true); // yfzhao
+			dragView.setmCallbackFlag(true); 
 			deleteFromWorkspace(source, item);
 		}
 	}
