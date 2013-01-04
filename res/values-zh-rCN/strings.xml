@@ -53,7 +53,7 @@
     <string name="menu_add" msgid="3065046628354640854">"添加"</string>
     <string name="menu_wallpaper" msgid="5837429080911269832">"壁纸"</string>
     <string name="menu_search" msgid="4826514464423239041">"搜索"</string>
-    <string name="menu_thumbnail" msgid="6424587053194766192">"桌面缩略图"</string>
+    <string name="menu_thumbnail" msgid="6424587053194766192">"屏幕管理"</string>
     <string name="menu_gestures" msgid="514678675575912237">"手势"</string>
     <string name="menu_desktop">"桌面设置"</string>
     <string name="menu_settings" msgid="6233960148378443661">"设置"</string>

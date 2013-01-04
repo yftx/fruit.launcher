@@ -90,4 +90,6 @@
     <!-- top padding of buttons in new folder dialog -->
     <dimen name="folder_button_top_padding">8.0dip</dimen>
 
+    <dimen name="app_icon_size">48dip</dimen>
+
 </resources>
