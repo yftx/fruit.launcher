@@ -61,7 +61,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.*;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -71,7 +70,6 @@ import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
 import com.fruit.launcher.theme.ThemeUtils;
 
-import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 public class LauncherProvider extends ContentProvider {
 
@@ -1006,7 +1004,7 @@ public class LauncherProvider extends ContentProvider {
 					values2.put(Favorites.CONTAINER,
 							Favorites.CONTAINER_DESKTOP);
 					// values2.put(Favorites.POSITION, position);
-					values2.put(Favorites.SCREEN, position2 / 16 + 3);
+					values2.put(Favorites.SCREEN, position2 / 16 + 5);
 					relativePosition = position2 % 16;
 					values2.put(Favorites.CELLX, relativePosition % 4);
 					values2.put(Favorites.CELLY, relativePosition / 4);
