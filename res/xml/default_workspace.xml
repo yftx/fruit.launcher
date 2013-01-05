@@ -218,17 +218,26 @@
         launcher:x="2"
         launcher:y="2" />
 
+<!--     <favorite -->
+<!--         launcher:className="com.mediatek.videoplayer.MovieListActivity" -->
+<!--         launcher:container="-100" -->
+<!--         launcher:packageName="com.mediatek.videoplayer" -->
+<!--         launcher:screen="4" -->
+<!--         launcher:spanX="1" -->
+<!--         launcher:spanY="1" -->
+<!--         launcher:x="3" -->
+<!--         launcher:y="2" /> -->
+
     <favorite
-        launcher:className="com.mediatek.videoplayer.MovieListActivity"
+        launcher:className="com.vollo.mwvplayer.MWVPlayerMenulistActivity"
         launcher:container="-100"
-        launcher:packageName="com.mediatek.videoplayer"
+        launcher:packageName="com.vollo.mwvplayer"
         launcher:screen="4"
         launcher:spanX="1"
         launcher:spanY="1"
         launcher:x="3"
         launcher:y="2" />
-
-
+    
     <!-- row No. 4 -->
 
     <favorite
