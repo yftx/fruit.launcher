@@ -129,9 +129,21 @@ public class DeleteZone extends ImageView implements DropTarget,
 			deleteFromWorkspace(source, item);
 			return;
 		} else if (item instanceof ShortcutInfo || item instanceof ApplicationInfo || item instanceof ApplicationInfoEx) {
-	
+			ShortcutInfo info = null;
+			
+			if (item instanceof ShortcutInfo) {
+				info = (ShortcutInfo) item;
+			}
+			
+			if (mLauncher.getWorkspace().isDuplicate(info.title.toString())) {
+				dragView.setmCallbackFlag(true); 
+				deleteFromWorkspace(source, item);
+				return;
+			}
+			
 			// if (mLauncher.isAllAppsVisible()) {
 			if ((item.itemType == 0) || (item.itemType == 1)) {
+				
 				boolean isSysApp = false;
 	
 				// deleteFromAllApps(item);
@@ -149,8 +161,8 @@ public class DeleteZone extends ImageView implements DropTarget,
 	
 				if (Utilities.isSystemApplication(mLauncher, pkgName)) {
 					isSysApp = true;
-				}
-	
+				}		
+
 				if (isSysApp) {
 					dragView.setmCallbackFlag(false); 
 					Toast.makeText(mLauncher, R.string.delete_error_system_app,
