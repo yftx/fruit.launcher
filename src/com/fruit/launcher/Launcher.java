@@ -988,7 +988,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 
 	boolean hasShortcut(Context context, String title, Intent data) {
-		return (mModel.hasShortcut(context, title, data) && mWorkspace.hasShortcut(data));
+		return (mModel.isDuplicate(context, title, data) && mWorkspace.hasShortcut(data));
 	}
 	
 	
@@ -1333,8 +1333,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 			boolean allAppsVisible = isAllAppsVisible();
 			if (!mWorkspace.isDefaultScreenShowing()) {
-				mWorkspace
-						.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
+				//mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
+				mWorkspace.moveToScreen(mWorkspace.getChildIndexByPageIndex(SettingUtils.mHomeScreenIndex));
 				 //CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
 				 //mScreenIndicator.setCurrentScreen(next.getPageIndex());
 				// mScreenIndicator.setCurrentScreen(mWorkspace.getCurrentScreen());
@@ -2483,32 +2483,32 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		v.setTag(null);
 	}
 
-	class PreviewTouchHandler implements View.OnClickListener, Runnable,
-			View.OnFocusChangeListener {
-		private final View mAnchor;
-
-		public PreviewTouchHandler(View anchor) {
-			mAnchor = anchor;
-		}
-
-		@Override
-		public void onClick(View v) {
-			mWorkspace.snapToScreen((Integer) v.getTag());
-			v.post(this);
-		}
-
-		@Override
-		public void run() {
-			dismissPreview(mAnchor);
-		}
-
-		@Override
-		public void onFocusChange(View v, boolean hasFocus) {
-			if (hasFocus) {
-				mWorkspace.snapToScreen((Integer) v.getTag());
-			}
-		}
-	}
+//	class PreviewTouchHandler implements View.OnClickListener, Runnable,
+//			View.OnFocusChangeListener {
+//		private final View mAnchor;
+//
+//		public PreviewTouchHandler(View anchor) {
+//			mAnchor = anchor;
+//		}
+//
+//		@Override
+//		public void onClick(View v) {
+//			mWorkspace.snapToScreen((Integer) v.getTag());
+//			v.post(this);
+//		}
+//
+//		@Override
+//		public void run() {
+//			dismissPreview(mAnchor);
+//		}
+//
+//		@Override
+//		public void onFocusChange(View v, boolean hasFocus) {
+//			if (hasFocus) {
+//				mWorkspace.snapToScreen((Integer) v.getTag());
+//			}
+//		}
+//	}
 
 	Workspace getWorkspace() {
 		return mWorkspace;
