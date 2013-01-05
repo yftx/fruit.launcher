@@ -16,7 +16,7 @@
 
 package com.fruit.launcher;
 
-import android.content.ContentResolver;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -1990,6 +1990,6 @@ public class CellLayout extends ViewGroup {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return ("Childs="+getChildCount()+",pageIndex="+getPageIndex());
+		return ("Have item childs="+getChildCount()+",pageIndex="+getPageIndex());
 	}
 }
