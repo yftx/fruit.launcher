@@ -18,6 +18,8 @@ package com.fruit.launcher;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -47,6 +49,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.ComponentName;
 import android.content.Context;
@@ -568,6 +571,41 @@ public final class Utilities {
 		}
 	}
 
+//	public static boolean isDuplicate(Context context, String title) {
+//		final PackageManager packageManager = context.getPackageManager();
+//		List<ResolveInfo> apps = null;
+//		final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+//		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);	
+//
+//		apps = packageManager.queryIntentActivities(mainIntent, 0);
+//
+//		if (apps.size() == 0) {
+//			return false;
+//		}
+//
+////		Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
+////				packageManager));
+//		
+//		int counter = 0;
+//		
+//		for (int j = 0; j < apps.size(); j++) {
+//			// This builds the icon bitmaps.
+//			ResolveInfo info = apps.get(j);			
+//			final String name = info.loadLabel(packageManager).toString();//info.activityInfo.name;
+//			Log.d(TAG, "isDuplicate,name="+name);
+//			if (name.equals(title)) {
+//				counter++;
+//			}
+//		}
+//		
+//		if(counter>1){
+//			return true;
+//		} else {
+//			return false;
+//		}
+//			
+//	}
+	
 	public static boolean isPackageInstall(Context context, String pkgName) {
 		if (pkgName == null || "".equals(pkgName)) {
 			return false;
