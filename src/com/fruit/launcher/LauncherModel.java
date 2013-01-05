@@ -353,8 +353,8 @@ public class LauncherModel extends BroadcastReceiver {
 			return;
 		}
 
-		Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
-				packageManager));
+//		Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
+//				packageManager));
 
 		for (int j = 0; j < apps.size(); j++) {
 			// This builds the icon bitmaps.
@@ -376,8 +376,10 @@ public class LauncherModel extends BroadcastReceiver {
 			
 			ComponentName cn = new ComponentName(appInfo.packageName, infoName);
 			final IconCache ic = app.getIconCache();
-			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, ic.getIcon(cn, info));
-			//shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, ic.getIcon(cn, info));			
+			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, ic.getIcon(cn, info));	
+//			app.getResources().get
+//			Parcelable icon = Intent.ShortcutIconResource.fromContext(app.getApplicationContext(), packageName+":drawable/icon"); 
+//			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, packageName+":drawable/icon");			
 			
 			Intent intent2 = new Intent();
 			intent2.setComponent(cn);
@@ -2066,8 +2068,90 @@ public class LauncherModel extends BroadcastReceiver {
 	}
 
 	// check if shortcut is existed
-	static boolean hasShortcut(Context context, String title, Intent data) {
+	public boolean isDuplicate(Context context, String title, Intent intent) {
+		return isDuplicate(context, title, intent, false);
+	}
+	
+	public boolean isDuplicate(Context context, String title, Intent intent, boolean strict) {
+		if (strict) {
+			return isDuplicateByTitleAndIntent(context, title, intent);
+		} else {
+			String pkgName = intent.getComponent().getPackageName();	
+			
+			if (pkgName == null) {
+				return isDuplicateByTitle(context, title);
+			} else {
+				return isDuplicateByTitleAndPkgName(context, title, pkgName);
+			}
 		
+		}
+	}
+	
+	private boolean isDuplicateByTitle(Context context, String title){
+		//local variable
+		final ContentResolver cr = context.getContentResolver();
+		Cursor c = null;
+		boolean result = false;
+		
+		//body
+		c = cr.query(Favorites.CONTENT_URI, new String[] { "title" },
+				"title=?", new String[] { title },	null);
+		
+		try {
+			result = c.moveToFirst();
+//			if (c != null && c.getCount() > 0) {
+//				result = true;
+//			}
+		} finally {
+			c.close();
+		}
+
+		return result;
+	}
+	
+	/**
+	 * @param context
+	 * @param title
+	 * @param data
+	 * @return
+	 */
+	private boolean isDuplicateByTitleAndPkgName(Context context,
+			String title, String pkgName) {
+		
+		//local variable
+		final ContentResolver cr = context.getContentResolver();
+		String intentUri = null;
+		Cursor c = null;
+		boolean result = false;
+		
+		//body
+		intentUri = "%" + pkgName + "%";
+		
+		c = cr.query(Favorites.CONTENT_URI, new String[] { "title", "intent" },
+				"title=? and intent like ?", new String[] { title, intentUri },
+				null);
+	
+		try {
+			//result = c.moveToFirst();
+			if (c != null && c.getCount() > 0) {
+				result = true;
+			}
+		} finally {
+			c.close();
+		}
+
+		return result;
+	}
+
+
+	/**
+	 * @param context
+	 * @param title
+	 * @param data
+	 * @return
+	 */
+	private boolean isDuplicateByTitleAndIntent(Context context,
+			String title, Intent data) {
 		final ContentResolver cr = context.getContentResolver();
 		String intentUri = new String("");
 		Cursor c = null;
@@ -2107,7 +2191,6 @@ public class LauncherModel extends BroadcastReceiver {
 		}
 
 		return result;
-
 	}
 
 	ShortcutInfo addShortcut(Context context, Intent data,
@@ -2115,7 +2198,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 		final ShortcutInfo info = infoFromShortcutIntent(context, data);
 
-		if (hasShortcut(context, info.title.toString(), data)) // yfzhao
+		if (isDuplicate(context, info.title.toString(), info.intent)) 
 			return null;
 
 		addItemToDatabase(context, info, Favorites.CONTAINER_DESKTOP,
@@ -2131,7 +2214,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 		final ShortcutInfo info = infoFromShortcutIntent(context, data);
 
-		if (hasShortcut(context, info.title.toString(), data)) // yfzhao
+		if (isDuplicate(context, info.title.toString(), info.intent)) 
 			return null;
 
 		addItemToDatabase(context, info, Favorites.CONTAINER_DOCKBAR,
