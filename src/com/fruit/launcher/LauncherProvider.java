@@ -966,8 +966,10 @@ public class LauncherProvider extends ContentProvider {
 						|| actInfoName.equals("com.mapbar.android.mapbarmap.MapViewActivity")
 						|| actInfoName
 								.equals("com.android.music.MusicBrowserActivity")
+//						|| actInfoName
+//								.equals("com.mediatek.videoplayer.MovieListActivity")
 						|| actInfoName
-								.equals("com.mediatek.videoplayer.MovieListActivity")
+								.equals("com.vollo.mwvplayer.MWVPlayerMenulistActivity")								
 								
 						|| actInfoName.equals("com.android.gallery3d.app.Gallery")
 						|| actInfoName.equals("com.mediatek.filemanager.FileManagerOperationActivity")
