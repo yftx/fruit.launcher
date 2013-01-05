@@ -170,12 +170,7 @@ public class DeleteZone extends ImageView implements DropTarget,
 					return;
 				}
 	
-				Uri uri = Uri.parse("package:" + pkgName);
-				Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	
-				mLauncher.startActivity(intent);
-				mLauncher.switchScreenMode(false);
+				mLauncher.uninstallApp(pkgName);
 	
 				dragView.setmCallbackFlag(false); 
 			}

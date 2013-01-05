@@ -101,7 +101,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 		//Launcher.setScreen(mWorkspace.getCurrentScreen());
 		
 		//mWorkspace.moveToScreen(mWorkspace.getCurrentScreen());
-		mWorkspace.moveToScreen(childIndex);
+		mWorkspace.moveToScreen(pageIndex);
 		// mWorkspace.setmTouchDirection(0);
 	}
 

@@ -527,7 +527,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	 * @param currentScreen
 	 */
 	void setCurrentScreen(int currentScreen) {
-		moveToScreen(currentScreen);
+	    final int pageIndex = ((CellLayout) getChildAt(currentScreen)).getPageIndex();
+		moveToScreen(pageIndex);
 	    //assert(currentScreen == mCurrentScreen);
 		//setCurrentScreen();
 	}
@@ -1835,6 +1836,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 
 	private void snapToScreen(int whichScreen, int velocity, boolean settle) {
+        if (mLauncher.isWorkspaceLocked())
+			return;
+        
 		// if (!mScroller.isFinished()) return;
 		// settle = true;
 		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
@@ -4014,22 +4018,49 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 //		moveToScreen(getCurrentScreen());		
 //
 //	}
+//	
+//	public void moveToScreen2(int screen, boolean animate) {
+//		if (mLauncher.isWorkspaceLocked())
+//			return;
+//		
+//		//mIsChanging = true;
+//		if(mCurrentScreen < screen){
+//			changChildWhenScrollLeft(screen-mCurrentScreen);
+//		} else if (mCurrentScreen > screen){
+//			changChildWhenScrollRight(mCurrentScreen-screen);
+//		}
+//		//mIsChanging = false;
+//		
+//		moveToCurrentScreen();
+//	}
 
-	private void moveToScreen(int screen, boolean animate) {
-		//mIsChanging = true;
-		if(mCurrentScreen < screen){
-			changChildWhenScrollRight(screen-mCurrentScreen);
-		} else if (mCurrentScreen > screen){
-			changChildWhenScrollLeft(mCurrentScreen-screen);
-		}
-		//mIsChanging = false;
-		
+	/**
+	 * 
+	 */
+	public void moveToCurrentScreen() {
 		//if (animate) {
 		//	snapToScreen(screen);			
 		//} else {
 			setCurrentScreen();
 		//}
 		getChildAt(mCurrentScreen).requestFocus();
+	}
+	
+	private void moveToScreen(int screen, boolean animate) {
+		if (mLauncher.isWorkspaceLocked())
+			return;		
+		
+		final int childIndex = getChildIndexByPageIndex(screen);
+		
+		//mIsChanging = true;
+		if(mCurrentScreen < childIndex){
+			changChildWhenScrollRight(childIndex-mCurrentScreen);
+		} else if (mCurrentScreen > childIndex){
+			changChildWhenScrollLeft(mCurrentScreen-childIndex);
+		}
+		//mIsChanging = false;
+		
+		moveToCurrentScreen();
 	}
 
 	public void moveToScreen(int screen) {

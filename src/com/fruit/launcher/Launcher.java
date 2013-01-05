@@ -151,6 +151,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private static final int REQUEST_PICK_SHORTCUT_TO_DOCK = 12;
 	private static final int REQUEST_CREATE_SHORTCUT_TO_DOCK = 13;
 	private static final int REQUEST_NEW_FOLDER = 14;
+	private static final int REQUEST_UNINSTALL_APP = 15;
 
 	static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
@@ -521,6 +522,18 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 		return Uri.parse(url);
 	}
+	
+	/**
+	 * @param pkgName
+	 */
+	public void uninstallApp(String pkgName) {
+		Uri uri = Uri.parse("package:" + pkgName);
+		Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			
+		startActivityForResult(intent, REQUEST_UNINSTALL_APP);
+		switchScreenMode(false);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -664,6 +677,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			if (appWidgetId != -1) {
 				mAppWidgetHost.deleteAppWidgetId(appWidgetId);
 			}
+		} else if (requestCode == REQUEST_UNINSTALL_APP && resultCode != RESULT_CANCELED) {
+			Log.d(TAG, "requestCode == REQUEST_UNINSTALL_APP && resultCode != RESULT_CANCELED");
 		}
 	}
 
@@ -683,8 +698,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		if (mRestoring) {
-			mWorkspaceLoading = true;
-			mModel.startLoader(this, true);
+			//mWorkspaceLoading = true;
+			//mModel.startLoader(this, true);
 			mRestoring = false;
 		}
 	}
@@ -1332,12 +1347,16 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 			boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 			boolean allAppsVisible = isAllAppsVisible();
-			if (!mWorkspace.isDefaultScreenShowing()) {
-				//mWorkspace.moveToDefaultScreen(alreadyOnHome && !allAppsVisible);
-				mWorkspace.moveToScreen(mWorkspace.getChildIndexByPageIndex(SettingUtils.mHomeScreenIndex));
-				 //CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
-				 //mScreenIndicator.setCurrentScreen(next.getPageIndex());
-				// mScreenIndicator.setCurrentScreen(mWorkspace.getCurrentScreen());
+			if (!isWorkspaceLocked()){
+				if (!mWorkspace.isDefaultScreenShowing()) {
+					//mWorkspace.moveToDefaultScreen(false);
+					//mWorkspace.moveToCurrentScreen();
+					//mWorkspace.moveToScreen(mWorkspace.getChildIndexByPageIndex(SettingUtils.mHomeScreenIndex));	
+					mWorkspace.moveToScreen(SettingUtils.mHomeScreenIndex);
+					 //CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
+					 //mScreenIndicator.setCurrentScreen(next.getPageIndex());
+					// mScreenIndicator.setCurrentScreen(mWorkspace.getCurrentScreen());
+				}
 			}
 			closeAllApps(alreadyOnHome && allAppsVisible);
 

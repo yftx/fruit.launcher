@@ -20,7 +20,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fruit.launcher"
     android:sharedUserId="@string/sharedUserId"
-    android:versionCode="213"
+    android:versionCode="214"
     android:versionName="2.0.5" >
 
     <original-package android:name="com.fruit.launcher" />
@@ -68,7 +68,9 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.BIND_WALLPAPER" />
-
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="8" >
