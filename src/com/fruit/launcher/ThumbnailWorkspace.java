@@ -74,15 +74,16 @@ public class ThumbnailWorkspace extends ViewGroup {
 	private void setFocusScreen(int pageIndex) {
 		// first scoll screen
 		// then set the screen
-		int childIndex = mWorkspace.getChildIndexByPageIndex(pageIndex);
-		int currPos = getWorkspaceFocusIndex();
-		Log.d(TAG, "setFocusScreen,childIndex="+childIndex+",pageIndex=" + pageIndex+",currPos="+currPos);
+		final int childIndex = mWorkspace.getChildIndexByPageIndex(pageIndex);
+		Log.d(TAG, "setFocusScreen,childIndex="+childIndex+",pageIndex=" + pageIndex);
+		//int currPos = getWorkspaceFocusIndex();
+		//Log.d(TAG, "setFocusScreen,childIndex="+childIndex+",pageIndex=" + pageIndex+",currPos="+currPos);
 		
-		if (mWorkspace.getCurrentScreen() < childIndex) {
-			mWorkspace.changChildWhenScrollRight(childIndex - mWorkspace.getCurrentScreen());
-		} else if (mWorkspace.getCurrentScreen() > childIndex) {
-			mWorkspace.changChildWhenScrollLeft(mWorkspace.getCurrentScreen() - childIndex);
-		}
+//		if (mWorkspace.getCurrentScreen() < childIndex) {
+//			mWorkspace.changChildWhenScrollRight(childIndex - mWorkspace.getCurrentScreen());
+//		} else if (mWorkspace.getCurrentScreen() > childIndex) {
+//			mWorkspace.changChildWhenScrollLeft(mWorkspace.getCurrentScreen() - childIndex);
+//		}
 		
 //		if (pageIndex < currPos) {
 //			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
@@ -97,9 +98,10 @@ public class ThumbnailWorkspace extends ViewGroup {
 		// pos = SettingUtils.mFixedScreenIndex; //yfzhao
 		// int index = getIndexByPos(pos);
 		// mWorkspace.getCurrentScreen() = SettingUtils.mHomeScreenIndex;//pos;
-		Launcher.setScreen(mWorkspace.getCurrentScreen());
-		// mWorkspace.snapToScreen(index);
-		mWorkspace.moveToScreen(mWorkspace.getCurrentScreen());
+		//Launcher.setScreen(mWorkspace.getCurrentScreen());
+		
+		//mWorkspace.moveToScreen(mWorkspace.getCurrentScreen());
+		mWorkspace.moveToScreen(childIndex);
 		// mWorkspace.setmTouchDirection(0);
 	}
 
