@@ -130,7 +130,32 @@ public class ItemAnimate {
 			} else {
 				mChild.removeCallbacks(this);
 				animateEnd = true;
+				//setAnimateEnd(true);
+				//notify();
 			}
 		}
 	}
+
+	/**
+	 * @return the animateEnd
+	 */
+//	public synchronized boolean isAnimateEnd() {
+//		while (!animateEnd){
+//			try {
+//				wait();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}			
+//		}		
+//		return animateEnd;
+//	}
+
+	/**
+	 * @param animateEnd the animateEnd to set
+	 */
+//	public synchronized void setAnimateEnd(boolean animateEnd) {
+//		this.animateEnd = animateEnd;
+//		notify();
+//	}
 }
