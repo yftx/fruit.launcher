@@ -125,23 +125,11 @@ public class ScreenIndicator extends ViewGroup {
 		}
 	}
 
-	void scrollLayout(float delta) {
-
-	}
-
-	void scrollLayout(int currrentScreen, int nextScreen) {
-
-	}
-
 	final void apllyTheme() {
 		removeAllViews();
 		createLayout();
 	}
 
-	/*
-	 * final void setLeft(int value) { int width = mRight - mLeft; mLeft =
-	 * value; mRight = mLeft + width; }
-	 */
 
 	final void switchScreenMode(boolean bIsFullscreen, int value) {
 		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) getLayoutParams();
