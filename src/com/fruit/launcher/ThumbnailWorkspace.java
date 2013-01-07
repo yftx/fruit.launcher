@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 public class ThumbnailWorkspace extends ViewGroup {
 
+	private static final int ANIMATE_DURATION = 600;
+
 	private static final String TAG = "ThumbnailWorkspace";
 
 	private static final int ROW_NUM = 3;
@@ -690,7 +692,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 				int y2 = getYPos(init - 1, mThumbHeight);
 
 				ItemAnimate itemAnimate = new ItemAnimate(x1, x2, y1, y2, child);
-				itemAnimate.setDuration(600);
+				itemAnimate.setDuration(ANIMATE_DURATION);
 				itemAnimate.setSquare(mThumbWidth, mThumbHeight);
 				itemAnimate.start();
 			}
@@ -702,7 +704,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 			int y2 = getYPos(mToPos - 1, mThumbHeight);
 			mItemAnimate.stop();
 			mItemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
-			mItemAnimate.setDuration(600);
+			mItemAnimate.setDuration(ANIMATE_DURATION);
 			mItemAnimate.setSquare(mThumbWidth, mThumbHeight);
 			mItemAnimate.start();
 			Log.d(TAG, "startAnimate mFromPos=" + mFromPos + " mToPos="
@@ -717,7 +719,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 				int y2 = getYPos(init + 1, mThumbHeight);
 
 				ItemAnimate itemAnimate = new ItemAnimate(x1, x2, y1, y2, child);
-				itemAnimate.setDuration(600);
+				itemAnimate.setDuration(ANIMATE_DURATION);
 				itemAnimate.setSquare(mThumbWidth, mThumbHeight);
 				itemAnimate.start();
 			}
@@ -730,7 +732,7 @@ public class ThumbnailWorkspace extends ViewGroup {
 
 			mItemAnimate.stop();
 			mItemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
-			mItemAnimate.setDuration(600);
+			mItemAnimate.setDuration(ANIMATE_DURATION);
 			mItemAnimate.setSquare(mThumbWidth, mThumbHeight);
 			mItemAnimate.start();
 			Log.d(TAG, "startAnimate mFromPos=" + mFromPos + " mToPos="
