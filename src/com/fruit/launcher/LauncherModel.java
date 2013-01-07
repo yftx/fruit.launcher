@@ -341,59 +341,60 @@ public class LauncherModel extends BroadcastReceiver {
 		mLoader.stopLoader();
 	}
 
-	public void createShortcutEx(Context context, Intent intent, String packageName) {
-		LauncherApplication app = (LauncherApplication) context;	
-		final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);		
-		final PackageManager packageManager = context.getPackageManager();
-		List<ResolveInfo> apps = null;
-		apps = packageManager.queryIntentActivities(mainIntent, 0);
-
-		if (apps.size() == 0) {
-			return;
-		}
-
-//		Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
-//				packageManager));
-
-		for (int j = 0; j < apps.size(); j++) {
-			// This builds the icon bitmaps.
-			ResolveInfo info = apps.get(j);
-
-			final android.content.pm.ApplicationInfo appInfo = info.activityInfo.applicationInfo;
-
-			//String intentInfo = "";
-			String infoName = info.activityInfo.name;
-
-			if (!appInfo.packageName.equals(packageName))
-				continue;
-			
-			Intent shortcutIntent = new Intent(InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);
-
-			shortcutIntent.putExtra("duplicate", false);
-
-			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME,	info.loadLabel(packageManager).toString());
-			
-			ComponentName cn = new ComponentName(appInfo.packageName, infoName);
-			final IconCache ic = app.getIconCache();
-			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, ic.getIcon(cn, info));	
-//			app.getResources().get
-//			Parcelable icon = Intent.ShortcutIconResource.fromContext(app.getApplicationContext(), packageName+":drawable/icon"); 
-//			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, packageName+":drawable/icon");			
-			
-			Intent intent2 = new Intent();
-			intent2.setComponent(cn);
-			intent2.setAction("android.intent.action.MAIN");
-			intent2.addCategory("android.intent.category.LAUNCHER");
-			intent2.setFlags(0x10200000);
-			// intent2.setAction(intentInfo);
-
-			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent2);
-
-			context.sendBroadcast(shortcutIntent);
-			break;
-		}
-	}
+//	public void createShortcutEx(Context context, Intent intent, String packageName) {
+//		LauncherApplication app = (LauncherApplication) context;	
+//		final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+//		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);		
+//		final PackageManager packageManager = context.getPackageManager();
+//		List<ResolveInfo> apps = null;
+//		apps = packageManager.queryIntentActivities(mainIntent, 0);
+//
+//		if (apps.size() == 0) {
+//			return;
+//		}
+//
+////		Collections.sort(apps, new ResolveInfo.DisplayNameComparator(
+////				packageManager));
+//
+//		for (int j = 0; j < apps.size(); j++) {
+//			// This builds the icon bitmaps.
+//			ResolveInfo info = apps.get(j);
+//
+//			final android.content.pm.ApplicationInfo appInfo = info.activityInfo.applicationInfo;
+//
+//			//String intentInfo = "";
+//			String infoName = info.activityInfo.name;
+//
+//			if (!appInfo.packageName.equals(packageName))
+//				continue;
+//			
+//			Intent shortcutIntent = new Intent(InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);
+//
+//			shortcutIntent.putExtra("duplicate", false);
+//
+//			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME,	info.loadLabel(packageManager).toString());
+//			
+//			ComponentName cn = new ComponentName(appInfo.packageName, infoName);
+//			final IconCache ic = app.getIconCache();
+//			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, ic.getIcon(cn, info));	
+////			app.getResources().get
+////			Parcelable icon = Intent.ShortcutIconResource.fromContext(app.getApplicationContext(), packageName+":drawable/icon"); 
+////			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, packageName+":drawable/icon");			
+//			
+//			Intent intent2 = new Intent();
+//			intent2.setComponent(cn);
+//			intent2.setAction("android.intent.action.MAIN");
+//			intent2.addCategory("android.intent.category.LAUNCHER");
+//			intent2.setFlags(0x10200000);
+//			// intent2.setAction(intentInfo);
+//			
+//
+//			shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent2);
+//			
+//			context.sendBroadcast(shortcutIntent);
+//			break;
+//		}
+//	}
 
 //	public void createShortcutEx2(Context context, Intent intent, String packageName) {
 //		LauncherApplication app = (LauncherApplication) context;		
@@ -435,8 +436,7 @@ public class LauncherModel extends BroadcastReceiver {
 		final String action = intent.getAction();
 		if (mBeforeFirstLoad) {
 			// If we haven't even loaded yet, don't bother, since we'll just
-			// pick
-			// up the changes.
+			// pick up the changes.
 			if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE.equals(action)) {
 				Log.e(TAG,
 						"onReceive, Before First Load, ACTION_EXTERNAL_APPLICATIONS_AVAILABLE");
@@ -518,7 +518,7 @@ public class LauncherModel extends BroadcastReceiver {
 							callbacks.addPackage(addedFinal);
 						}
 					});
-					createShortcutEx(context, intent, packageName); // yfzhao
+					//createShortcutEx(context, intent, packageName); // yfzhao
 				}
 				if (modified != null) {
 					final ArrayList<ApplicationInfo> modifiedFinal = modified;
@@ -528,7 +528,7 @@ public class LauncherModel extends BroadcastReceiver {
 							callbacks.bindAppsUpdated(modifiedFinal);
 						}
 					});
-					createShortcutEx(context, intent, packageName); // yfzhao
+					//createShortcutEx(context, intent, packageName); // yfzhao
 					// createShortcutEx(context, intent); //yfzhao
 					// Toast.makeText(context,
 					// context.getString(R.string.app_updated),
@@ -2067,7 +2067,7 @@ public class LauncherModel extends BroadcastReceiver {
 		}
 	}
 
-	// check if shortcut is existed
+	//check if shortcut is existed
 	public boolean isDuplicate(Context context, String title, Intent intent) {
 		return isDuplicate(context, title, intent, false);
 	}
@@ -2075,8 +2075,15 @@ public class LauncherModel extends BroadcastReceiver {
 	public boolean isDuplicate(Context context, String title, Intent intent, boolean strict) {
 		if (strict) {
 			return isDuplicateByTitleAndIntent(context, title, intent);
-		} else {
-			String pkgName = intent.getComponent().getPackageName();	
+		} else {		
+			String pkgName = null;
+			
+			try {
+				pkgName = intent.getComponent().getPackageName();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
 			
 			if (pkgName == null) {
 				return isDuplicateByTitle(context, title);
@@ -2411,11 +2418,11 @@ public class LauncherModel extends BroadcastReceiver {
 		mLoader.dumpState();
 	}
 	
-	public String dumpState2String(){
+	public String dumpState2String(String appName){
 		String str = new String("");
 		
 		str+=ApplicationInfo.dumpApplicationInfoList2String(TAG, "All apps: ",
-				mAllAppsList.data);
+				mAllAppsList.data, appName);
 //		str+=ApplicationInfo.dumpApplicationInfoList2String(TAG, "Added apps: ",
 //				mAllAppsList.added);
 //		str+=ApplicationInfo.dumpApplicationInfoList2String(TAG, "Removed apps: ",
