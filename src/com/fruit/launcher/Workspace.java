@@ -78,6 +78,7 @@ import com.fruit.launcher.widgets.LockScreenUtil;
 public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		DragScroller, LauncherMonitor.InfoCallback {
 
+	private static final int ANIMATE_DURATION = 600;
 	private static final String TAG = "Workspace";
 	private static final int INVALID_SCREEN = -1;
 
@@ -177,7 +178,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	// private int[] aMap = null; //yfzhao
 
-	// private int[] mPos = new int[2];
+	//private int[] mPos = new int[2];
 	// private int[] mPosMove = new int[2];
 	private int[] newCell = new int[2]; // the cell on dropped
 
@@ -225,7 +226,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	private CueNumber mCueNumber;
 
 	int delayer = 0;
-	final int DELAY_OUT = 100;
+	final int DELAY_OUT = 15;
 	
 	private int mBubbleCount = 0;
 	private int mWidgetCount = 0;
@@ -2055,29 +2056,66 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 ////		mScroller.startScroll(mScrollX, 0, delta, 0, duration);
 ////		invalidate();
 //	}
-
+	
+//	private int getXPos(int pos, CellLayout layout) {
+//		
+//		View view = layout.getChildAt(layout.numberToIndex(pos));
+//		
+//		if(view==null){
+//			return -1;
+//		}
+//		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
+//		if(lp==null){
+//			return -1;
+//		}
+//		return lp.x;
+//	}
+//	
+//	private int getYPos(int pos, CellLayout layout) {
+//		
+//		View view = layout.getChildAt(layout.numberToIndex(pos));
+//		
+//		if(view==null){
+//			return -1;
+//		}
+//		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
+//		if(lp==null){
+//			return -1;
+//		}
+//		return lp.y;
+//	}
+	
 	private int getXPos(int index, int thumbWidth) {
+		
 		if (index >= mMaxCount) {
 			// Only support max_count screens
 			return 0;
 		}
+		
 		int offsetX = (mCellWidth - mViewWidth) / 2;
+		
 		int pos = thumbWidth * (index % mColCount) + mWidthStartPadding
 				+ offsetX;
+		
 		Log.d(TAG, "moveitem,xpos=" + pos);
 		return pos;
 	}
 
 	private int getYPos(int index, int thumbHeight) {
+		
 		if (index >= mMaxCount) {
 			// Only support max_count screens
 			return 0;
 		}
+		
 		int offsetY = (mCellHeight - mViewHeight) / 2;
+		
 		int pos = thumbHeight * (index / mRowCount) 
 				 + mHeightStartPadding + offsetY;
+		
 		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
 			pos+=mHeightStatusBar;
+		
 		Log.d(TAG, "moveitem,ypos=" + pos + ",mHeightStatusBar="
 				+ mHeightStatusBar);
 		return pos;
@@ -2089,7 +2127,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		ItemAnimate itemAnimate = new ItemAnimate(x1, x2, y1, y2, child);
 		//itemAnimate.stop();
 		// itemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
-		itemAnimate.setDuration(600);
+		itemAnimate.setDuration(ANIMATE_DURATION);
 		itemAnimate.setSquare(w, h);
 		itemAnimate.start();
 	}
@@ -2099,7 +2137,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mItemAnimate.stop();
 		mItemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
 		// itemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
-		mItemAnimate.setDuration(600);
+		mItemAnimate.setDuration(ANIMATE_DURATION);
 		mItemAnimate.setSquare(w, h);
 		mItemAnimate.start();
 	}
@@ -2191,6 +2229,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		int y1 = getYPos(init, mCellHeight);
 		int x2 = getXPos(init + offset, mCellWidth);
 		int y2 = getYPos(init + offset, mCellHeight);
+//		int x1 = getXPos(init, current);
+//		int y1 = getYPos(init, current);
+//		int x2 = getXPos(init+offset, current);
+//		int y2 = getYPos(init+offset, current);
 
 		Log.d(TAG, "moveItem,(x1,y1)=(" + x1 + "," + y1 + "),(x2,y2)=(" + x2
 				+ "," + y2 + ")");
@@ -2198,8 +2240,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		startItemAnimate(x1, y1, x2, y2, child);
 
 		current.numberToCell(init + offset, newCell);
+		
 		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
 			y2-=mHeightStatusBar;
+		
 		//current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
 		current.changeCellXY(child, newCell[0], newCell[1]);
 
@@ -2218,6 +2262,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		int y1 = getYPos(init, mCellHeight);
 		int x2 = getXPos(init + offset, mCellWidth);
 		int y2 = getYPos(init + offset, mCellHeight);
+//		int x1 = getXPos(init, current);
+//		int y1 = getYPos(init, current);
+//		int x2 = getXPos(init+offset, current);
+//		int y2 = getYPos(init+offset, current);
 
 		Log.d(TAG, "moveItemEx,(x1,y1)=(" + x1 + "," + y1 + "),(x2,y2)=(" + x2
 				+ "," + y2 + ")");
@@ -2225,8 +2273,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		startItemAnimateEx(x1, y1, x2, y2, child);
 
 		current.numberToCell(init + offset, newCell);
+		
 		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
 			y2-=mHeightStatusBar;
+		
 		//current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
 		current.changeCellXY(child, newCell[0], newCell[1]);
 
@@ -2264,6 +2314,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		startAnimateEx(current, fromPos, toPos);
 	}
 
+	private int getPosX(int x) {
+		return x - mViewWidth / 2;
+	}
+
+	private int getPosY(int y) {
+		return y - mViewHeight / 2;
+	}
 
 	public void setLongClickValues(CellLayout.CellInfo cellInfo) {
 		mStartDrag = true;
@@ -2318,9 +2375,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		Log.d(TAG, "moveitem,mCellWidth=" + mCellWidth + ", mCellHeight="
 				+ mCellHeight);
 
-		// v.getParent().bringChildToFront(v);
-		// v.layout(getPosX(mPos[0]), getPosY(mPos[1]), getPosX(mPos[0]) +
-		// mCellWidth, getPosY(mPos[1]) + mCellHeight);
+//		v.getParent().bringChildToFront(v);
+//		v.layout(getPosX(mPos[0]), getPosY(mPos[1]), getPosX(mPos[0]) +
+//					mViewWidth, getPosY(mPos[1]) + mViewHeight);
 		delayer = 0;
 	}
 
@@ -2516,71 +2573,83 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			timer++;
 			if (timer > TIME_OUT)
 				break;
+			
+//			try {
+//				this.wait();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
+		mItemAnimate.stop();
 		
-		if(oriLayout==null){
-			this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
-		}
-		try {
-			final CellLayout cellLayout = getCurrentDropLayout();
-
-			if (source != this) {
-				onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
-			} else {
-				// Move internally
-				if (mDragInfo != null && mDragInfo.cell != null) {
-
-					final View cell = mDragInfo.cell;
-					
-					if (oriLayout != null) {
-						if (cellLayout.getPageIndex() != oriLayout.getPageIndex()) {
-							// final CellLayout originalCellLayout = (CellLayout)
-							// getChildAt(mDragInfo.screen);
-							if (cellLayout.isFull()) {
-								dragView.setmCallbackFlag(false);
-								// invalidate();
-								return;
-							}
-							oriLayout.removeView(cell);
-							cellLayout.addView(cell);
-						}
-					}
-
-					if(isViewSpan1x1(mDragInfo.cell))
-						onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
-								dragInfo);
-					else
-						onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
-								dragInfo);
-					return;
-
-
-				} else {
-					invalidate();
-					Log.d(TAG, "mDragInfo == null");
-				}
+		//if(mItemAnimate.isAnimateEnd())
+		{
+			if(oriLayout==null){
+				this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
 			}
-
-			Log.d(TAG,
-					"dockbar, mIsEmpty,ondrop workspace from dockbar,current has "
-							+ cellLayout.getChildCount() + " children");
-
-			// invalidate();
-			// mDragInfo = null;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			try {
+				final CellLayout cellLayout = getCurrentDropLayout();
+	
+				if (source != this) {
+					onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
+				} else {
+					// Move internally
+					if (mDragInfo != null && mDragInfo.cell != null) {
+	
+						final View cell = mDragInfo.cell;
+						
+						if (oriLayout != null) {
+							if (cellLayout.getPageIndex() != oriLayout.getPageIndex()) {
+								// final CellLayout originalCellLayout = (CellLayout)
+								// getChildAt(mDragInfo.screen);
+								if (cellLayout.isFull()) {
+									dragView.setmCallbackFlag(false);
+									// invalidate();
+									return;
+								}
+								oriLayout.removeView(cell);
+								cellLayout.addView(cell);
+							}
+						}
+	
+						if(isViewSpan1x1(mDragInfo.cell))
+							onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
+									dragInfo);
+						else
+							onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
+									dragInfo);
+						return;
+	
+	
+					} else {
+						invalidate();
+						Log.d(TAG, "mDragInfo == null");
+					}
+				}
+	
+				Log.d(TAG,
+						"dockbar, mIsEmpty,ondrop workspace from dockbar,current has "
+								+ cellLayout.getChildCount() + " children");
+	
+				// invalidate();
+				// mDragInfo = null;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
-	void dropAllChilds(CellLayout cellLayout) {
-		for (int i = 0; i < cellLayout.getChildCount(); i++) {
-			View child = cellLayout.getChildAt(i);
-			CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child
-					.getLayoutParams();
-			child.layout(lp.x, lp.y, lp.x + mCellWidth, lp.y + mCellHeight);
-		}
-	}
+//	void dropAllChilds(CellLayout cellLayout) {
+//		for (int i = 0; i < cellLayout.getChildCount(); i++) {
+//			View child = cellLayout.getChildAt(i);
+//			CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child
+//					.getLayoutParams();
+//			child.layout(lp.x, lp.y, lp.x + mCellWidth, lp.y + mCellHeight);
+//		}
+//	}
 
 	void updateCellByScreenIndex(View cell, int index) {
 		if (cell == null)
@@ -3150,6 +3219,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mLauncher = launcher;
 	}
 
+	Launcher getLauncher() {
+		return mLauncher;
+	}
+	
 	@Override
 	public void setDragController(DragController dragController) {
 		mDragController = dragController;
@@ -3218,6 +3291,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	public void finishDropCompleted() {
 		cleanAfterDrop();
 
+		checkAllCells();
+		
 		exchangeAllCells();
 	}
 
@@ -4063,7 +4138,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 
 		// current.onLayout(true, 0, 0, 0, 0);
-		invalidate();
+		//invalidate();
 	}
 
 	public void exchangeAllCells(int index) {
@@ -4079,6 +4154,38 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
+	public void updateCellInfo(View child){
+		
+	}
+	
+	public void checkAllCells(){
+		final int count = getChildCount();
+		final int[] xy = new int[2];
+		//ArrayList<View> seqNoList = new ArrayList<View> ();
+		for(int i=0;i<count;i++){
+			final CellLayout layout = (CellLayout) getChildAt(i);
+			final int cell_count = layout.getChildCount();
+			int[] checks = new int[ItemInfo.COL*ItemInfo.ROW];
+			for (int j=0;j<cell_count;j++){
+				final View child = layout.getChildAt(j);
+				final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+				checks[j]=getSeqNo(i, lp.cellX, lp.cellY);
+				for (int k=0; k<j;k++){
+					if(checks[j]==checks[k]) {
+						int number = layout.findFirstVacantCell();
+						if(number < 0){
+							//could not happened
+						} else {
+							layout.numberToCell(number, xy);
+							lp.cellX = xy[0];
+							lp.cellY = xy[1];	
+						}
+					}
+				}				
+			}
+		}
+		
+	}
 	// public void exchangeAllCells(CellLayout current) {
 	// //CellLayout current = (CellLayout) getChildAt(index);
 	// View child = null;
@@ -4334,5 +4441,33 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	 */
 	public void setOriLayout(CellLayout oriLayout) {
 		this.oriLayout = oriLayout;
+	}
+
+	/**
+	 * @return the mHeightStatusBar
+	 */
+	public int getmHeightStatusBar() {
+		return mHeightStatusBar;
+	}
+
+	/**
+	 * @param mHeightStatusBar the mHeightStatusBar to set
+	 */
+	public void setmHeightStatusBar(int mHeightStatusBar) {
+		this.mHeightStatusBar = mHeightStatusBar;
+	}
+
+	/**
+	 * @return the mStartDrag
+	 */
+	public boolean ismStartDrag() {
+		return mStartDrag;
+	}
+
+	/**
+	 * @param mStartDrag the mStartDrag to set
+	 */
+	public void setmStartDrag(boolean mStartDrag) {
+		this.mStartDrag = mStartDrag;
 	}
 }
