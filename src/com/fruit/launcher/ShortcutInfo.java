@@ -156,7 +156,10 @@ class ShortcutInfo extends ItemInfo {
 
 	@Override
 	public String toString() {
-		return "ShortcutInfo(title=" + title.toString() + ")";
+		return "ShortcutInfo(title=" + title.toString() + "),type="+itemType
+				+",screen="+this.screen+",seqno="+this.seqNo
+				+",cell("+this.cellX+","+this.cellY+","+this.spanX+","+this.spanY+"),"
+				+",container="+this.container;
 	}
 
 	@Override
