@@ -1115,7 +1115,11 @@ public class CellLayout extends ViewGroup {
 				CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child
 						.getLayoutParams();
 
-				int childLeft = lp.x;
+				int childLeft = lp.x;	
+				Workspace workspace = (Workspace) getParent();
+				if (workspace.ismStartDrag() && !(workspace.getLauncher().mDeleteZone.getVisibility() == View.VISIBLE)) {
+					lp.y -= workspace.getmHeightStatusBar();
+				}
 				int childTop = lp.y;
 				child.layout(childLeft, childTop, childLeft + lp.width,
 						childTop + lp.height);
