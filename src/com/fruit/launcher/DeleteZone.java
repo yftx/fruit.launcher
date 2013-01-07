@@ -121,33 +121,38 @@ public class DeleteZone extends ImageView implements DropTarget,
 		}
 
 		if (item instanceof UserFolderInfo) {
-			if (((UserFolderInfo) item).contents.size() > 0) {
+			//if (((UserFolderInfo) item).contents.size() > 0) {
+			if (((UserFolderInfo) item).getSize() > 0) {
 				dragView.setmCallbackFlag(false); 
+				Toast.makeText(mLauncher, R.string.folder_is_not_empty,
+						Toast.LENGTH_SHORT).show();				
 			} else {
 				dragView.setmCallbackFlag(true); 
-			}
-			deleteFromWorkspace(source, item);
-			return;
-		} else if (item instanceof ShortcutInfo || item instanceof ApplicationInfo || item instanceof ApplicationInfoEx) {
-			ShortcutInfo info = null;
-			
-			if (item instanceof ShortcutInfo) {
-				info = (ShortcutInfo) item;
+				deleteFromWorkspace(source, item);
 			}
 			
-			if (mLauncher.getWorkspace().isDuplicate(info.title.toString())) {
+		} else if (item instanceof ShortcutInfo) {// || item instanceof ApplicationInfo || item instanceof ApplicationInfoEx) {
+//			ShortcutInfo info = null;
+//			
+//			if (item instanceof ShortcutInfo) {
+//				info = (ShortcutInfo) item;
+//			}
+			
+			ShortcutInfo info = (ShortcutInfo) item;
+			
+			if ((info.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT) 
+					|| (mLauncher.getWorkspace().isDuplicate(info.title.toString()))) {
 				dragView.setmCallbackFlag(true); 
 				deleteFromWorkspace(source, item);
 				return;
 			}
 			
 			// if (mLauncher.isAllAppsVisible()) {
-			if ((item.itemType == 0) || (item.itemType == 1)) {
+			if ((info.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION)){// || (item.itemType == 1)) {
 				
-				boolean isSysApp = false;
-	
-				// deleteFromAllApps(item);
-				ComponentName cn = ((ShortcutInfo) item).intent.getComponent();
+				boolean isSysApp = false;	
+				
+				ComponentName cn = info.intent.getComponent();
 				// Intent it =
 				// data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
 	
@@ -170,9 +175,14 @@ public class DeleteZone extends ImageView implements DropTarget,
 					return;
 				}
 	
-				mLauncher.uninstallApp(pkgName);
-	
-				dragView.setmCallbackFlag(false); 
+				if (Utilities.isPackageInstall(mLauncher, pkgName)){
+					mLauncher.uninstallApp(pkgName);
+					dragView.setmCallbackFlag(false); 
+				} else {
+					dragView.setmCallbackFlag(true); 
+					deleteFromWorkspace(source, item);					
+				}
+				
 			}
 		} else {
 			dragView.setmCallbackFlag(true); 
@@ -264,6 +274,9 @@ public class DeleteZone extends ImageView implements DropTarget,
 				appWidgetHost
 						.deleteAppWidgetId(launcherAppWidgetInfo.appWidgetId);
 			}
+			mLauncher.getWorkspace().forceToDeleteWidget((long)launcherAppWidgetInfo.appWidgetId);
+		} else if (item instanceof CustomAppWidgetInfo){
+			mLauncher.getWorkspace().forceToDeleteWidget(((CustomAppWidgetInfo)item).id);
 		}
 		LauncherModel.deleteItemFromDatabase(mLauncher, item);
 	}
