@@ -223,10 +223,6 @@ public final class ThemeManager {
 		}
 	}
 
-	public Bitmap getRandomAppBgIcon(String className) {
-		return getAppBgIcon(className);
-	}
-
 	public Bitmap getAppBgIcon(String className) {
 		if (mAppBgIcons == null || mAppBgIcons.length == 0) {
 			return null;
