@@ -112,14 +112,16 @@ class ApplicationInfo extends ItemInfo {
 	}
 	
 	public static String dumpApplicationInfoList2String(String tag, String label,
-			ArrayList<ApplicationInfo> list){
+			ArrayList<ApplicationInfo> list, String appName){
 		String str = new String("");
 		int i = 1;
 				
-		str += list.size()+"\n";
-		for (ApplicationInfo info : list) {
-			str += "  " + i +"   "+ info.title  +"\n";
-			i++;
+		str += (list.size()-1)+"\n";//remove fruit.launcher itself
+		for (ApplicationInfo info : list) {	
+			if (!info.title.toString().equals(appName)){
+				str += "  " + i +"   "+ info.title  +"\n";
+				i++;
+			}
 		}
 		return str;		
 	}
