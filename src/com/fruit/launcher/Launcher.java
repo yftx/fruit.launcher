@@ -155,8 +155,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
-	//static final int SCREEN_COUNT = 5;
-	//static final int DEFAULT_SCREEN = 0;// 2;
 	static final int NUMBER_CELLS_X = 4;
 	static final int NUMBER_CELLS_Y = 4;
 
@@ -207,15 +205,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
 
 	private BroadcastReceiver mScreenConfigReceiver;
-
-	// yfzhao
-	private final BroadcastReceiver mSCReceiver = new InstallShortcutReceiver();;
+	
+//	private final BroadcastReceiver mSCReceiver = new InstallShortcutReceiver();;
 
 	public static int mScreenWidth;
 	public static int mScreenHeight;
 
-	// public int mItemWidth;
-	// public int mItemHeight;
 	public static String mDumpString;
 	
 	private LayoutInflater mInflater;
@@ -370,9 +365,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		registerReceiver(mScreenConfigReceiver, filterScreen);
 
 		// register
-		IntentFilter sc_filter = new IntentFilter(
-				InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);// (InstallShortcutReceiver.class.getName());
-		this.registerReceiver(mSCReceiver, sc_filter);
+//		IntentFilter sc_filter = new IntentFilter(
+//				InstallShortcutReceiver.ACTION_INSTALL_SHORTCUT);// (InstallShortcutReceiver.class.getName());
+//		this.registerReceiver(mSCReceiver, sc_filter);
 	}
 
 	/**
@@ -510,7 +505,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			Utilities.sDensity = dm.density;
 		}
 	}
-
 
 	// Note: This doesn't do all the client-id magic that BrowserProvider does
 	// in Browser. (http://b/2425179)
@@ -697,7 +691,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			mWorkspace.sendBroadcast4Widget();
 		}
 
-		if (mRestoring) {
+		if (mRestoring) {//??
 			//mWorkspaceLoading = true;
 			//mModel.startLoader(this, true);
 			mRestoring = false;
@@ -1006,6 +1000,32 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		return (mModel.isDuplicate(context, title, data) && mWorkspace.hasShortcut(data));
 	}
 	
+	/**
+	 * Add an application shortcut to the workspace.
+	 * 
+	 * @param data
+	 *            The intent describing the application.
+	 * @param cellInfo
+	 *            The position on screen where to create the shortcut.
+	 */
+	void autoAddApplication(Context context, Intent data,
+			CellLayout.CellInfo cellInfo) {
+		//CellLayout layout = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
+		//cellInfo.screen = layout.getPageIndex();//SettingUtils.MIN_SCREEN_COUNT-1;//mWorkspace.getCurrentScreen();
+		cellInfo.screen = mWorkspace.getCurrentScreen();
+		while (!findSingleSlotEx(cellInfo)) {
+			cellInfo.screen++;	
+			if (cellInfo.screen>mWorkspace.getChildCount()-1){
+				cellInfo.screen=0;
+			} else if (cellInfo.screen==mWorkspace.getCurrentScreen()){
+				Toast.makeText(this, getString(R.string.out_of_space),
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+		}
+
+		addApplication(context, data, cellInfo);
+	}
 	
 	/**
 	 * Add an application shortcut to the workspace.
@@ -1021,7 +1041,20 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		if (!findSingleSlot(cellInfo)) {
 			return;
 		}
+		
+		if(data.getComponent().getClassName().equals("com.fruit.launcher.Launcher"))
+			return;
 
+		addApplication(context, data, cellInfo);
+	}
+
+	/**
+	 * @param context
+	 * @param data
+	 * @param cellInfo
+	 */
+	private void addApplication(Context context, Intent data,
+			CellLayout.CellInfo cellInfo) {
 		final ShortcutInfo info = mModel.getShortcutInfo(
 				context.getPackageManager(), data, context);
 
@@ -1044,43 +1077,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
-//	void completeAddApplicationEx(Context context, Intent data) {
-//		CellLayout.CellInfo cell = new CellLayout.CellInfo();
-//		cell.cellX = mCellCoordinates[0];
-//		cell.cellY = mCellCoordinates[1];
-//		cell.screen = screen;
-//		
-//		final int[] xy = mCellCoordinates;
-//		if (!findSlot(cellInfo, xy, spans[0], spans[1])) {
-//			if (appWidgetId != -1)
-//				mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-//			return;
-//		}
-//		
-//
-//
-//		final ShortcutInfo info = mModel.getShortcutInfo(
-//				context.getPackageManager(), data, context);
-//
-//		if (info != null) {
-//			
-//			if (hasShortcut(context, info.title.toString(), data)) {
-//				Toast.makeText(this, getString(R.string.duplicate_shortcut),
-//						Toast.LENGTH_SHORT).show();
-//				return;
-//			}
-//
-//			info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK
-//					| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-//			info.container = ItemInfo.NO_ID;
-//			mWorkspace.addApplicationShortcut(info, cell,
-//					isWorkspaceLocked());
-//		} else {
-//			Log.e(TAG, "Couldn't find ActivityInfo for selected application: "
-//					+ data);
-//		}
-//	}
-	
 	/**
 	 * Add an application shortcut to the dock bar.
 	 * 
@@ -1202,24 +1198,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
-//    int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight, int[] spanXY) {
-//        if (spanXY == null) {
-//            spanXY = new int[2];
-//        }
-//
-//        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(this, component, null);
-//        // We want to account for the extra amount of padding that we are adding to the widget
-//        // to ensure that it gets the full amount of space that it has requested
-//        int requiredWidth = minWidth + padding.left + padding.right;
-//        int requiredHeight = minHeight + padding.top + padding.bottom;
-//        return CellLayout.rectToCell(getResources(), requiredWidth, requiredHeight, null);
-//    }
-//
-//    int[] getSpanForWidget(AppWidgetProviderInfo info, int[] spanXY) {
-//        return getSpanForWidget(info.provider, info.minWidth, info.minHeight, spanXY);
-//    }
-
-    
 	/**
 	 * Add a widget to the workspace.
 	 * 
@@ -1352,7 +1330,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					//mWorkspace.moveToDefaultScreen(false);
 					//mWorkspace.moveToCurrentScreen();
 					//mWorkspace.moveToScreen(mWorkspace.getChildIndexByPageIndex(SettingUtils.mHomeScreenIndex));	
-					mWorkspace.moveToScreen(SettingUtils.mHomeScreenIndex);
+					mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
 					 //CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
 					 //mScreenIndicator.setCurrentScreen(next.getPageIndex());
 					// mScreenIndicator.setCurrentScreen(mWorkspace.getCurrentScreen());
@@ -1457,7 +1435,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		unregisterReceiver(mCloseSystemDialogsReceiver);
 		unregisterReceiver(mScreenConfigReceiver);
-		unregisterReceiver(mSCReceiver);
+//		unregisterReceiver(mSCReceiver);
 	}
 
 	@Override
@@ -1593,10 +1571,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		case MENU_NEW_FOLDER:
 			showNewUserFolderDialog(Applications.CONTAINER_APPS);
 			return true;
+		case MENU_DESKTOP:
+			mDumpString = "";
+			mDumpString = dumpState2String();
+			break;
 		}
 
-		mDumpString = "";
-		mDumpString = dumpState2String();
+
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -1649,11 +1630,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			CellLayout layout = (CellLayout) mWorkspace.getChildAt(mWorkspace
 					.getCurrentScreen());
 			LauncherModel.addItemToDatabase(this, info,
-					Favorites.CONTAINER_DESKTOP, layout.getPageIndex()/*
-																	 * mWorkspace.
-																	 * getCurrentScreen
-																	 * ()
-																	 */,
+					Favorites.CONTAINER_DESKTOP, layout.getPageIndex(),
 					mCellCoordinates[0], mCellCoordinates[1], false);
 			info.screen = mWorkspace.getCurrentScreen();// layout.getPageIndex();
 			bindCustomAppWidget(info);
@@ -1726,11 +1703,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		CellLayout layout = (CellLayout) mWorkspace.getChildAt(cellInfo.screen);
 
 		LauncherModel.addItemToDatabase(this, folderInfo,
-				Favorites.CONTAINER_DESKTOP, layout.getPageIndex()/*
-																 * mWorkspace.
-																 * getCurrentScreen
-																 * ()
-																 */,
+				Favorites.CONTAINER_DESKTOP, layout.getPageIndex(),
 				cellInfo.cellX, cellInfo.cellY, false);
 		mFolders.put(folderInfo.id, folderInfo);
 
@@ -1815,7 +1788,21 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		return info;
 	}
-
+	
+	private boolean findSingleSlotEx(CellLayout.CellInfo cellInfo) {
+		final int[] xy = new int[2];
+		CellLayout layout = (CellLayout)mWorkspace.getChildAt(cellInfo.screen);
+		int number = layout.findFirstVacantCell();
+		if(number < 0){
+			return false;
+		} else {
+			layout.numberToCell(number, xy);
+			cellInfo.cellX = xy[0];
+			cellInfo.cellY = xy[1];			
+			return true;
+		}		
+	}
+	
 	private boolean findSingleSlot(CellLayout.CellInfo cellInfo) {
 		final int[] xy = new int[2];
 		if (findSlot(cellInfo, xy, 1, 1)) {
@@ -2217,7 +2204,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		openFolder.bind(folderInfo);
 		folderInfo.opened = true;
 		mDragLayer.clearDisappearingChildren();
-		mDragLayer.addView(openFolder);
+        mDragLayer.addView((View) openFolder);
 
 		mDockBarEnable = false;
 
@@ -2870,7 +2857,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		mDockBarEnable = false;
 		((View) mThumbnailWorkspace).setFocusable(true);
 		((View) mThumbnailWorkspace).requestFocus();
-
 	}
 
 	void closeThumbnailWorkspace(boolean animate) {
@@ -3492,7 +3478,17 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@Override
 	public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
 		removeDialog(DIALOG_CREATE_SHORTCUT);
-		//mWorkspace.removeItems(apps);//add shortcut here
+		//mWorkspace.addItems(apps);//add shortcut here		
+		
+		final int appCount = apps.size();
+		for (int k = 0; k < appCount; k++) {
+			ApplicationInfo app = apps.get(k);	
+			CellLayout.CellInfo cellInfo = new CellLayout.CellInfo();
+			autoAddApplication(this, app.intent, cellInfo);
+			cellInfo = null;
+			//onActivityResult(REQUEST_PICK_APPLICATION, Activity.RESULT_OK, app.intent);
+		}
+		
 		mAllAppsGrid.addApps(apps);
 	}
 
@@ -3504,7 +3500,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@Override
 	public void bindAppsUpdated(ArrayList<ApplicationInfo> apps) {
 		removeDialog(DIALOG_CREATE_SHORTCUT);
-		mWorkspace.updateShortcuts(apps);
+		mWorkspace.updateItems(apps);
 		mAllAppsGrid.updateApps(apps);
 	}
 
@@ -3640,11 +3636,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	
 	public String dumpState2String(){
 		String str = new String("");
-		
-		str += getString(R.string.desktopiconnumber) + getString(R.string.colon) + mDesktopItems.size()+"\n";
+		mWorkspace.setAllCount();
+		str += getString(R.string.desktopiconnumber) + getString(R.string.colon) + (mWorkspace.getBubbleCount() + mDockBar.getChildCount()) +"\n";//mDesktopItems.size()
+		str += getString(R.string.desktopwidgetnumber) + getString(R.string.colon) + mWorkspace.getWidgetCount()+"\n";
 		str += getString(R.string.folder_name) + getString(R.string.colon) + mFolders.size()+"\n";
 		str += getString(R.string.all_apps_button_label) + getString(R.string.colon);
-		str += mModel.dumpState2String();
+		str += mModel.dumpState2String(getText(R.string.application_name).toString());
 		
 		return str;		
 	}
@@ -3760,5 +3757,4 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 		mFolders.put(info.id, info);
 	}
-
 }
