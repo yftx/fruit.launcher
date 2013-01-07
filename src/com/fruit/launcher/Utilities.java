@@ -448,55 +448,46 @@ public final class Utilities {
 		return out.toByteArray();
 	}
 
-	public static Bitmap scaleBitmapAfterInstalled(Bitmap b) {
-		if (b == null) {
-			return null;
-		} else {
-			float sxo = 1.0f;
-			float syo = 1.0f;
-			float base = 1.0f;
-
-			// Bitmap oldIcon = b;
-			int w = b.getWidth();
-			int h = b.getHeight();
-
-			// if (DisplayMetrics.DENSITY_DEVICE <= 120) {
-			// base = 0.86f;//160.0f / DisplayMetrics.DENSITY_DEVICE;
-			// }
-			if ((w < 72) || (w > 85))
-				sxo = base / (w / 72.0f); // 0.86f;
-
-			if ((h < 72) || (h > 85))
-				syo = base / (h / 72.0f); // 0.86f;
-
-			Bitmap theIcon = Utilities.scaleBitmap(b, sxo, syo);
-
-			Log.d(TAG, theIcon.getWidth() + " " + theIcon.getHeight());
-
-			return theIcon;
-		}
-
-	}
+//	public static Bitmap scaleBitmapAfterInstalled(Bitmap b) {
+//		if (b == null) {
+//			return null;
+//		} else {
+//			float sxo = 1.0f;
+//			float syo = 1.0f;
+//			float base = 1.0f;
+//
+//			// Bitmap oldIcon = b;
+//			int w = b.getWidth();
+//			int h = b.getHeight();
+//
+//			// if (DisplayMetrics.DENSITY_DEVICE <= 120) {
+//			// base = 0.86f;//160.0f / DisplayMetrics.DENSITY_DEVICE;
+//			// }
+//			if ((w < 72) || (w > 85))
+//				sxo = base / (w / 72.0f); // 0.86f;
+//
+//			if ((h < 72) || (h > 85))
+//				syo = base / (h / 72.0f); // 0.86f;
+//
+//			Bitmap theIcon = Utilities.scaleBitmap(b, sxo, syo);
+//
+//			Log.d(TAG, theIcon.getWidth() + " " + theIcon.getHeight());
+//
+//			return theIcon;
+//		}
+//
+//	}
 
 	static public Bitmap createCompoundBitmapEx(String title, Bitmap icon) {
 		final ThemeManager mThemeMgr = ThemeManager.getInstance();
-		return createCompoundBitmap(mThemeMgr.getRandomAppBgIcon(title), icon);
+		return createCompoundBitmap(mThemeMgr.getAppBgIcon(title), icon);
 	}
 
 	static public Bitmap createCompoundBitmap(Bitmap bgBitmap, Bitmap iconBitmap) {
 		float sxo = 1.0f;
 		float syo = 1.0f;
-		//
-		// if (iconBitmap != null) {
-		// if (iconBitmap.getWidth() > 72)
-		// sxo = 0.86f;
-		//
-		// if (iconBitmap.getHeight() > 72)
-		// syo = 0.86f;
-		// }
 
-		if (bgBitmap == null) {
-			// final Bitmap icon2 = scaleBitmap(iconBitmap, sxo, syo);
+		if (bgBitmap == null) {			
 			return iconBitmap;
 		}
 
@@ -514,13 +505,7 @@ public final class Utilities {
 		 * = 0.95f; sy = 0.95f; }
 		 */
 		final Bitmap bg = scaleBitmap(bgBitmap, sx, sy);
-		// if (iconBitmap != null) {
-		// if (iconBitmap.getWidth() > 72)
-		// sxo = 0.86f;
-		//
-		// if (iconBitmap.getHeight() > 72)
-		// syo = 0.86f;
-		// }
+
 		final Bitmap icon = scaleBitmap(iconBitmap, sxo, syo);
 		final int bgWidth = bg.getWidth();
 		final int bgHeight = bg.getHeight();
