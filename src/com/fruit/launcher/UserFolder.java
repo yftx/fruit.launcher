@@ -162,8 +162,7 @@ public class UserFolder extends Folder implements DropTarget {
 
 			}
 		}
-		mLauncher.getWorkspace().cleanAfterDrop();
-		mLauncher.getWorkspace().exchangeAllCells();
+		mLauncher.getWorkspace().finishDropCompleted();
 	}
 
 	@SuppressWarnings("deprecation")

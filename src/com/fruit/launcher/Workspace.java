@@ -532,7 +532,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	 */
 	void setCurrentScreen(int currentScreen) {
 	    final int pageIndex = ((CellLayout) getChildAt(currentScreen)).getPageIndex();
-		moveToScreen(pageIndex);
+		moveToScreenByPageIndex(pageIndex);
 	    //assert(currentScreen == mCurrentScreen);
 		//setCurrentScreen();
 	}
@@ -962,7 +962,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mTouchX = mScrollX = mScroller.getCurrX();
 			mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
 			mScrollY = mScroller.getCurrY();		
-			scrollTo(mScrollX, mScrollY);
+			scrollTo(mScrollX, mScrollY);//??
 			Log.d(TAG,"computeScroll>computeScrollOffset>scrollX="+mScrollX
 					+",mTouchX="+mTouchX+",mSmoothingTime="+mSmoothingTime);
 			
@@ -1020,26 +1020,31 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 
 	void sendBroadcast4Widget(CellLayout layout) {
-		String packageNames = new String("");
-		Intent intent = new Intent(ACTION_SCROLLER_SCREEN);
+		try {
+			String packageNames = new String("");
+			Intent intent = new Intent(ACTION_SCROLLER_SCREEN);
 
-		for (int i = 0; i < layout.getChildCount(); i++) {
-			View child = layout.getChildAt(i);
-			if (child instanceof LauncherAppWidgetHostView) {
-				packageNames += ((LauncherAppWidgetHostView) child)
-						.getAppWidgetInfo().provider.getPackageName() + ":";
+			for (int i = 0; i < layout.getChildCount(); i++) {
+				View child = layout.getChildAt(i);
+				if (child instanceof LauncherAppWidgetHostView) {
+					packageNames += ((LauncherAppWidgetHostView) child)
+							.getAppWidgetInfo().provider.getPackageName() + ":";
+				}
+				// packageNames+=":";
 			}
-			// packageNames+=":";
-		}
 
-		if (!packageNames.equals(new String(""))) {
-			// intent.putExtra("test", "testValue");
-			intent.putExtra("packageNames", packageNames);
+			if (!packageNames.equals(new String(""))) {
+				// intent.putExtra("test", "testValue");
+				intent.putExtra("packageNames", packageNames);
 
-			// this.getContext().sendBroadcast(intent);
-			this.getContext().getApplicationContext().sendBroadcast(intent);
+				// this.getContext().sendBroadcast(intent);
+				this.getContext().getApplicationContext().sendBroadcast(intent);
 
-			// mLauncher.sendBroadcast(intent);
+				// mLauncher.sendBroadcast(intent);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -1425,41 +1430,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		return mTouchState != TOUCH_STATE_REST;
 	}
 
-	/*
-	 * private void endDrag(CellLayout current, int x, int y) { if (mDragInfo ==
-	 * null) return;
-	 * 
-	 * View mDragView = mDragInfo.cell; //CellLayout current = (CellLayout)
-	 * getChildAt(mCurrentScreen);
-	 * 
-	 * if (mDragView != null) { if (isDropOnDeleteZone) { //onDrop(this, x, y,
-	 * 0, 0, mDragInfo.cell, mDragInfo); //mLauncher.mDeleteZone.onDrop(this, x,
-	 * y, 0, 0, mDragInfo.cell, mDragView.getTag()); return; }
-	 * 
-	 * if (!isDropOnView1x1){ current.numberToCell(mFromPos, newCell);
-	 * current.onDropChild(mDragInfo.cell, newCell); } else {
-	 * current.numberToCell(mToPos, newCell);
-	 * current.onDropChild(mDragInfo.cell, newCell); }
-	 * 
-	 * // int point[] = new int[2]; // current.cellToPoint(newCell[0],
-	 * newCell[1], point); // mDragView.layout(point[0], point[1],
-	 * point[0]+mDragView.getWidth(), point[1]+mDragView.getHeight());
-	 * 
-	 * if (mDragInitPos != mToPos) { //current.removeViewAt(mDragInitPos);
-	 * //current.addView(mDragView, mToPos); //this.exchangeScreen(mDragInitPos,
-	 * mToPos); this.exchangeTheCell(mCurrentScreen, mDragInitPos, mToPos,
-	 * true); }
-	 * 
-	 * //removeViewAt(current.getChildCount() - 1); //current.addView(mDragView,
-	 * mToPos); mDragView = null; mDragInfo = null;
-	 * 
-	 * invalidate();
-	 * 
-	 * }
-	 * 
-	 * clearLongClickValues(); }
-	 */
-
 	private void onSecondaryPointerUp(MotionEvent ev) {
 		final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 		final int pointerId = ev.getPointerId(pointerIndex);
@@ -1609,7 +1579,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			Log.d(TAG, "changChildWhenScroll.Left,step="+step);
 			for (int i = 0; i < step; i++) {
 				final View lastChild = getChildAt(getChildCount() - 1);
-				removeViewAt(getChildCount() - 1);
+				//removeViewAt(getChildCount() - 1);
+				removeView(lastChild);
 				addView(lastChild, 0);			
 			}			
 		//}
@@ -1623,7 +1594,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			Log.d(TAG, "changChildWhenScroll.Right,step="+step);
 			for (int i = 0; i < step; i++) {
 				final View firstChild = getChildAt(0);
-				removeViewAt(0);
+				//removeViewAt(0);
+				removeView(firstChild);
 				addView(firstChild);			
 			}			
 		//}
@@ -1920,175 +1892,169 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 
 	
-	void snapToScreenNew(int whichScreen, int velocity, boolean settle) {
-		final int childIndex = getChildIndexByPageIndex(whichScreen);
-		if (childIndex == mCurrentScreen){
-			snapToScreenOri(whichScreen, velocity, settle);
-		} else {
-			snapToScreenEx(whichScreen, velocity, settle);
-		}
-	}
-	
-	private void snapToScreenOri(int whichScreen, int velocity, boolean settle) {
-        //if (!mScroller.isFinished()) return;
-        whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
-
-        clearVacantCache();
-        enableChildrenCache(mCurrentScreen, whichScreen);
-
-        mNextScreen = whichScreen;
-        //mScreenIndicator.setCurrentScreen(mNextScreen);
-
-        View focusedChild = getFocusedChild();
-        if (focusedChild != null && whichScreen != mCurrentScreen &&
-                focusedChild == getChildAt(mCurrentScreen)) {
-            focusedChild.clearFocus();
-        }
-
-        final int screenDelta = Math.max(1, Math.abs(whichScreen - mCurrentScreen));
-        final int newX = whichScreen * getWidth();
-        final int delta = newX - mScrollX;
-        //int duration = (screenDelta + 1) * 100;
-        int duration = (int) (Math.abs(delta) / (float) getWidth() * 400);
-        if (!mScroller.isFinished()) {
-            mScroller.abortAnimation();
-        }
-
-        if (settle) {
-            mScrollInterpolator.setDistance(screenDelta);
-        } else {
-            mScrollInterpolator.disableSettle();
-        }
-
-        velocity = Math.abs(velocity);
-        if (velocity > 0) {
-            duration += (duration / (velocity / BASELINE_FLING_VELOCITY)) * FLING_VELOCITY_INFLUENCE;
-        } else {
-            duration += 100;
-        }
-
-        awakenScrollBars(duration);
-        mScroller.startScroll(mScrollX, 0, delta, 0, duration);
-        invalidate();
-    }
-	
-	private void snapToScreenEx(int whichScreen, int velocity, boolean settle) {
-		// if (!mScroller.isFinished()) return;
-		// settle = true;
-		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
-		//int currPageIndex = ((CellLayout)getChildAt(mCurrentScreen)).getPageIndex();
-		final int childIndex = getChildIndexByPageIndex(whichScreen);
-		
-		clearVacantCache();
-		enableChildrenCache(mCurrentScreen, childIndex);
-
-		mNextScreen = childIndex;
-		//mScreenIndicator.setCurrentScreen(mNextScreen);//see below
-
-		View focusedChild = getFocusedChild();
-		if (focusedChild != null && whichScreen != mCurrentScreen
-				&& focusedChild == getChildAt(mCurrentScreen)) {
-			focusedChild.clearFocus();
-		}
-
-		// first we should check direction		
-		if (mCurrentScreen < mNextScreen){
-			changChildWhenScrollRight(mNextScreen - mCurrentScreen);
-		} else if (mCurrentScreen > mNextScreen) {
-			changChildWhenScrollLeft(mCurrentScreen - mNextScreen);
-		}
-		
-//		int step = 0;
-//		if (mTouchDirection == TOUCH_STATE_SCROLLING_LEFT) {
-//			if (mCurrentScreen < mNextScreen) {
-//				step = (this.getChildCount() - mNextScreen) + (mCurrentScreen);
-//			} else if (mCurrentScreen > mNextScreen) {
-//				step = mCurrentScreen - mNextScreen;
-//			}
-//			changChildWhenScrollLeft(step);
-//		} else if (mTouchDirection == TOUCH_STATE_SCROLLING_RIGHT) {
-//			if (mCurrentScreen < mNextScreen) {
-//				step = mNextScreen - mCurrentScreen;
-//			} else if (mCurrentScreen > mNextScreen) {
-//				step = (this.getChildCount() - mCurrentScreen) + (mNextScreen);
-//			}
-//			changChildWhenScrollRight(step);
+//	void snapToScreenNew(int whichScreen, int velocity, boolean settle) {
+//		final int childIndex = getChildIndexByPageIndex(whichScreen);
+//		if (childIndex == mCurrentScreen){
+//			snapToScreenOri(whichScreen, velocity, settle);
+//		} else {
+//			snapToScreenEx(whichScreen, velocity, settle);
 //		}
-
-		//CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
-		//mScreenIndicator.setCurrentScreen(next.getPageIndex());
-		
-		final int screenDelta = Math.max(1, Math.abs(mNextScreen - mCurrentScreen));
-    	final int newX = mNextScreen * getWidth();
-    	final int delta = newX - mScrollX;
-    	//int duration = (screenDelta + 1) * 100;
-		int duration = (int) (Math.abs(delta) / (float) getWidth() * 400);
-		if (!mScroller.isFinished()) {
-		    mScroller.abortAnimation();
-		}
-		
-		if (settle) {
-		    mScrollInterpolator.setDistance(screenDelta);
-		} else {
-		    mScrollInterpolator.disableSettle();
-		}
-		
-		velocity = Math.abs(velocity);
-		if (velocity > 0) {
-		    duration += (duration / (velocity / BASELINE_FLING_VELOCITY)) * FLING_VELOCITY_INFLUENCE;
-		} else {
-		    duration += 100;
-		}
-		
-		awakenScrollBars(duration);
-		mScroller.startScroll(mScrollX, 0, delta, 0, duration);
-		invalidate();
-	        
-
-//		final int screenDelta = Math.max(1,
-//				Math.abs(whichScreen - mCurrentScreen));
-//		int newX = whichScreen * getWidth();
+//	}
+//	
 //
-//		if (mCurrentScreen < mNextScreen) {
-//			newX -= getWidth();
-//			mScrollX -= getWidth();
+//	private void snapToScreenOri(int whichScreen, int velocity, boolean settle) {
+//        //if (!mScroller.isFinished()) return;
+//        whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
+//
+//        clearVacantCache();
+//        enableChildrenCache(mCurrentScreen, whichScreen);
+//
+//        mNextScreen = whichScreen;
+//        mScreenIndicator.setCurrentScreen(mNextScreen);
+//
+//        View focusedChild = getFocusedChild();
+//        if (focusedChild != null && whichScreen != mCurrentScreen &&
+//                focusedChild == getChildAt(mCurrentScreen)) {
+//            focusedChild.clearFocus();
+//        }
+//
+//        final int screenDelta = Math.max(1, Math.abs(whichScreen - mCurrentScreen));
+//        final int newX = whichScreen * getWidth();
+//        final int delta = newX - mScrollX;
+//        //int duration = (screenDelta + 1) * 100;
+//        int duration = (int) (Math.abs(delta) / (float) getWidth() * 400);
+//        if (!mScroller.isFinished()) {
+//            mScroller.abortAnimation();
+//        }
+//
+//        if (settle) {
+//            mScrollInterpolator.setDistance(screenDelta);
+//        } else {
+//            mScrollInterpolator.disableSettle();
+//        }
+//
+//        velocity = Math.abs(velocity);
+//        if (velocity > 0) {
+//            duration += (duration / (velocity / BASELINE_FLING_VELOCITY)) * FLING_VELOCITY_INFLUENCE;
+//        } else {
+//            duration += 100;
+//        }
+//
+//        awakenScrollBars(duration);
+//        mScroller.startScroll(mScrollX, 0, delta, 0, duration);
+//        invalidate();
+//    }
+//	
+//	private void snapToScreenEx(int whichScreen, int velocity, boolean settle) {
+//		// if (!mScroller.isFinished()) return;
+//		// settle = true;
+//		whichScreen = Math.max(0, Math.min(whichScreen, getChildCount() - 1));
+//		//int currPageIndex = ((CellLayout)getChildAt(mCurrentScreen)).getPageIndex();
+//		final int childIndex = getChildIndexByPageIndex(whichScreen);
+//		
+//		clearVacantCache();
+//		enableChildrenCache(mCurrentScreen, childIndex);
+//
+//		mNextScreen = childIndex;
+//		//mScreenIndicator.setCurrentScreen(mNextScreen);//see below
+//
+//		View focusedChild = getFocusedChild();
+//		if (focusedChild != null && whichScreen != mCurrentScreen
+//				&& focusedChild == getChildAt(mCurrentScreen)) {
+//			focusedChild.clearFocus();
+//		}
+//
+//		// first we should check direction		
+//		if (mCurrentScreen < mNextScreen){
+//			changChildWhenScrollRight(mNextScreen - mCurrentScreen);
 //		} else if (mCurrentScreen > mNextScreen) {
-//			newX += getWidth();
-//			mScrollX += getWidth();
+//			changChildWhenScrollLeft(mCurrentScreen - mNextScreen);
 //		}
+//		
+////		int step = 0;
+////		if (mTouchDirection == TOUCH_STATE_SCROLLING_LEFT) {
+////			if (mCurrentScreen < mNextScreen) {
+////				step = (this.getChildCount() - mNextScreen) + (mCurrentScreen);
+////			} else if (mCurrentScreen > mNextScreen) {
+////				step = mCurrentScreen - mNextScreen;
+////			}
+////			changChildWhenScrollLeft(step);
+////		} else if (mTouchDirection == TOUCH_STATE_SCROLLING_RIGHT) {
+////			if (mCurrentScreen < mNextScreen) {
+////				step = mNextScreen - mCurrentScreen;
+////			} else if (mCurrentScreen > mNextScreen) {
+////				step = (this.getChildCount() - mCurrentScreen) + (mNextScreen);
+////			}
+////			changChildWhenScrollRight(step);
+////		}
 //
-//		final int delta = newX - mScrollX;
-//		// int duration = (screenDelta + 1) * 100;
+//		//CellLayout next = (CellLayout) getChildAt(mCurrentScreen);
+//		//mScreenIndicator.setCurrentScreen(next.getPageIndex());
+//		
+//		final int screenDelta = Math.max(1, Math.abs(mNextScreen - mCurrentScreen));
+//    	final int newX = mNextScreen * getWidth();
+//    	final int delta = newX - mScrollX;
+//    	//int duration = (screenDelta + 1) * 100;
 //		int duration = (int) (Math.abs(delta) / (float) getWidth() * 400);
 //		if (!mScroller.isFinished()) {
-//			mScroller.abortAnimation();
+//		    mScroller.abortAnimation();
 //		}
-//
+//		
 //		if (settle) {
-//			mScrollInterpolator.setDistance(screenDelta);
+//		    mScrollInterpolator.setDistance(screenDelta);
 //		} else {
-//			mScrollInterpolator.disableSettle();
+//		    mScrollInterpolator.disableSettle();
 //		}
-//
+//		
 //		velocity = Math.abs(velocity);
 //		if (velocity > 0) {
-//			duration += (duration / (velocity / BASELINE_FLING_VELOCITY))
-//					* FLING_VELOCITY_INFLUENCE;
+//		    duration += (duration / (velocity / BASELINE_FLING_VELOCITY)) * FLING_VELOCITY_INFLUENCE;
 //		} else {
-//			duration += 100;
+//		    duration += 100;
 //		}
-//
+//		
 //		awakenScrollBars(duration);
 //		mScroller.startScroll(mScrollX, 0, delta, 0, duration);
 //		invalidate();
-	}
-
-	// private int getPos(int x, int y) {
-	// int row = y / mCellHeight;
-	// int col = x / mCellWidth;
-	//
-	// return row * mColCount + col;
-	// }
+//	        
+//
+////		final int screenDelta = Math.max(1,
+////				Math.abs(whichScreen - mCurrentScreen));
+////		int newX = whichScreen * getWidth();
+////
+////		if (mCurrentScreen < mNextScreen) {
+////			newX -= getWidth();
+////			mScrollX -= getWidth();
+////		} else if (mCurrentScreen > mNextScreen) {
+////			newX += getWidth();
+////			mScrollX += getWidth();
+////		}
+////
+////		final int delta = newX - mScrollX;
+////		// int duration = (screenDelta + 1) * 100;
+////		int duration = (int) (Math.abs(delta) / (float) getWidth() * 400);
+////		if (!mScroller.isFinished()) {
+////			mScroller.abortAnimation();
+////		}
+////
+////		if (settle) {
+////			mScrollInterpolator.setDistance(screenDelta);
+////		} else {
+////			mScrollInterpolator.disableSettle();
+////		}
+////
+////		velocity = Math.abs(velocity);
+////		if (velocity > 0) {
+////			duration += (duration / (velocity / BASELINE_FLING_VELOCITY))
+////					* FLING_VELOCITY_INFLUENCE;
+////		} else {
+////			duration += 100;
+////		}
+////
+////		awakenScrollBars(duration);
+////		mScroller.startScroll(mScrollX, 0, delta, 0, duration);
+////		invalidate();
+//	}
 
 	private int getXPos(int index, int thumbWidth) {
 		if (index >= mMaxCount) {
@@ -2161,416 +2127,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 
 	}
-	// private void startAnimate(int fromPos, int toPos, boolean only1x1){
-	//
-	// }
-
-	// int getaMap(int index) {
-	// if (index < 0 || index >= mMaxCount){
-	// return -1;
-	// } else {
-	// return aMap[index];
-	// }
-	// }
-
-	// private void startAnimate(CellLayout current, int fromPos, int toPos){
-	// //CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	//
-	// if (aMap == null) {
-	// aMap = new int[current.getMaxCount()];
-	// current.checkCellLayout();
-	// System.arraycopy(current.aMap, 0, aMap, 0, aMap.length);
-	// }
-	//
-	// int offset = 1;
-	//
-	// if (fromPos < toPos) {
-	//
-	// //for (int init = mFromPos + 1; init < mToPos; init++) {
-	// for (int init = toPos; init > fromPos; init-=offset) {
-	//
-	// View child =
-	// current.getChildAt(getaMap(init));//(current.numberToIndex(init));
-	// View temp = current.getChildAt(getaMap(init-1));
-	//
-	// if (child == null) {
-	// break;
-	// } else {
-	// if (temp == null) {
-	// moveItem(init, offset*(-1), child, current);
-	// break;
-	// } else {
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// temp.getLayoutParams();
-	// if (lp.cellHSpan==1 && lp.cellVSpan==1) {
-	// offset = 1;
-	// } else {
-	// while (!(lp.cellHSpan==1 && lp.cellVSpan==1)) {
-	// offset++;
-	// temp = current.getChildAt(getaMap(init-offset));
-	// if (temp==null){
-	// moveItem(init, offset*(-1), child, current);
-	// break;
-	// } else {
-	// lp = (CellLayout.LayoutParams) temp.getLayoutParams();
-	// }
-	// }
-	// }
-	// moveItem(init, offset*(-1), child, current);
-	// }
-	// }
-	// }
-	//
-	// // View child = current.getChildAt(current.numberToIndex(mToPos - 1));
-	// //
-	// // int x1 = getXPos(mToPos, mCellWidth);
-	// // int y1 = getYPos(mToPos, mCellHeight);
-	// // int x2 = getXPos(mToPos - 1, mCellWidth);
-	// // int y2 = getYPos(mToPos - 1, mCellHeight);
-	// //
-	// // startItemAnimate(x1, y1, x2, y2, child);
-	//
-	//
-	// //Log.d(TAG, " mFromPos="+ mFromPos + " mToPos=" + mToPos );
-	//
-	// //mFromPos = mToPos;
-	//
-	// } else {
-	// for (int init = toPos; init < fromPos; init+=offset) {
-	// View child =
-	// current.getChildAt(getaMap(init));//(current.numberToIndex(init));
-	// View temp = current.getChildAt(getaMap(init+1));
-	//
-	// if (child == null) {
-	// break;
-	// } else {
-	// if (temp == null) {
-	// moveItem(init, offset, child, current);
-	// break;
-	// } else {
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// temp.getLayoutParams();
-	// if (lp.cellHSpan==1 && lp.cellVSpan==1) {
-	// offset = 1;
-	// } else {
-	// while (!(lp.cellHSpan==1 && lp.cellVSpan==1)) {
-	// offset++;
-	// temp = current.getChildAt(getaMap(init+offset));
-	// if (temp==null) {
-	// moveItem(init, offset, child, current);
-	// break;
-	// } else {
-	// lp = (CellLayout.LayoutParams) temp.getLayoutParams();
-	// }
-	// }
-	// }
-	// moveItem(init, offset, child, current);
-	// }
-	// }
-	// }
-	//
-	// // View child = current.getChildAt(current.numberToIndex(mFromPos - 1));
-	// //
-	// // int x1 = getXPos(mFromPos - 1, mCellWidth);
-	// // int y1 = getYPos(mFromPos - 1, mCellHeight);
-	// // int x2 = getXPos(mFromPos, mCellWidth);
-	// // int y2 = getYPos(mFromPos, mCellHeight);
-	// //
-	// // startItemAnimate(x1, y1, x2, y2, child);
-	//
-	// // current.numberToCell(mFromPos, newCell);
-	// // //current.onDropChild(child, newCell);
-	// // current.changeCellXY(child, newCell[0], newCell[1]);
-	//
-	//
-	// }
-	//
-	// Log.d(TAG, " fromPos="+ fromPos + " toPos=" + toPos );
-	//
-	// fromPos = toPos;
-	// aMap = null;
-	//
-	// }
-
-	// void moveAnimate(CellLayout current, int fromPos, int toPos) {
-	// if (current==null) return;
-	// if (fromPos<0 || fromPos>=mMaxCount) return;
-	// if (toPos<0 || toPos>=mMaxCount) return;
-	//
-	// int offset = 1;
-	// View child = null;
-	// View temp = null;
-	//
-	// fromPos = current.findNearestVacantCellBetween(fromPos, toPos); //pass
-	// empty cell
-	//
-	// if (fromPos < toPos) {
-	// for (int init = fromPos+1; init<=toPos; init+=offset) {
-	// child = current.getChildAt(current.numberToIndex(init));
-	// if (child == null) continue;
-	//
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// child.getLayoutParams();
-	// if (lp == null) continue;
-	//
-	// if (lp.cellHSpan==1 && lp.cellVSpan==1) {
-	// offset = 1;
-	// } else {
-	// while (!(lp.cellHSpan==1 && lp.cellVSpan==1)) {
-	// offset++;
-	// temp = current.getChildAt(current.numberToIndex(init+offset));
-	// if (temp==null){
-	// moveItem(init, offset*(-1), child, current);
-	// break;
-	// } else {
-	// lp = (CellLayout.LayoutParams) temp.getLayoutParams();
-	// }
-	// }
-	// }
-	// moveItem(init, offset*(-1), child, current);
-	//
-	// }
-	// } else if (fromPos > toPos) {
-	//
-	// } else {
-	//
-	// }
-	//
-	// }
-	// void startAnimate(CellLayout current, int fromPos, int toPos){
-	// mFromPos = fromPos;
-	// mToPos = toPos;
-	// Log.d(TAG,"914,from-to:"+mFromPos+"-"+mToPos);
-	//
-	// startAnimate(current);
-	// }
-
-	// void startAnimate(CellLayout current, int fromPos, int toPos){
-	// mFromPos = fromPos;
-	// mToPos = toPos;
-	// startAnimate(current);
-	// }
-
-	// void startAnimate(CellLayout current){
-	// //CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	//
-	// // if (aMap == null) {
-	// // aMap = new int[current.getMaxCount()];
-	// // current.checkCellLayout();
-	// // System.arraycopy(current.aMap, 0, aMap, 0, aMap.length);
-	// // }
-	// if (current==null) return;
-	//
-	// int offset = 1;
-	//
-	// current.setNumberIndexLastTime();
-	//
-	// if (mFromPos < mToPos) { //move forward
-	//
-	// //for (int init = mFromPos + 1; init < mToPos; init++) {
-	// for (int init = mToPos; init > mFromPos; init-=offset) {
-	//
-	// View child =
-	// current.getChildAt(current.numberToIndexLastTime(init));//(current.numberToIndex(init));
-	// View temp = current.getChildAt(current.numberToIndexLastTime(init-1));
-	//
-	// if (child == null) {
-	// break;
-	// } else {
-	// if (temp == null) {
-	// moveItem(init, offset*(-1), child, current);
-	// break;
-	// } else {
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// temp.getLayoutParams();
-	// if (lp.cellHSpan==1 && lp.cellVSpan==1) {
-	// offset = 1;
-	// } else {
-	// while (!(lp.cellHSpan==1 && lp.cellVSpan==1)) {
-	// offset++;
-	// temp = current.getChildAt(current.numberToIndexLastTime(init-offset));
-	// if (temp==null){
-	// moveItem(init, offset*(-1), child, current);
-	// break;
-	// } else {
-	// lp = (CellLayout.LayoutParams) temp.getLayoutParams();
-	// }
-	// }
-	// }
-	// moveItem(init, offset*(-1), child, current);
-	// }
-	// }
-	// }
-	//
-	// // View child = current.getChildAt(current.numberToIndex(mToPos - 1));
-	// //
-	// // int x1 = getXPos(mToPos, mCellWidth);
-	// // int y1 = getYPos(mToPos, mCellHeight);
-	// // int x2 = getXPos(mToPos - 1, mCellWidth);
-	// // int y2 = getYPos(mToPos - 1, mCellHeight);
-	// //
-	// // startItemAnimate(x1, y1, x2, y2, child);
-	//
-	//
-	// //Log.d(TAG, " mFromPos="+ mFromPos + " mToPos=" + mToPos );
-	//
-	// //mFromPos = mToPos;
-	//
-	// } else {
-	// for (int init = mToPos; init < mFromPos; init+=offset) {
-	// View child =
-	// current.getChildAt(current.numberToIndexLastTime(init));//(current.numberToIndex(init));
-	// View temp = current.getChildAt(current.numberToIndexLastTime(init+1));
-	//
-	// if (child == null) {
-	// break;
-	// } else {
-	// if (temp == null) {
-	// moveItem(init, offset, child, current);
-	// break;
-	// } else {
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// temp.getLayoutParams();
-	// if (lp.cellHSpan==1 && lp.cellVSpan==1) {
-	// offset = 1;
-	// } else {
-	// while (!(lp.cellHSpan==1 && lp.cellVSpan==1)) {
-	// offset++;
-	// temp = current.getChildAt(current.numberToIndexLastTime(init+offset));
-	// if (temp==null) {
-	// moveItem(init, offset, child, current);
-	// break;
-	// } else {
-	// lp = (CellLayout.LayoutParams) temp.getLayoutParams();
-	// }
-	// }
-	// }
-	// moveItem(init, offset, child, current);
-	// }
-	// }
-	// }
-	//
-	// // View child = current.getChildAt(current.numberToIndex(mFromPos - 1));
-	// //
-	// // int x1 = getXPos(mFromPos - 1, mCellWidth);
-	// // int y1 = getYPos(mFromPos - 1, mCellHeight);
-	// // int x2 = getXPos(mFromPos, mCellWidth);
-	// // int y2 = getYPos(mFromPos, mCellHeight);
-	// //
-	// // startItemAnimate(x1, y1, x2, y2, child);
-	//
-	// // current.numberToCell(mFromPos, newCell);
-	// // //current.onDropChild(child, newCell);
-	// // current.changeCellXY(child, newCell[0], newCell[1]);
-	//
-	//
-	// }
-	//
-	// Log.d(TAG, " mFromPos="+ mFromPos + " mToPos=" + mToPos );
-	//
-	// mFromPos = mToPos;
-	// //aMap = null;
-	//
-	// }
-
-//	void startAnimate(CellLayout current, int fromPos, int toPos) {
-//		// CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-//
-//		// if (aMap == null) {
-//		// aMap = new int[current.getMaxCount()];
-//		// current.checkCellLayout();
-//		// System.arraycopy(current.aMap, 0, aMap, 0, aMap.length);
-//		// }
-//		if (current == null)
-//			return;
-//
-//		int offset = 1;
-//
-//		current.setNumberIndexLastTime();
-//
-//		if (fromPos < toPos) { // move forward
-//
-//			// for (int init = mFromPos + 1; init < mToPos; init++) {
-//			for (int init = toPos; init > fromPos; init -= offset) {
-//
-//				View child = current.getChildAt(current
-//						.numberToIndexLastTime(init));// (current.numberToIndex(init));
-//				View temp = current.getChildAt(current
-//						.numberToIndexLastTime(init - 1));
-//
-//				if (child == null) {
-//					break;
-//				} else {
-//					if (temp == null) {
-//						moveItem(init, offset * (-1), child, current);
-//						break;
-//					} else {
-//						CellLayout.LayoutParams lp = (CellLayout.LayoutParams) temp
-//								.getLayoutParams();
-//						if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
-//							offset = 1;
-//						} else {
-//							while (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
-//								offset++;
-//								temp = current.getChildAt(current
-//										.numberToIndexLastTime(init - offset));
-//								if (temp == null) {
-//									moveItem(init, offset * (-1), child,
-//											current);
-//									break;
-//								} else {
-//									lp = (CellLayout.LayoutParams) temp
-//											.getLayoutParams();
-//								}
-//							}
-//						}
-//						moveItem(init, offset * (-1), child, current);
-//					}
-//				}
-//			}
-//
-//		} else {
-//			for (int init = toPos; init < fromPos; init += offset) {
-//				View child = current.getChildAt(current
-//						.numberToIndexLastTime(init));// (current.numberToIndex(init));
-//				View temp = current.getChildAt(current
-//						.numberToIndexLastTime(init + 1));
-//
-//				if (child == null) {
-//					break;
-//				} else {
-//					if (temp == null) {
-//						moveItem(init, offset, child, current);
-//						break;
-//					} else {
-//						CellLayout.LayoutParams lp = (CellLayout.LayoutParams) temp
-//								.getLayoutParams();
-//						if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
-//							offset = 1;
-//						} else {
-//							while (!(lp.cellHSpan == 1 && lp.cellVSpan == 1)) {
-//								offset++;
-//								temp = current.getChildAt(current
-//										.numberToIndexLastTime(init + offset));
-//								if (temp == null) {
-//									moveItem(init, offset, child, current);
-//									break;
-//								} else {
-//									lp = (CellLayout.LayoutParams) temp
-//											.getLayoutParams();
-//								}
-//							}
-//						}
-//						moveItem(init, offset, child, current);
-//					}
-//				}
-//			}
-//
-//		}
-//
-//		Log.d(TAG, "914,one move sesion finished");
-//
-//	}
 
 	void startAnimateEx(CellLayout current, int fromPos, int toPos) {
 
@@ -2678,34 +2234,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// current.numberToCell(init, newCell);
 	}
 	
-	// private void startAnimation(View child, int pos, int[] cellXY){
-	// //CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-	// CellLayout.LayoutParams lp = (CellLayout.LayoutParams)
-	// child.getLayoutParams();
-	//
-	// int x1 = lps[pos].x;//getXPos(mToPos, mCellWidth);
-	// int y1 = lps[pos].y;//getYPos(mToPos, mCellHeight);
-	//
-	// mViewWidth = child.getMeasuredWidth();
-	// mViewHeight = child.getMeasuredHeight();
-	//
-	// int offsetX = (mCellWidth - mViewWidth) / 2;
-	// int offsetY = (mCellHeight - mViewHeight) / 2;
-	//
-	// int x2 = mWidthStartPadding + cellXY[0]*mCellWidth +
-	// offsetX;//getXPos(mToPos - 1, mCellWidth);
-	// int y2 = mHeightStartPadding + cellXY[1]*mCellHeight +
-	// offsetY;//getYPos(mToPos - 1, mCellHeight);
-	//
-	// mItemAnimate.stop();
-	// mItemAnimate.setAnimateTarget(x1, x2, y1, y2, child);
-	// mItemAnimate.setDuration(600);
-	// mItemAnimate.setSquare(child.getMeasuredWidth(),
-	// child.getMeasuredHeight());
-	// mItemAnimate.start();
-	//
-	// }
-
 	public View pointToView(CellLayout current, int x, int y) {
 		// CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
 
@@ -2825,26 +2353,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if (!child.isInTouchMode()) {
 			return;
 		}
-
-		// if (getResources().getBoolean(R.bool.config_lock_apps)) {
-		// Object tag = child.getTag();
-		// if (tag instanceof ShortcutInfo) {
-		// final Intent intent = ((ShortcutInfo) tag).intent;
-		// // [[add by liujian at 2012-5-23
-		// // [HQ00151612]
-		// if (intent.getComponent() != null) {
-		// final String pkgName = intent.getComponent()
-		// .getPackageName();
-		// final String className = intent.getComponent()
-		// .getClassName();
-		// if (pkgName.equals("com.mediatek.wo3g")
-		// && className.equals("com.mediatek.wo3g.Wo3G")) {
-		// return;
-		// }
-		// }
-		// // ]]at 2012-5-23
-		// }
-		// }
 
 		mDragInfo = cellInfo;
 		// mDragInfo.screen = mCurrentScreen;
@@ -3217,7 +2725,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			lastLayout = oriLayout;
 		}
 		
-		// yfzhao
 		// 1. from workspace, pass
 		if (source instanceof Workspace) {
 			// if (!isViewSpan1x1(dragInfo))
@@ -3701,10 +3208,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// layout.requestLayout();
 		// layout.invalidate();
 
+		finishDropCompleted();
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void finishDropCompleted() {
 		cleanAfterDrop();
 
 		exchangeAllCells();
-		
 	}
 
 	/**
@@ -3994,111 +3508,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
-//	void addItems(ArrayList<ApplicationInfo> apps) {
-//		@SuppressWarnings("unused")
-//		final PackageManager pm = mLauncher.getPackageManager();
-//		final int count = getChildCount();
-//		int screen = INVALID_SCREEN;
-//		int cellXY[] = new int[2];
-//		boolean isFound = false;
-//		
-//		for (int i = 0; i < count; i++) {
-//			final CellLayout layout = (CellLayout) getChildAt(i);
-//			int childCount = layout.getChildCount();
-//			screen = layout.getPageIndex();
-//			for (int j = 0; j < childCount; j++) {
-//				if (layout.numberToCell(layout.findFirstVacantCell(), cellXY)){
-//					isFound = true;
-//					break;
-//				}
-//			}	
-//			if (isFound)
-//				break;
-//		}
-//		
-//		final int appCount = apps.size();
-//		for (int k = 0; k < appCount; k++) {
-//			ApplicationInfo app = apps.get(k);
-//			app.cellX = cellXY[0];
-//			app.cellY = cellXY[1];
-//			app.screen = screen;
-//			app.intent
-//			if (app.componentName.equals(name)) {
-//				info.setIcon(mIconCache.getIcon(info.intent));
-//				((TextView) view)
-//						.setCompoundDrawablesWithIntrinsicBounds(
-//								null,
-//								new FastBitmapDrawable(info
-//										.getIcon(mIconCache)),
-//								null, null);
-//			}
-//		}
-//				
-//				final View view = layout.getChildAt(j);
-//				Object tag = view.getTag();
-//				if (tag instanceof ShortcutInfo) {
-//					ShortcutInfo info = (ShortcutInfo) tag;
-//					// We need to check for ACTION_MAIN otherwise getComponent()
-//					// might
-//					// return null for some shortcuts (for instance, for
-//					// shortcuts to
-//					// web pages.)
-//					final Intent intent = info.intent;
-//					final ComponentName name = intent.getComponent();
-//					if (info.itemType == BaseLauncherColumns.ITEM_TYPE_APPLICATION
-//							&& Intent.ACTION_MAIN.equals(intent.getAction())
-//							&& name != null) {
-//						
-//					}
-//				}
-//			}
-//		}
-//	}
-	
-//	void moveToDefaultScreen(boolean animate) {
-//		int defaultChild = getChildIndexByPageIndex(mDefaultScreen);
-//		//int childIndex = getChildIndexByPageIndex(getCurrentScreen());
-//		int currPos = ((CellLayout)getChildAt(getCurrentScreen())).getPageIndex();
-//		
-//		Log.d(TAG, "setFocusScreen,currPos="+currPos+",defaultChild=" + defaultChild);
-//
-//		if(mCurrentScreen < defaultChild){
-//			changChildWhenScrollRight(defaultChild-mCurrentScreen);
-//		} else if (mCurrentScreen > defaultChild){
-//			changChildWhenScrollLeft(mCurrentScreen-defaultChild);
-//		}
-//		
-////		if (mDefaultScreen < currPos) {
-////			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-////			changChildWhenScrollLeft(currPos - mDefaultScreen);
-////		} else if (mDefaultScreen > currPos) {
-////			// mWorkspace.setmTouchDirection(mWorkspace.TOUCH_STATE_SCROLLING_RIGHT);
-////			changChildWhenScrollRight(mDefaultScreen - currPos);
-////		} else {
-////			//do nothing
-////		}
-//		
-//		Launcher.setScreen(getCurrentScreen());
-//		
-//		moveToScreen(getCurrentScreen());		
-//
-//	}
-//	
-//	public void moveToScreen2(int screen, boolean animate) {
-//		if (mLauncher.isWorkspaceLocked())
-//			return;
-//		
-//		//mIsChanging = true;
-//		if(mCurrentScreen < screen){
-//			changChildWhenScrollLeft(screen-mCurrentScreen);
-//		} else if (mCurrentScreen > screen){
-//			changChildWhenScrollRight(mCurrentScreen-screen);
-//		}
-//		//mIsChanging = false;
-//		
-//		moveToCurrentScreen();
-//	}
-
 	/**
 	 * 
 	 */
@@ -4111,26 +3520,26 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		getChildAt(mCurrentScreen).requestFocus();
 	}
 	
-	private void moveToScreen(int screen, boolean animate) {
-		if (mLauncher.isWorkspaceLocked())
-			return;		
-		
-		final int childIndex = getChildIndexByPageIndex(screen);
-		
-		//mIsChanging = true;
-		if(mCurrentScreen < childIndex){
-			changChildWhenScrollRight(childIndex-mCurrentScreen);
-		} else if (mCurrentScreen > childIndex){
-			changChildWhenScrollLeft(mCurrentScreen-childIndex);
-		}
-		//mIsChanging = false;
-		
-		moveToCurrentScreen();
-	}
-
-	public void moveToScreen(int screen) {
-		moveToScreen(screen, false);
-	}
+//	private void moveToScreen(int screen, boolean animate) {
+//		if (mLauncher.isWorkspaceLocked())
+//			return;		
+//		
+//		final int childIndex = getChildIndexByPageIndex(screen);
+//		
+//		//mIsChanging = true;
+//		if(mCurrentScreen < childIndex){
+//			changChildWhenScrollRight(childIndex-mCurrentScreen);
+//		} else if (mCurrentScreen > childIndex){
+//			changChildWhenScrollLeft(mCurrentScreen-childIndex);
+//		}
+//		//mIsChanging = false;
+//		
+//		moveToCurrentScreen();
+//	}
+//
+//	public void moveToScreen(int screen) {
+//		moveToScreen(screen, false);
+//	}
 
 	public void moveToScreenByPageIndex(int pageIndex) {
 		if (mLauncher.isWorkspaceLocked())
@@ -4348,16 +3757,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	}
 
-//	void updatePageIndex(int fromPos, int toPos, int childIndex) {
-//		for (int i = fromPos; i < toPos; i++) {
-//			int index = childIndex + (i - fromPos);
-//			if (index >= toPos)
-//				index = index % toPos;
-//			CellLayout current = (CellLayout) getChildAt(index);
-//			current.setPageIndex(i);
-//		}
-//	}
-	
 
     public void removeScreenByPageIndexAt(int screenIndex) {
     	int childIndex = this.getChildIndexByPageIndex(screenIndex);
@@ -4762,7 +4161,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		invalidate();
 	}
 
-	
 	public void notifyScreenState() {
 		Intent intent = new Intent();
 		intent.setAction(SCREEN_STATE);
