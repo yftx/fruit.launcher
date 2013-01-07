@@ -227,6 +227,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	int delayer = 0;
 	final int DELAY_OUT = 100;
 	
+	private int mBubbleCount = 0;
+	private int mWidgetCount = 0;
+	private int mFolderCount = 0;
+	
 	//private boolean mIsChanging = false;
 			
 	private final String ACTION_SCROLLER_SCREEN = "vollo.BACK_TO_MAINMENU_OR_MOVE_IN_MAINMENU";
@@ -2640,8 +2644,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		current.numberToCell(init + offset, newCell);
 		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
 			y2-=mHeightStatusBar;
-		current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
-		// current.changeCellXY(child, newCell[0], newCell[1]);
+		//current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
+		current.changeCellXY(child, newCell[0], newCell[1]);
 
 		// child.layout(x2, y2, x2+mCellWidth, y2+mCellHeight);
 		// current.numberToCell(init, newCell);
@@ -2667,8 +2671,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		current.numberToCell(init + offset, newCell);
 		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
 			y2-=mHeightStatusBar;
-		current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
-		// current.changeCellXY(child, newCell[0], newCell[1]);
+		//current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
+		current.changeCellXY(child, newCell[0], newCell[1]);
 
 		// child.layout(x2, y2, x2+mCellWidth, y2+mCellHeight);
 		// current.numberToCell(init, newCell);
@@ -3948,7 +3952,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
-	void updateShortcuts(ArrayList<ApplicationInfo> apps) {
+	void updateItems(ArrayList<ApplicationInfo> apps) {
 		@SuppressWarnings("unused")
 		final PackageManager pm = mLauncher.getPackageManager();
 		final int count = getChildCount();
@@ -3990,6 +3994,67 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
+//	void addItems(ArrayList<ApplicationInfo> apps) {
+//		@SuppressWarnings("unused")
+//		final PackageManager pm = mLauncher.getPackageManager();
+//		final int count = getChildCount();
+//		int screen = INVALID_SCREEN;
+//		int cellXY[] = new int[2];
+//		boolean isFound = false;
+//		
+//		for (int i = 0; i < count; i++) {
+//			final CellLayout layout = (CellLayout) getChildAt(i);
+//			int childCount = layout.getChildCount();
+//			screen = layout.getPageIndex();
+//			for (int j = 0; j < childCount; j++) {
+//				if (layout.numberToCell(layout.findFirstVacantCell(), cellXY)){
+//					isFound = true;
+//					break;
+//				}
+//			}	
+//			if (isFound)
+//				break;
+//		}
+//		
+//		final int appCount = apps.size();
+//		for (int k = 0; k < appCount; k++) {
+//			ApplicationInfo app = apps.get(k);
+//			app.cellX = cellXY[0];
+//			app.cellY = cellXY[1];
+//			app.screen = screen;
+//			app.intent
+//			if (app.componentName.equals(name)) {
+//				info.setIcon(mIconCache.getIcon(info.intent));
+//				((TextView) view)
+//						.setCompoundDrawablesWithIntrinsicBounds(
+//								null,
+//								new FastBitmapDrawable(info
+//										.getIcon(mIconCache)),
+//								null, null);
+//			}
+//		}
+//				
+//				final View view = layout.getChildAt(j);
+//				Object tag = view.getTag();
+//				if (tag instanceof ShortcutInfo) {
+//					ShortcutInfo info = (ShortcutInfo) tag;
+//					// We need to check for ACTION_MAIN otherwise getComponent()
+//					// might
+//					// return null for some shortcuts (for instance, for
+//					// shortcuts to
+//					// web pages.)
+//					final Intent intent = info.intent;
+//					final ComponentName name = intent.getComponent();
+//					if (info.itemType == BaseLauncherColumns.ITEM_TYPE_APPLICATION
+//							&& Intent.ACTION_MAIN.equals(intent.getAction())
+//							&& name != null) {
+//						
+//					}
+//				}
+//			}
+//		}
+//	}
+	
 //	void moveToDefaultScreen(boolean animate) {
 //		int defaultChild = getChildIndexByPageIndex(mDefaultScreen);
 //		//int childIndex = getChildIndexByPageIndex(getCurrentScreen());
@@ -4067,6 +4132,23 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		moveToScreen(screen, false);
 	}
 
+	public void moveToScreenByPageIndex(int pageIndex) {
+		if (mLauncher.isWorkspaceLocked())
+			return;		
+		
+		final int childIndex = getChildIndexByPageIndex(pageIndex);
+		
+		//mIsChanging = true;
+		if(mCurrentScreen < childIndex){
+			changChildWhenScrollRight(childIndex-mCurrentScreen);
+		} else if (mCurrentScreen > childIndex){
+			changChildWhenScrollLeft(mCurrentScreen-childIndex);
+		}
+		//mIsChanging = false;
+		
+		moveToCurrentScreen();
+	}
+	
 	void setIndicator(ScreenIndicator indicator) {
 		mScreenIndicator = indicator;
 		indicator.setCurrentScreen(mCurrentScreen);
@@ -4155,8 +4237,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		requestLayout();
 	}
 
-	private void processItemsInScreen(int screenIndex) {
-		CellLayout cell = (CellLayout) getChildAt(screenIndex);
+	private void processItemsInScreen(int childIndex) {
+		CellLayout cell = (CellLayout) getChildAt(childIndex);
 
 		if (cell == null) {
 			Log.e(TAG, "processItemsInScreen, cell null");
@@ -4224,15 +4306,32 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				new String[] { String.valueOf(cell.getPageIndex()/* screenIndex */) });
 	}
 
-	// int getPageIndexByPos(int pos){
-	// for(int i=0;i<getChildCount();i++){
-	// CellLayout current = (CellLayout)getChildAt(i);
-	// if(current.getPageIndex()==pos){
-	// return i;
-	// }
-	// }
-	// return -1;
-	// }
+
+	public int getBubbleCount(){
+		return mBubbleCount;
+	}
+	
+	public int getWidgetCount(){
+		return mWidgetCount;
+	}
+	
+	public int getFolderCount(){
+		return mFolderCount;
+	}
+	
+	public void setAllCount() {
+		mBubbleCount=0;
+		mWidgetCount=0;
+		mFolderCount=0;
+		final int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			final CellLayout layout = (CellLayout) getChildAt(i);
+			layout.setAllCount();
+			mBubbleCount+=layout.getBubbleCount();
+			mWidgetCount+=layout.getWidgetCount();
+			mFolderCount+=layout.getFolderCount();
+		}
+	}
 
 	public int getChildIndexByPageIndex(int pageIndex) {
 		int result = -1;
@@ -4258,10 +4357,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 //			current.setPageIndex(i);
 //		}
 //	}
+	
 
-
-
-    public void removeScreenAt(int screenIndex) {
+    public void removeScreenByPageIndexAt(int screenIndex) {
     	int childIndex = this.getChildIndexByPageIndex(screenIndex);
 		// Process items in database
     	processItemsInScreen(childIndex);
@@ -4283,7 +4381,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		this.printChildCount();
 		
 		//update db
-		exchangeDatabase(screenIndex, getChildCount()); //?? necessarily
+		//exchangeDatabase(screenIndex, getChildCount()); //?? necessarily
 		
 		// When current screen be deleted, set new current screen to the first screen
 		if (childIndex == mCurrentScreen) {
@@ -4323,7 +4421,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		this.printChildCount();
     }
     
-	public void exchangeScreen(int fromPos, int toPos) {
+    
+	public void exchangeScreenByPageIndex(int fromPos, int toPos) {
 		View child = null;
 		
 		int fromChildIndex = getChildIndexByPageIndex(fromPos);
@@ -4592,18 +4691,50 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	// }
 
 	public void printChildCount() {
-		Log.d(TAG, "printChildCount workspace default screen is " + mDefaultScreen
-				+ ", current screen is " + mCurrentScreen);
-		for (int i = 0; i < getChildCount(); i++) {
-			CellLayout layout = (CellLayout) getChildAt(i);
-			Log.d(TAG, "printChildCount workspace has " + getChildCount() + "," + i
-					+ " child has " + layout.getChildCount()
-					+ " cells and pageIndex is " + layout.getPageIndex());
-		}
+//		Log.d(TAG, "printChildCount workspace default screen is " + mDefaultScreen
+//				+ ", current screen is " + mCurrentScreen);
+//		for (int i = 0; i < getChildCount(); i++) {
+//			CellLayout layout = (CellLayout) getChildAt(i);
+//			Log.d(TAG, "printChildCount workspace has " + getChildCount() + "," + i
+//					+ " child has " + layout.getChildCount()
+//					+ " cells and pageIndex is " + layout.getPageIndex());
+//		}
 
 	}
 
-	public void addNewScreen(int pos) {
+	public void forceToDeleteWidget(long appWidgetId){
+		try {
+			final int count = getChildCount();
+			for (int i=0;i<count;i++){
+				final CellLayout layout = (CellLayout) getChildAt(i);
+				final int cell_count = layout.getChildCount();
+				for (int j=0;j<cell_count;j++){
+					final View view = layout.getChildAt(j);
+					if (view instanceof LauncherAppWidgetHostView) {
+						LauncherAppWidgetHostView appWidgetView = (LauncherAppWidgetHostView) view;					
+						if (((long)appWidgetView.getAppWidgetId()) == appWidgetId) {
+							layout.removeView(appWidgetView);
+							return;
+						}
+					} else if (view instanceof CustomAppWidget) {
+						CustomAppWidget customWidgetView = (CustomAppWidget) view;	
+						CustomAppWidgetInfo customWidgetInfo = (CustomAppWidgetInfo) customWidgetView.getTag();
+						if (customWidgetInfo.id == appWidgetId) {
+							layout.removeView(customWidgetView);
+							return;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	
+	public void addNewScreenByChildIndex(int pos) {
 		// TODO Auto-generated method stub
 		View cellLayout = mInflater.inflate(R.layout.workspace_screen, null);
 		cellLayout.setOnLongClickListener(mLongClickListener);
@@ -4631,6 +4762,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		invalidate();
 	}
 
+	
 	public void notifyScreenState() {
 		Intent intent = new Intent();
 		intent.setAction(SCREEN_STATE);
