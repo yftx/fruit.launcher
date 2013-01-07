@@ -290,33 +290,12 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 
 			} else {
 				// Drag from workspace to Dock bar
-				final View shortcut = mLauncher
-						.createShortcut(
-								R.layout.application,
-								(ViewGroup) workspace.getChildAt(workspace
-										.getChildIndexByPageIndex(dockIteminfo.screen)/*
-																				 * workspace
-																				 * .
-																				 * getCurrentScreen
-																				 * (
-																				 * )
-																				 *//*
-																					 * dockIteminfo
-																					 * .
-																					 * screen
-																					 */),
+				final View shortcut = mLauncher.createShortcut(R.layout.application,
+								(ViewGroup) workspace.getChildAt(workspace.getChildIndexByPageIndex(dockIteminfo.screen)),
 								dockIteminfo);
 				// Log.d(TAG,"dockbar, before addInScreen,current has "+
 				// ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
-				workspace.addInScreen(shortcut,
-						workspace.getChildIndexByPageIndex(dockIteminfo.screen)/*
-																 * workspace.
-																 * getCurrentScreen
-																 * ()
-																 *//*
-																	 * dockIteminfo.
-																	 * screen
-																	 */,
+				workspace.addInScreen(shortcut, workspace.getChildIndexByPageIndex(dockIteminfo.screen),
 						dockIteminfo.cellX, dockIteminfo.cellY, 1, 1, false);
 				// Log.d(TAG,"dockbar, after addInScreen,current has "+
 				// ((CellLayout)workspace.getChildAt(dockIteminfo.screen)).getChildCount()+" children");
@@ -332,8 +311,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 
 		// TODO Auto-generated method stub
 		if (!success) {
-			setImageBitmap(mBackupDockButtonInfo.getIcon(mLauncher
-					.getIconCache()));
+			setImageBitmap(((ShortcutInfo) mBackupDockButtonInfo).getIcon(mLauncher.getIconCache()));
 			mIsEmpty = false;
 			setTag(mBackupDockButtonInfo);
 			LauncherModel
