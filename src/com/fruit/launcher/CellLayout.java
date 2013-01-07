@@ -40,6 +40,7 @@ import android.app.WallpaperManager;
 
 import java.util.ArrayList;
 
+import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
 import com.fruit.launcher.setting.SettingUtils;
 
@@ -66,27 +67,25 @@ public class CellLayout extends ViewGroup {
 	private int mWidthGap;
 	private int mHeightGap;
 
+	private int mBubbleCount = 0;
+	private int mWidgetCount = 0;
+	private int mFolderCount = 0;
+	
 	private final Rect mRect = new Rect();
 	private final CellInfo mCellInfo = new CellInfo();
 
 	int[] mCellXY = new int[2];
 	boolean[][] mOccupied;
-	// protected int kkk;
+
 	private RectF mDragRect = new RectF();
 
 	private boolean mDirtyTag;
-	// public boolean isDirty = false;
-
 	private boolean mLastDownOnOccupiedCell = false;
 
 	private final WallpaperManager mWallpaperManager;
 	private Camera mCamera;
 	// used for anti-alias
 	private PaintFlagsDrawFilter mCanvasFlag;
-
-	// public int[] aMap = null; //yfzhao
-	// private CellLayout.LayoutParams lps[] = null;
-	// private int[][] bMap = null;
 
 	private int pageIndex = -1;
 
@@ -141,121 +140,8 @@ public class CellLayout extends ViewGroup {
 
 		mWallpaperManager = WallpaperManager.getInstance(getContext());
 		mCamera = new Camera();
-
-		// checkCellLayout();
 	}
 
-	// private void initCellLayoutMaps(){
-	// if (lps == null) {
-	// lps = new CellLayout.LayoutParams[getMaxCount()];
-	// }
-	//
-	// if (bMap == null) {
-	// bMap = new int[getCountX()][getCountY()];
-	// }
-	//
-	// if (aMap == null) {
-	// aMap = new int[getMaxCount()];
-	// }
-	//
-	// for (int i=0; i<getMaxCount(); i++) {
-	// lps[i] = null;
-	// aMap[i] = INVALID_CELL;
-	// }
-	//
-	// for (int i=0; i<getCountX(); i++) {
-	// for (int j = 0; j < getCountY(); j++) {
-	// bMap[j][i] = INVALID_CELL;
-	// }
-	// }
-	//
-	// }
-	//
-	// public void checkCellLayout() {
-	//
-	// int count = getChildCount();
-	// int countX = getCountX();
-	// //int countY = getCountY();
-	// View child = null;
-	// int result = INVALID_CELL;
-	//
-	// //
-	// initCellLayoutMaps();
-	//
-	// if (count>getMaxCount()){
-	// count = getMaxCount();
-	// }
-	//
-	// //
-	// for (int i = 0; i < count; i++) {
-	// child = getChildAt(i);
-	// lps[i] = (CellLayout.LayoutParams) child.getLayoutParams();
-	// if (/*lps[i].dropped ||*/ lps[i].isDragging) {
-	// result = i;//INVALID_CELL;
-	// } else {
-	// result = i;
-	// }
-	//
-	// bMap[lps[i].cellY][lps[i].cellX] = result;
-	// aMap[lps[i].cellY*countX+lps[i].cellX] = result;
-	// for (int k = 0; k<lps[i].cellVSpan; k++) {
-	// for (int j = 0; j<lps[i].cellHSpan; j++) {
-	// bMap[lps[i].cellY+k][lps[i].cellX+j] = result; //0-max index
-	// aMap[(lps[i].cellY+k)*countX+(lps[i].cellX+j)] = result;
-	// }
-	// }
-	// }
-	//
-	// Log.d(TAG,"checkCellLayout");
-	// }
-	//
-	//
-	// public void checkCellLayout(CellLayout cellLayout) {
-	// //
-	// int count = cellLayout.getChildCount();
-	// int countX = cellLayout.getCountX();
-	// int countY = cellLayout.getCountY();
-	//
-	// View child = null;
-	//
-	// initCellLayoutMaps();
-	//
-	// //
-	// for (int i = 0; i < count; i++) {
-	// child = cellLayout.getChildAt(i);
-	// lps[i] = (CellLayout.LayoutParams) child.getLayoutParams();
-	// //if (lps[i].dropped || lps[i].isDragging) {
-	// // bMap[lps[i].cellY][lps[i].cellX] = i;// -1; //count as empty
-	// // aMap[lps[i].cellY*countX+lps[i].cellX] = i;
-	// //} else {
-	// bMap[lps[i].cellY][lps[i].cellX] = i;
-	// aMap[lps[i].cellY*countX+lps[i].cellX] = i;
-	// for (int k = 0; k<lps[i].cellVSpan; k++) {
-	// for (int j = 0; j<lps[i].cellHSpan; j++) {
-	// bMap[lps[i].cellY+k][lps[i].cellX+j] = i; //0-max index
-	// aMap[(lps[i].cellY+k)*countX+(lps[i].cellX+j)] = i;
-	// }
-	// }
-	// //}
-	// }
-	//
-	// Log.d(TAG,"aMap");
-	// }
-	//
-
-	// int getaMap(int index) {
-	// if (index < 0 || index >= getMaxCount()){
-	// return INVALID_CELL;
-	// } else {
-	// return aMap[index];
-	// }
-	// }
-
-	// yfzhao for trans
-	// int cellToIndex(int cellX, int cellY){
-	// checkCellLayout();
-	// return bMap[cellY][cellX];
-	// }
 
 	int cellToIndex(int cellX, int cellY) {
 		int result = INVALID_CELL;
@@ -265,7 +151,8 @@ public class CellLayout extends ViewGroup {
 		}
 
 		//
-		for (int i = 0; i < getChildCount(); i++) {
+		final int count = getChildCount();
+		for (int i = 0; i < count; i++) {
 			View v = getChildAt(i);
 			if (v == null)
 				continue;
@@ -303,12 +190,6 @@ public class CellLayout extends ViewGroup {
 			return cellToIndex(cellXY[0], cellXY[1]);
 	}
 
-
-	// int numberToIndex(int number){
-	// checkCellLayout();
-	// return getaMap(number);
-	// }
-
 	int numberToIndex(int number) {
 		int result = INVALID_CELL;
 
@@ -321,25 +202,6 @@ public class CellLayout extends ViewGroup {
 
 	}
 
-//	private int[] numberIndexArray = null;
-//
-//	void setNumberIndexLastTime() {
-//		if (numberIndexArray == null) {
-//			numberIndexArray = new int[getMaxCount()];
-//		}
-//		for (int i = 0; i < getMaxCount(); i++) {
-//			numberIndexArray[i] = numberToIndex(i);
-//		}
-//	}
-//
-//	int numberToIndexLastTime(int number) {
-//		return numberIndexArray[number];
-//	}
-
-	// int[] getNumberIndexLastTime(){
-	// return numberIndexArray;
-	// }
-
 	boolean numberToCell(int number, int[] cellXY) {
 		if (cellXY == null)
 			return false;
@@ -347,11 +209,13 @@ public class CellLayout extends ViewGroup {
 		if (number < 0 || number >= getMaxCount()) {
 			cellXY[0] = -1;
 			cellXY[1] = -1;
+			return false;
 		} else {
-			cellXY[1] = number / getCountX();
 			cellXY[0] = number % getCountX();
+			cellXY[1] = number / getCountX();			
+			return true;
 		}
-		return true;
+		
 	}
 	
 	int cellToNumberEx(int cellX, int cellY) {
@@ -369,10 +233,6 @@ public class CellLayout extends ViewGroup {
 			return cellToNumber(cellXY[0], cellXY[1]);
 	}
 
-	// int getCellSpanX(int index) {
-	// checkCellLayout();
-	// return lps[index].cellHSpan;
-	// }
 
 	int getCellSpanX(int index) {
 		int result = INVALID_CELL;
@@ -390,11 +250,6 @@ public class CellLayout extends ViewGroup {
 		return result;
 	}
 
-	// int getCellSpanY(int index) {
-	// checkCellLayout();
-	// return lps[index].cellVSpan;
-	// }
-
 	int getCellSpanY(int index) {
 		int result = INVALID_CELL;
 
@@ -410,21 +265,6 @@ public class CellLayout extends ViewGroup {
 
 		return result;
 	}
-
-	// boolean isFull() {
-	// checkCellLayout();
-	// int i = 0;
-	// for (i=0; i<getMaxCount(); i++) {
-	// if (getaMap(i) == INVALID_CELL) {
-	// break;
-	// }
-	// }
-	//
-	// if (i>=getMaxCount())
-	// return true;
-	// else
-	// return false;
-	// }
 
 	boolean isFull() {
 		boolean result = false;
@@ -447,31 +287,16 @@ public class CellLayout extends ViewGroup {
 		return result;
 	}
 
-	boolean isOverFull() {
-		boolean result = false;
+//	boolean isOverFull() {
+//		boolean result = false;
+//
+//		if (getChildCount() > getMaxCount()) {
+//			result = true;
+//		}
+//
+//		return result;
+//	}
 
-		if (getChildCount() > getMaxCount()) {
-			result = true;
-		}
-
-		return result;
-	}
-
-	// boolean isEvevyCellOk() {
-	// boolean result = false;
-	//
-	// for (int i = 0; i < getChildCount(); i++) {
-	// View v = getChildAt(i);
-	// if (v==null) return result;
-	//
-	// LayoutParams lp = (LayoutParams) v.getLayoutParams();
-	// if (lp==null) return result;
-	//
-	//
-	// }
-	//
-	// return result;
-	// }
 
 	boolean hasNumber(int[] temp, int number) {
 		boolean result = false;
@@ -542,6 +367,67 @@ public class CellLayout extends ViewGroup {
 			child.cancelLongPress();
 		}
 	}
+	
+	public int getBubbleCount(){
+		return mBubbleCount;
+	}
+	
+	public int getWidgetCount(){
+		return mWidgetCount;
+	}
+	
+	public int getFolderCount(){
+		return mFolderCount;
+	}
+	
+	public void setAllCount() {
+		mBubbleCount=0;
+		mWidgetCount=0;
+		mFolderCount=0;
+		final int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			final View child = getChildAt(i);
+			Log.d(TAG, child.toString()+",tag:"+child.getTag().toString());
+			if (child instanceof FolderIcon) {
+				mFolderCount++;
+				//Object info = child.getTag();
+				//Object folderInfo = /*(UserFolderInfo) */((FolderIcon)child).getTag();
+				UserFolderInfo userFolderInfo = (UserFolderInfo)(((FolderIcon)child).getTag());
+				//Log.d(TAG,"FolderIcon:info="+info.toString()+",folderinfo="+folderInfo.toString());
+				//UserFolder folder = (UserFolder) (((FolderIcon)child).getParent().);
+				final int size = userFolderInfo.getSize();
+				for (int j=0; j<size; j++){
+					ShortcutInfo shortcutInfo = userFolderInfo.contents.get(j);
+					if (shortcutInfo.itemType == BaseLauncherColumns.ITEM_TYPE_APPLICATION){
+						mBubbleCount++;
+					} else {
+						mWidgetCount++;
+					}
+				}
+			} else {
+				if (child instanceof CustomAppWidget || child instanceof LauncherAppWidgetHostView){				
+					mWidgetCount++;
+				} else if (child instanceof BubbleTextView) {					
+//					Object info = child.getTag();
+//					Object cellInfo = ((BubbleTextView) child).getTag();
+					ShortcutInfo shortcutInfo = (ShortcutInfo) (((BubbleTextView) child).getTag());
+//					Log.d(TAG,"BubbleTextView,info="+info.toString()
+//							+",cellInfo="+cellInfo.toString()
+//							+",shortcut="+shortcutInfo.toString());
+					
+					if (shortcutInfo.itemType == BaseLauncherColumns.ITEM_TYPE_APPLICATION){
+						mBubbleCount++;
+					} else {
+						mWidgetCount++;
+					}
+					
+					
+				}
+			}
+		}
+	}
+	
+
 
 	int getCountX() {
 		return mPortrait ? mShortAxisCells : mLongAxisCells;
@@ -551,7 +437,6 @@ public class CellLayout extends ViewGroup {
 		return mPortrait ? mLongAxisCells : mShortAxisCells;
 	}
 
-	// yfzhao expand function
 	int getMaxCount() {
 		return getCountX() * getCountY();
 	}
@@ -783,7 +668,7 @@ public class CellLayout extends ViewGroup {
 		return true;
 	}
 
-	// yfzhao
+	
 	int findFirstVacantCell() {
 		int number = INVALID_CELL;
 
@@ -812,7 +697,7 @@ public class CellLayout extends ViewGroup {
 		return number;
 	}
 
-	View getLastChild1x1() {
+	View getLastChild1x1() {		
 		View child = null;
 
 		for (int i = getMaxCount() - 1; i >= 0; i--) {
@@ -847,22 +732,22 @@ public class CellLayout extends ViewGroup {
 
 	}
 
-	public void changeCellXY(View v, int cellX, int cellY, int x, int y) {
-		if (v == null)
-			return;
-
-		LayoutParams lp = (LayoutParams) v.getLayoutParams();
-		if (lp == null)
-			return;
-
-		lp.cellX = cellX;
-		lp.cellY = cellY;
-
-		//lp.x = x;
-		//lp.y = y;// -39;
-
-		Log.d(TAG, "changeCellXY::"+ lp.toString());
-	}
+//	public void changeCellXY(View v, int cellX, int cellY, int x, int y) {
+//		if (v == null)
+//			return;
+//
+//		LayoutParams lp = (LayoutParams) v.getLayoutParams();
+//		if (lp == null)
+//			return;
+//
+//		lp.cellX = cellX;
+//		lp.cellY = cellY;
+//
+//		lp.x = x;
+//		lp.y = y;
+//
+//		Log.d(TAG, "changeCellXY::"+ lp.toString());
+//	}
 
 	int findNearestVacantCellBetween(int oldPlace, int newPlace) {
 		int number = INVALID_CELL;
@@ -967,32 +852,6 @@ public class CellLayout extends ViewGroup {
 		return result;
 
 	}
-
-	// boolean dropViewToCell(View view, int cellX, int cellY) {
-	// return dropViewToNumber(view, cellToNumber(cellX, cellY));
-	// }
-	//
-	// boolean dropViewToNumber(View view, int number) {
-	// boolean result = false;
-	//
-	// if ((number < 0) || (number > getMaxCount()-1)) {
-	// result = false;
-	// } else {
-	// int index = numberToIndex(number);
-	// if ((number < 0) || (number > getChildCount()-1)) {
-	// result = false;
-	// } else {
-	// View v = getChildAt(index);
-	// LayoutParams lp = (LayoutParams) v.getLayoutParams();
-	//
-	// result = true;
-	// }
-	//
-	// }
-	//
-	// return result;
-	//
-	// }
 
 	CellInfo findAllVacantCells(boolean[] occupiedCells, View ignoreView) {
 		final boolean portrait = mPortrait;
@@ -1384,7 +1243,6 @@ public class CellLayout extends ViewGroup {
 			mDragRect.setEmpty();
 			child.requestLayout();
 			invalidate();
-			// checkCellLayout();
 		}
 	}
 
@@ -1476,28 +1334,6 @@ public class CellLayout extends ViewGroup {
 	 * @param height
 	 *            Height in pixels
 	 */
-	// public int[] rectToCell(int width, int height) {
-	// // Always assume we're working with the smallest span to make sure we
-	// // reserve enough space in both orientations.
-	// final Resources resources = getResources();
-	// int actualWidth =
-	// resources.getDimensionPixelSize(R.dimen.workspace_cell_width);
-	// int actualHeight =
-	// resources.getDimensionPixelSize(R.dimen.workspace_cell_height);
-	// //int smallerSize = Math.min(actualWidth, actualHeight);
-	//
-	// // Always round up to next largest cell
-	// //int spanX = (width + smallerSize) / smallerSize;
-	// //int spanY = (height + smallerSize) / smallerSize;
-	// int spanX = (width + actualWidth) / actualWidth;
-	// int spanY = (height + actualHeight) / actualHeight;
-	//
-	// if (spanX > 4) spanX = 4;
-	// if (spanY > 4) spanY = 4;
-	//
-	// return new int[] { spanX, spanY };
-	// }
-
 	public int[] rectToCell(int width, int height) {
 		// Always assume we're working with the smallest span to make sure we
 		// reserve enough space in both orientations.
@@ -1521,38 +1357,6 @@ public class CellLayout extends ViewGroup {
 
 		return new int[] { spanX, spanY };
 	}
-	
-//    /**
-//     * Computes the required horizontal and vertical cell spans to always
-//     * fit the given rectangle.
-//     *
-//     * @param width Width in pixels
-//     * @param height Height in pixels
-//     * @param result An array of length 2 in which to store the result (may be null).
-//     */
-//    public int[] rectToCell(int width, int height, int[] result) {
-//        return rectToCell(getResources(), width, height, result);
-//    }
-//
-//    public static int[] rectToCell(Resources resources, int width, int height, int[] result) {
-//        // Always assume we're working with the smallest span to make sure we
-//        // reserve enough space in both orientations.
-//        int actualWidth = resources.getDimensionPixelSize(R.dimen.workspace_cell_width);
-//        int actualHeight = resources.getDimensionPixelSize(R.dimen.workspace_cell_height);
-//        int smallerSize = Math.min(actualWidth, actualHeight);
-//
-//        // Always round up to next largest cell
-//        int spanX = (int) Math.ceil(width / (float) smallerSize);
-//        int spanY = (int) Math.ceil(height / (float) smallerSize);
-//
-//        if (result == null) {
-//            return new int[] { spanX, spanY };
-//        }
-//        result[0] = spanX;
-//        result[1] = spanY;
-//        return result;
-//    }
-
 
 	/**
 	 * Find the first vacant cell, if there is one.
