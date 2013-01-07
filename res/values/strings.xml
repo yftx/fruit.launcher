@@ -216,5 +216,6 @@
 	<string name="medium">Medium</string>
 	<string name="low">Low</string>
 	<string name="colon">": "</string>
-	<string name="desktopiconnumber">Desktop Items</string>
+	<string name="desktopiconnumber">Desktop Items</string>	
+    <string name="desktopwidgetnumber">Widget Count</string>
 </resources>
