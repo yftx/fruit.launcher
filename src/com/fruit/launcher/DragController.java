@@ -175,9 +175,6 @@ public class DragController {
 			int dragAction) {
 		mOriginator = v;
 
-		// int w=v.getWidth();
-		// int h=v.getHeight();
-
 		Bitmap b = getViewBitmap(v);
 
 		if (b == null) {
