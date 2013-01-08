@@ -147,9 +147,9 @@ public class CellLayout extends ViewGroup {
 	int cellToIndex(int cellX, int cellY) {
 		int result = INVALID_CELL;
 		
-		int[] used = new int[ItemInfo.COL * ItemInfo.ROW];
+		int[] checks = new int[ItemInfo.COL * ItemInfo.ROW];
 		for (int i = 0; i < ItemInfo.COL * ItemInfo.ROW; i++) {
-			used[i] = -1;
+			checks[i] = -1;
 		}
 
 		//
@@ -167,14 +167,14 @@ public class CellLayout extends ViewGroup {
 				int cellNumStart = lp.cellY * (ItemInfo.COL) + lp.cellX;
 				for (int j = 0; j < lp.cellHSpan; j++) {
 					for (int k = 0; k < lp.cellVSpan; k++) {
-						used[cellNumStart + ItemInfo.COL * k + j] = i;
+						checks[cellNumStart + ItemInfo.COL * k + j] = i;
 					}
 				}
 			}
 
 			int overNum = cellY * (ItemInfo.COL) + cellX;
 
-			if (used[overNum] != -1) {
+			if (checks[overNum] > -1) {
 				result = i;
 				break;
 			} else {
@@ -182,7 +182,7 @@ public class CellLayout extends ViewGroup {
 			}
 		}
 
-		used=null;
+		checks=null;
 		return result;
 	}
 
@@ -718,9 +718,13 @@ public class CellLayout extends ViewGroup {
 			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
 			if (lp==null)
 				continue;
-			
-			final int num = cellToNumber(lp.cellX,lp.cellY);			
-			checks[num]=num;
+						
+			int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+			for (int j = 0; j < lp.cellHSpan; j++) {
+				for (int k = 0; k < lp.cellVSpan; k++) {
+					checks[num + ItemInfo.COL * k + j] = i;
+				}
+			}
 		}
 		
 		for (int i = 0; i < getMaxCount(); i++) {
@@ -753,8 +757,12 @@ public class CellLayout extends ViewGroup {
 			if (lp==null)
 				continue;
 			
-			final int num = cellToNumber(lp.cellX,lp.cellY);			
-			checks[num]=num;
+			int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+			for (int j = 0; j < lp.cellHSpan; j++) {
+				for (int k = 0; k < lp.cellVSpan; k++) {
+					checks[num + ItemInfo.COL * k + j] = i;
+				}
+			}
 		}
 		
 		for (int i = getMaxCount()-1; i >=0 ; i--) {

@@ -232,6 +232,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	private int mWidgetCount = 0;
 	private int mFolderCount = 0;
 	
+	public static int workspaceBottom;	
+	
 	//private boolean mIsChanging = false;
 			
 	private final String ACTION_SCROLLER_SCREEN = "vollo.BACK_TO_MAINMENU_OR_MOVE_IN_MAINMENU";
@@ -356,6 +358,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		mHeightStatusBar = (int) r.getDimension(R.dimen.status_bar_height)+1;
 
+		workspaceBottom = mHeightEndPadding;
+		
 		mCueNumber = new CueNumber();
 		mCueNumber.mbNumber = false;
 		mCueNumber.mMonitorType = LauncherMonitor.MONITOR_NONE;
@@ -972,7 +976,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mTouchX = mScrollX = mScroller.getCurrX();
 			mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
 			mScrollY = mScroller.getCurrY();		
-			scrollTo(mScrollX, mScrollY);//??
+			//scrollTo(mScrollX, mScrollY);//??
 			Log.d(TAG,"computeScroll>computeScrollOffset>scrollX="+mScrollX
 					+",mTouchX="+mTouchX+",mSmoothingTime="+mSmoothingTime);
 			
@@ -989,6 +993,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mScreenIndicator.setCurrentScreen(next.getPageIndex());
 			
 			Launcher.setScreen(mCurrentScreen);
+			scrollTo(mCurrentScreen * getWidth(), 0);
 			mNextScreen = INVALID_SCREEN;
 			mWallpaperIndex = INVALID_SCREEN;
 			mTouchDirection = TOUCH_STATE_REST;
@@ -3413,7 +3418,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 	@Override
 	public void scrollRight() {
-		Log.d(TAG, "scrollRight");
+		Log.d(TAG, "scrollRight");		
 		clearVacantCache();
 		
 		if (mScroller.isFinished()) {
@@ -4264,19 +4269,40 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	// }
 
 	/**
-	 * @param i
+	 * @param childIndex
 	 */
-	public void checkCurrentCellsByChildIndex(int i) {
-		final CellLayout layout = (CellLayout) getChildAt(i);
+	public void checkCurrentCellsByChildIndex(int childIndex) {
+		final CellLayout layout = (CellLayout) getChildAt(childIndex);
 		int[] xy = new int[2];
 		final int cell_count = layout.getChildCount();
 		int[] checks = new int[ItemInfo.COL*ItemInfo.ROW];
-		for (int j=0;j<cell_count;j++){
-			final View child = layout.getChildAt(j);
-			final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-			checks[j]=getSeqNo(i, lp.cellX, lp.cellY);
-			for (int k=0; k<j;k++){
-				if(checks[j]==checks[k]) {
+		for (int i = 0; i < layout.getMaxCount(); i++) {
+			checks[i]=-1;
+		}
+		
+		for (int i=0;i<cell_count;i++){
+			final View child = layout.getChildAt(i);
+			final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();			
+			
+			if(lp.cellHSpan>1||lp.cellVSpan>1){
+				int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+				for (int j = 0; j < lp.cellHSpan; j++) {
+					for (int k = 0; k < lp.cellVSpan; k++) {
+						checks[num + ItemInfo.COL * k + j] = i;	
+					}
+				}				
+			}
+		}		
+			
+		for (int i=0;i<cell_count;i++){
+			final View child = layout.getChildAt(i);
+			final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();			
+			
+			if(lp.cellHSpan==1||lp.cellVSpan==1){
+				int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+				if (checks[num]<0){
+					checks[num]=i;
+				}else{
 					int number = layout.findFirstVacantCell();
 					if(number < 0){
 						//could not happened
@@ -4286,8 +4312,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 						lp.cellY = xy[1];	
 					}
 				}
-			}				
+			}
 		}
+			
 		xy=null;
 		checks=null;
 	}
@@ -4417,11 +4444,18 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			 * && ((ShortcutInfo) tag).itemType ==
 			 * Favorites.ITEM_TYPE_APPLICATION
 			 */) {
-				ShortcutInfo appInfo = (ShortcutInfo) tag;
-				appInfo.setIcon(null);
+				ShortcutInfo appInfo = (ShortcutInfo) tag;	
+				if (appInfo.itemType == Favorites.ITEM_TYPE_APPLICATION){
+					appInfo.setIcon(null);
+				}
+				Bitmap bmp = appInfo.getIcon(mIconCache);
+				Bitmap icon = bmp;
+				if (appInfo.itemType != Favorites.ITEM_TYPE_APPLICATION){
+					icon = Utilities.createCompoundBitmapEx(appInfo.title.toString(), bmp);
+				} 
 				((TextView) child).setCompoundDrawablesWithIntrinsicBounds(
 						null,
-						new FastBitmapDrawable(appInfo.getIcon(mIconCache)),
+						new FastBitmapDrawable(icon),
 						null, null);
 			} else if (tag instanceof UserFolderInfo) {
 				UserFolderInfo folderInfo = (UserFolderInfo) tag;

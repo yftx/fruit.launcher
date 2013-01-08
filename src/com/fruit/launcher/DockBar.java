@@ -68,8 +68,7 @@ public class DockBar extends ViewGroup {
 	private View.OnClickListener mDockButtonClickListener;
 
 	private IconCache mIconCache;
-
-	// modify by guo
+	
 	private ArrayList<ShortcutInfo> mAllAppHomeBar;
 
 	public DockBar(Context context, AttributeSet attrs) {
@@ -95,6 +94,7 @@ public class DockBar extends ViewGroup {
 
 		mCellNum = typedArray.getInt(R.styleable.DockBar_cellNum,
 				DEFAULT_CELL_NUM_IDEAL);
+		
 		mLeftPadding = typedArray.getDimensionPixelOffset(
 				R.styleable.DockBar_leftPadding, 10);
 		mRightPadding = typedArray.getDimensionPixelOffset(
@@ -104,7 +104,7 @@ public class DockBar extends ViewGroup {
 				R.styleable.DockBar_topPadding, 0);
 		mBottomPadding = typedArray.getDimensionPixelOffset(
 				R.styleable.DockBar_bottomPadding, 0);
-
+	
 		// mIdealHomeIndex = mCellNum / 2;
 		// mAllAppHomeIndex = mCellNumAllApp / 2;
 		mIsDockItemShow = true;

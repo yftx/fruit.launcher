@@ -427,7 +427,7 @@ public class DragController {
 			mMotionDownX = screenX;
 			mMotionDownY = screenY;
 
-			if ((screenX < SCROLL_ZONE)
+			if ((screenX < SCROLL_ZONE) || (screenY < Launcher.mScreenHeight-Workspace.workspaceBottom)
 					|| (screenX > scrollView.getWidth() - SCROLL_ZONE)) {
 				mScrollState = SCROLL_WAITING_IN_ZONE;
 				mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
@@ -476,14 +476,16 @@ public class DragController {
 			if (mDeleteRegion != null) {
 				inDeleteRegion = mDeleteRegion.contains(screenX, screenY);
 			}
-			if (!inDeleteRegion && screenX < SCROLL_ZONE) {
+			if (!inDeleteRegion && screenX < SCROLL_ZONE 
+					&& (screenY < Launcher.mScreenHeight-Workspace.workspaceBottom)) {
 				if (mScrollState == SCROLL_OUTSIDE_ZONE) {
 					mScrollState = SCROLL_WAITING_IN_ZONE;
 					mScrollRunnable.setDirection(SCROLL_LEFT);
 					mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
 				}
 			} else if (!inDeleteRegion
-					&& screenX > scrollView.getWidth() - SCROLL_ZONE) {
+					&& screenX > scrollView.getWidth() - SCROLL_ZONE
+					&& (screenY < Launcher.mScreenHeight-Workspace.workspaceBottom)) {
 				if (mScrollState == SCROLL_OUTSIDE_ZONE) {
 					mScrollState = SCROLL_WAITING_IN_ZONE;
 					mScrollRunnable.setDirection(SCROLL_RIGHT);
