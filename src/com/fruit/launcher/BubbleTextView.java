@@ -201,6 +201,6 @@ public class BubbleTextView extends TextView {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return super.toString()+":"+this.getText().toString();
+		return super.toString()+":"+this.getText().toString()+","+this.getLayoutParams().toString();
 	}
 }

@@ -37,6 +37,7 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.animation.Transformation;
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetProviderInfo;
 
 import java.util.ArrayList;
 
@@ -159,7 +160,7 @@ public class CellLayout extends ViewGroup {
 				continue;
 
 			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
-			if (lp == null)
+			if (lp == null || lp.isDragging)
 				continue;
 
 			if (lp.cellHSpan >= 1 || lp.cellVSpan >= 1) {
@@ -220,7 +221,7 @@ public class CellLayout extends ViewGroup {
 		
 	}
 	
-	int cellToNumberEx(int cellX, int cellY) {
+	int cellToSeqNo(int cellX, int cellY) {
 		return getPageIndex()*getCountX()*getCountY()+cellY * getCountX() + cellX;
 	}
 
@@ -789,17 +790,50 @@ public class CellLayout extends ViewGroup {
 //
 //	}
 
-	public void changeCellXY(View v, int cellX, int cellY) {
+	public void changeCellXY(View v, int cellX, int cellY, int x, int y) {
 		if (v == null)
 			return;
 
+		//CellInfo info = null;
+		
+		if (v instanceof LiveFolderIcon) {
+
+		} else if (v instanceof FolderIcon) {
+			UserFolderInfo userFolderInfo = (UserFolderInfo)(((FolderIcon)v).getTag());
+			userFolderInfo.cellX = cellX;
+			userFolderInfo.cellY = cellY;
+		} else if (v instanceof CustomAppWidget) {
+			CustomAppWidget customAppWidget = (CustomAppWidget) v;
+			CustomAppWidgetInfo winfo = (CustomAppWidgetInfo) customAppWidget.getTag();
+			winfo.cellX = cellX;
+			winfo.cellY = cellY;
+		} else if (v instanceof BubbleTextView) {
+			ShortcutInfo shortcutInfo = (ShortcutInfo) (((BubbleTextView) v).getTag());
+			shortcutInfo.cellX = cellX;
+			shortcutInfo.cellY = cellY;
+		} else if (v instanceof LauncherAppWidgetHostView) {
+//			LauncherAppWidgetHostView view = (LauncherAppWidgetHostView) v;
+//			AppWidgetProviderInfo appWidgetInfo = view.getAppWidgetInfo();			
+		} else {
+			Log.e(TAG, "Unknown item type when add in screen");
+		}
+		
+		//if (info==null)
+		//	return;
+		
+		//info.cellX = cellX;
+		//info.cellY = cellY;
+		
 		LayoutParams lp = (LayoutParams) v.getLayoutParams();
 		if (lp == null)
 			return;
 
 		lp.cellX = cellX;
 		lp.cellY = cellY;
+		lp.x = x;
+		lp.y = y;
 
+		Log.d(TAG,"changeCellXY:" + v.toString());
 	}
 
 //	public void changeCellXY(View v, int cellX, int cellY, int x, int y) {

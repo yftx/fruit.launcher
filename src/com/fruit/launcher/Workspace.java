@@ -175,7 +175,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	private float mDistance = 0f;
 
 	private ItemAnimate mItemAnimate; // yfzhao
-	private boolean isOneSesseion = true;
+	//private boolean isOneSesseion = true;
 	// private int[] aMap = null; //yfzhao
 
 	//private int[] mPos = new int[2];
@@ -2241,11 +2241,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		current.numberToCell(init + offset, newCell);
 		
-		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
-			y2-=mHeightStatusBar;
+//		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
+//			y2-=mHeightStatusBar;
 		
 		//current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
-		current.changeCellXY(child, newCell[0], newCell[1]);
+		current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
 
 		// child.layout(x2, y2, x2+mCellWidth, y2+mCellHeight);
 		// current.numberToCell(init, newCell);
@@ -2274,11 +2274,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		current.numberToCell(init + offset, newCell);
 		
-		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
-			y2-=mHeightStatusBar;
-		
+//		if(mLauncher.mDeleteZone.getVisibility() == View.VISIBLE)
+//			y2-=mHeightStatusBar;
+	
 		//current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
-		current.changeCellXY(child, newCell[0], newCell[1]);
+		current.changeCellXY(child, newCell[0], newCell[1], x2, y2);
 
 		// child.layout(x2, y2, x2+mCellWidth, y2+mCellHeight);
 		// current.numberToCell(init, newCell);
@@ -2858,7 +2858,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		
 		if (newIndex >= 0) {
 			if (isViewSpan1x1(current.getChildAt(newIndex))) {
-				if (!isTheDragView(current, newIndex)) {
+				if (!current.getChildAt(newIndex).equals(mDragInfo.cell)){
+				//if (!isTheDragView(current, newIndex)) {
 					Log.d(TAG, "start2drag,overCell is not empty,move the item in it "
 							+ mFromPos + "-" + mToPos);
 					// move to give space for new item
@@ -2925,7 +2926,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		
 		final int overSeqNo = current.cellToNumber(lp.cellX, lp.cellY);//getSeqNo(current.getPageIndex(), lp.cellX, lp.cellY);
 		
-		if (dragSeqNo==overSeqNo)
+		if (dragSeqNo==overSeqNo && view.equals(mDragInfo.cell))
 			return true;
 		else 
 			return false;
@@ -2968,10 +2969,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// int screen = -1;
 
 		Log.d(TAG, "drag sequence,workspace onDragOver, animateEnd="
-				+ mItemAnimate.animateEnd + ",isOneSesseion="+isOneSesseion);
+				+ mItemAnimate.animateEnd);// + ",isOneSesseion="+isOneSesseion);
 		
-		if (mItemAnimate.animateEnd && isOneSesseion) {
-			isOneSesseion = false;
+		if (mItemAnimate.animateEnd /*&& isOneSesseion*/) {
+			//isOneSesseion = false;
 			CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
 			if(oriLayout==null){
 				this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
@@ -3009,7 +3010,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			
 			start2drag(current, x, y, xOffset, yOffset);	
 			
-			isOneSesseion = true;
+			//isOneSesseion = true;
+			invalidate();
 		}
 	}
 
