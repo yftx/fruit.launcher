@@ -145,6 +145,7 @@ public class CellLayout extends ViewGroup {
 
 	int cellToIndex(int cellX, int cellY) {
 		int result = INVALID_CELL;
+		
 		int[] used = new int[ItemInfo.COL * ItemInfo.ROW];
 		for (int i = 0; i < ItemInfo.COL * ItemInfo.ROW; i++) {
 			used[i] = -1;
@@ -153,11 +154,11 @@ public class CellLayout extends ViewGroup {
 		//
 		final int count = getChildCount();
 		for (int i = 0; i < count; i++) {
-			View v = getChildAt(i);
+			final View v = getChildAt(i);
 			if (v == null)
 				continue;
 
-			LayoutParams lp = (LayoutParams) v.getLayoutParams();
+			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
 			if (lp == null)
 				continue;
 
@@ -180,6 +181,7 @@ public class CellLayout extends ViewGroup {
 			}
 		}
 
+		used=null;
 		return result;
 	}
 
@@ -668,56 +670,124 @@ public class CellLayout extends ViewGroup {
 		return true;
 	}
 
+//	int findFirstVacantCell() {
+//		int number = INVALID_CELL;
+//
+//		for (int i = 0; i < getMaxCount(); i++) {
+//			View v = getChildAt(numberToIndex(i));
+//			if (v == null) {
+//				number = i;
+//				break;
+//			}
+//		}
+//
+//		return number;
+//	}
+//
+//	int findLastVacantCell() {
+//		int number = INVALID_CELL;
+//
+//		for (int i = getMaxCount() - 1; i >= 0; i--) {
+//			View v = getChildAt(numberToIndex(i));
+//			if (v == null) {
+//				number = i;
+//				break;
+//			}
+//		}
+//
+//		return number;
+//	}
+	
 	
 	int findFirstVacantCell() {
 		int number = INVALID_CELL;
 
+		int[] checks = new int[ItemInfo.COL*ItemInfo.ROW];
 		for (int i = 0; i < getMaxCount(); i++) {
-			View v = getChildAt(numberToIndex(i));
-			if (v == null) {
+			checks[i]=-1;
+		}
+		
+		final int count = getChildCount();
+		
+		for (int i=0;i<count;i++){
+			final View v = getChildAt(i);
+			if (v==null)
+				continue;
+			
+			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
+			if (lp==null)
+				continue;
+			
+			final int num = cellToNumber(lp.cellX,lp.cellY);			
+			checks[num]=num;
+		}
+		
+		for (int i = 0; i < getMaxCount(); i++) {
+			if(checks[i]<0){
 				number = i;
 				break;
 			}
 		}
-
+		
+		checks=null;
 		return number;
 	}
 
 	int findLastVacantCell() {
 		int number = INVALID_CELL;
 
-		for (int i = getMaxCount() - 1; i >= 0; i--) {
-			View v = getChildAt(numberToIndex(i));
-			if (v == null) {
+		int[] checks = new int[ItemInfo.COL*ItemInfo.ROW];
+		for (int i = 0; i < getMaxCount(); i++) {
+			checks[i]=-1;
+		}
+		
+		final int count = getChildCount();
+		
+		for (int i=0;i<count;i++){
+			final View v = getChildAt(i);
+			if (v==null)
+				continue;
+			
+			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
+			if (lp==null)
+				continue;
+			
+			final int num = cellToNumber(lp.cellX,lp.cellY);			
+			checks[num]=num;
+		}
+		
+		for (int i = getMaxCount()-1; i >=0 ; i--) {
+			if(checks[i]<0){
 				number = i;
 				break;
 			}
 		}
 
+		checks=null;
 		return number;
 	}
 
-	View getLastChild1x1() {		
-		View child = null;
-
-		for (int i = getMaxCount() - 1; i >= 0; i--) {
-			View v = getChildAt(numberToIndex(i));
-			if (v == null)
-				continue;
-
-			LayoutParams lp = (LayoutParams) v.getLayoutParams();
-			if (lp == null)
-				continue;
-
-			if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
-				child = v;
-				break;
-			}
-		}
-
-		return child;
-
-	}
+//	View getLastChild1x1() {		
+//		View child = null;
+//
+//		for (int i = getMaxCount() - 1; i >= 0; i--) {
+//			View v = getChildAt(numberToIndex(i));
+//			if (v == null)
+//				continue;
+//
+//			LayoutParams lp = (LayoutParams) v.getLayoutParams();
+//			if (lp == null)
+//				continue;
+//
+//			if (lp.cellHSpan == 1 && lp.cellVSpan == 1) {
+//				child = v;
+//				break;
+//			}
+//		}
+//
+//		return child;
+//
+//	}
 
 	public void changeCellXY(View v, int cellX, int cellY) {
 		if (v == null)
@@ -808,9 +878,9 @@ public class CellLayout extends ViewGroup {
 		// int temp2 = INVALID_CELL;
 
 		// if (currentPlace>=(getMaxCount()>>2)) {
-		int temp1 = findNearestVacantCellIn(currentPlace, getMaxCount() - 1);
+		final int temp1 = findNearestVacantCellIn(currentPlace, getMaxCount() - 1);
 		// } else {
-		int temp2 = findNearestVacantCellIn(currentPlace, 0);
+		final int temp2 = findNearestVacantCellIn(currentPlace, 0);
 		// }
 
 		if (temp1 >= 0 && temp2 >= 0) {
@@ -826,22 +896,22 @@ public class CellLayout extends ViewGroup {
 		return number;
 	}
 
-	int findNearestVacantCellIn(int oldPlace, int newPlace) {
+	int findNearestVacantCellIn(int currentPlace, int newPlace) {
 
-		if (oldPlace == newPlace)
+		if (currentPlace == newPlace)
 			return INVALID_CELL;
 
 		int result = INVALID_CELL;
 
-		if (oldPlace < newPlace) {
-			for (int i = oldPlace + 1; i <= newPlace; i++) {
+		if (currentPlace < newPlace) {
+			for (int i = currentPlace + 1; i <= newPlace; i++) {
 				if (numberToIndex(i) < 0) {
 					result = i;
 					break;
 				}
 			}
-		} else if (oldPlace > newPlace) {
-			for (int i = oldPlace - 1; i >= newPlace; i--) {
+		} else if (currentPlace > newPlace) {
+			for (int i = currentPlace - 1; i >= newPlace; i--) {
 				if (numberToIndex(i) < 0) {
 					result = i;
 					break;
