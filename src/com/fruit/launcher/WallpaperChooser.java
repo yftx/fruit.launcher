@@ -280,6 +280,7 @@ public class WallpaperChooser extends Activity implements
 				return BitmapFactory.decodeResource(mResources,
 						mImages.get(params[0]), mOptions);
 			} catch (OutOfMemoryError e) {
+				e.printStackTrace();
 				return null;
 			}
 		}
