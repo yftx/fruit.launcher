@@ -3637,7 +3637,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	public String dumpState2String(){
 		String str = new String("");
 		mWorkspace.setAllCount();
-		str += getString(R.string.desktopiconnumber) + getString(R.string.colon) + (mWorkspace.getBubbleCount() + mDockBar.getChildCount()) +"\n";//mDesktopItems.size()
+		str += getString(R.string.desktopiconnumber) + getString(R.string.colon) + (mWorkspace.getBubbleCount() + mDockBar.getDockCount()) +"\n";//mDesktopItems.size()
 		str += getString(R.string.desktopwidgetnumber) + getString(R.string.colon) + mWorkspace.getWidgetCount()+"\n";
 		str += getString(R.string.folder_name) + getString(R.string.colon) + mFolders.size()+"\n";
 		str += getString(R.string.all_apps_button_label) + getString(R.string.colon);

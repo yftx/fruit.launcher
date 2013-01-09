@@ -132,6 +132,15 @@ public class DockBar extends ViewGroup {
 				R.drawable.dock_background, "dock_background"));
 	}
 
+	public int getDockCount(){
+		int count = 0;
+		for (int i=0;i<mDockButtons.length;i++){
+			if (!mDockButtons[i].mIsEmpty)
+				count++;
+		}
+		return count;
+	}
+	
 	// private void initAllAppDockButton() {
 	// // TODO Auto-generated method stub
 	// LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -586,5 +595,19 @@ public class DockBar extends ViewGroup {
 		Drawable dockBg = iconCache.getLocalIcon(R.drawable.dock_background,
 				"dock_background");
 		setBackgroundDrawable(dockBg);
+	}
+
+	/**
+	 * @return the mCellNum
+	 */
+	public int getmCellNum() {
+		return mCellNum;
+	}
+
+	/**
+	 * @param mCellNum the mCellNum to set
+	 */
+	public void setmCellNum(int mCellNum) {
+		this.mCellNum = mCellNum;
 	}
 }
