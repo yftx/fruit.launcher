@@ -740,6 +740,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (isWorkspaceLocked())
+			return true;
+		
 		boolean handled = super.onKeyDown(keyCode, event);
 		if (!handled && acceptFilter() && keyCode != KeyEvent.KEYCODE_ENTER) {
 			boolean gotKey = TextKeyListener.getInstance().onKeyDown(
@@ -1305,6 +1308,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onNewIntent(Intent intent) {
+		if (isWorkspaceLocked())
+			return;
+		
 		// check flag to exit Launcher
 		if (intent.getIntExtra("exitFlag", 0) == 1) {
 			finish();
@@ -2035,6 +2041,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 */
 	@Override
 	public void onClick(View v) {
+		if (isWorkspaceLocked())
+			return;
+		
 		Object tag = v.getTag();
 		if (v instanceof DockButton) {
 			if (!mDockBarEnable) {
@@ -2388,7 +2397,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	}
 
 	@Override
-	public boolean onLongClick(View v) {
+	public boolean onLongClick(View v) {	
 		if (v instanceof DockButton) {
 			DockButton dockButton = (DockButton) v;
 			if (dockButton.mIsEmpty) {
@@ -3446,6 +3455,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (ClassCastException e) {
+				e.printStackTrace();
+			} catch (Exception e){
 				e.printStackTrace();
 			}
 		}
