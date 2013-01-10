@@ -163,13 +163,18 @@ public class CellLayout extends ViewGroup {
 			if (lp == null || lp.isDragging)
 				continue;
 
-			if (lp.cellHSpan >= 1 || lp.cellVSpan >= 1) {
-				int cellNumStart = lp.cellY * (ItemInfo.COL) + lp.cellX;
-				for (int j = 0; j < lp.cellHSpan; j++) {
-					for (int k = 0; k < lp.cellVSpan; k++) {
-						checks[cellNumStart + ItemInfo.COL * k + j] = i;
+			try {
+				if (lp.cellHSpan >= 1 || lp.cellVSpan >= 1) {
+					int cellNumStart = lp.cellY * (ItemInfo.COL) + lp.cellX;
+					for (int j = 0; j < lp.cellHSpan; j++) {
+						for (int k = 0; k < lp.cellVSpan; k++) {
+							checks[cellNumStart + ItemInfo.COL * k + j] = i;
+						}
 					}
 				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 			int overNum = cellY * (ItemInfo.COL) + cellX;

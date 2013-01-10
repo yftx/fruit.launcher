@@ -2929,7 +2929,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 //		}
 		
 		if (newIndex >= 0) {
-			if (isViewSpan1x1(current.getChildAt(newIndex))) {
+			final View child = current.getChildAt(newIndex);
+			if (isViewSpan1x1(child)) {
 				if (!current.getChildAt(newIndex).equals(mDragInfo.cell)){
 				//if (!isTheDragView(current, newIndex)) {
 					Log.d(TAG, "start2drag,overCell is not empty,move the item in it "
@@ -2942,7 +2943,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 						Log.d(TAG, "start2drag,mIsNeedPreMove: from-to="
 								+ mFromPos + "-" + mToPos+",current="+current.toString());
 						
-						startDragAndUpdate(current, overCell);
+						if (!isUserFolder(child))
+							startDragAndUpdate(current, overCell);
 						
 //						newIndex=current.numberToIndex(mToPos);
 //						
@@ -2958,7 +2960,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 //							}
 //						}
 					} else {
-						startDragAndUpdate(current, overCell);
+						if (!isUserFolder(child))
+							startDragAndUpdate(current, overCell);
 					}
 				} else {
 					if (mIsNeedPreMove) {						
@@ -3018,6 +3021,37 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		updateDragInfo(mDragInfo, overCell, current.getPageIndex());
 	}
 
+	private boolean isUserFolder(Object dragInfo){
+		if(dragInfo==null){
+			return false;
+		}
+		
+		ItemInfo info = (ItemInfo) dragInfo;
+		
+		if (info!=null && info instanceof UserFolderInfo) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isUserFolder(ItemInfo itemInfo){
+		
+		if (itemInfo!=null && itemInfo instanceof UserFolderInfo) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isUserFolder(View child){
+		if (child!=null && child instanceof FolderIcon) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	@Override
 	public void onDragOver(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
@@ -3031,11 +3065,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if (!isViewSpan1x1(dragInfo))
 			return;
 		
-		while (delayer < DELAY_OUT) {
-			//SystemClock.sleep(5);
-			delayer++;
-			return;
-		}
+//		while (delayer < DELAY_OUT) {
+//			//SystemClock.sleep(5);
+//			delayer++;
+//			return;
+//		}
 		
 		//CellLayout current = null;
 		// int screen = -1;
@@ -3437,11 +3471,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	 */
 	public void finishDropCompleted() {
 		
-		cleanAfterDrop();
-
 		if (isViewSpan1x1(mDragInfo)){
+			cleanAfterDrop();
 			checkAllCells();		
 			exchangeAllCells();
+		} else {
+			cleanAfterDrop();
 		}
 		
 //		checkCurrentCellsByChildIndex(mCurrentScreen);
@@ -4392,18 +4427,23 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			checks[i]=-1;
 		}
 		
-		for (int i=0;i<cell_count;i++){
-			final View child = layout.getChildAt(i);
-			final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();			
-			
-			//if(lp.cellHSpan>1||lp.cellVSpan>1){
-				int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
-				for (int j = 0; j < lp.cellHSpan; j++) {
-					for (int k = 0; k < lp.cellVSpan; k++) {
-						checks[num + ItemInfo.COL * k + j] = i;	
-					}
-				}				
-			//}
+		try {
+			for (int i=0;i<cell_count;i++){
+				final View child = layout.getChildAt(i);
+				final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();			
+				
+				//if(lp.cellHSpan>1||lp.cellVSpan>1){
+					int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+					for (int j = 0; j < lp.cellHSpan; j++) {
+						for (int k = 0; k < lp.cellVSpan; k++) {
+							checks[num + ItemInfo.COL * k + j] = i;	
+						}
+					}				
+				//}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}		
 
 		if (checks[layout.cellToNumber(newCell)]>0){
