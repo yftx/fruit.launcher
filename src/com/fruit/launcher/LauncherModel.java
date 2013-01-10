@@ -892,6 +892,17 @@ public class LauncherModel extends BroadcastReceiver {
 			// check & update map of what's occupied; used to discard
 			// overlapping/invalid items
 			private boolean checkItemPlacement(ItemInfo occupied[][][],
+					ItemInfo item, Context context) {
+				boolean result = checkItemPlacement(occupied, item);
+				if (!result){
+					deleteItemFromDatabase(context, item);
+				}
+				return result;
+			}
+			
+			// check & update map of what's occupied; used to discard
+			// overlapping/invalid items
+			private boolean checkItemPlacement(ItemInfo occupied[][][],
 					ItemInfo item) {
 				if (item.container != Favorites.CONTAINER_DESKTOP) {
 					return true;
@@ -1022,7 +1033,7 @@ public class LauncherModel extends BroadcastReceiver {
 									info.orderId = c.getInt(orderIdIndex);
 
 									// check & update map of what's occupied
-									if (!checkItemPlacement(occupied, info)) {
+									if (!checkItemPlacement(occupied, info, context)) {
 										break;
 									}
 
@@ -1072,7 +1083,7 @@ public class LauncherModel extends BroadcastReceiver {
 								folderInfo.cellY = c.getInt(cellYIndex);
 
 								// check & update map of what's occupied
-								if (!checkItemPlacement(occupied, folderInfo)) {
+								if (!checkItemPlacement(occupied, folderInfo, context)) {
 									break;
 								}
 
@@ -1130,7 +1141,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 									// check & update map of what's occupied
 									if (!checkItemPlacement(occupied,
-											liveFolderInfo)) {
+											liveFolderInfo, context)) {
 										break;
 									}
 
@@ -1188,7 +1199,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 									// check & update map of what's occupied
 									if (!checkItemPlacement(occupied,
-											appWidgetInfo)) {
+											appWidgetInfo, context)) {
 										break;
 									}
 
@@ -1219,7 +1230,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 								// check & update map of what's occupied
 								if (!checkItemPlacement(occupied,
-										customAppWidgetInfo)) {
+										customAppWidgetInfo, context)) {
 									break;
 								}
 								mCustomAppWidgets.add(customAppWidgetInfo);
