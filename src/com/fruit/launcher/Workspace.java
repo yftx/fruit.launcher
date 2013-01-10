@@ -1022,6 +1022,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 
 	void sendBroadcast4Widget() {
+		if (mLauncher.isWorkspaceLocked())
+			return;
+		
 		// String packageNames = null;
 		Intent intent = new Intent(ACTION_SCROLLER_SCREEN);
 
@@ -1035,6 +1038,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 
 	void sendBroadcast4Widget(CellLayout layout) {
+		if (mLauncher.isWorkspaceLocked())
+			return;
+		
 		try {
 			String packageNames = new String("");
 			Intent intent = new Intent(ACTION_SCROLLER_SCREEN);
@@ -2498,7 +2504,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		return (cellInfo.spanX == 1 && cellInfo.spanY == 1);
 	}
+	
+	boolean isViewSpan1x1(ItemInfo itemInfo) {
+		if (itemInfo == null)
+			return false;
 
+		return (itemInfo.spanX == 1 && itemInfo.spanY == 1);
+	}
+	
 	boolean isViewSpan1x1(Object dragInfo) {
 
 		if (dragInfo == null)
@@ -2538,122 +2551,170 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
-	public void onDropOri1x1(CellLayout cellLayout, int x, int y, int xOffset,
-			int yOffset, DragView dragView, Object dragInfo) {
-
-		final View cell = mDragInfo.cell;
-		// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
-
-		cellLayout.onDropChild(cell);
-		
-		final ItemInfo info = (ItemInfo) cell.getTag();
-		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-				.getLayoutParams();
-		LauncherModel.moveItemInDatabase(mLauncher, info,
-				Favorites.CONTAINER_DESKTOP, cellLayout.getPageIndex(),
-				lp.cellX, lp.cellY);
-	}
+//	public void onDropOri1x1(CellLayout cellLayout, int x, int y, int xOffset,
+//			int yOffset, DragView dragView, Object dragInfo) {
+//
+//		final View cell = mDragInfo.cell;
+//		// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
+//
+//		cellLayout.onDropChild(cell);
+//		
+//		final ItemInfo info = (ItemInfo) cell.getTag();
+//		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
+//				.getLayoutParams();
+//		LauncherModel.moveItemInDatabase(mLauncher, info,
+//				Favorites.CONTAINER_DESKTOP, cellLayout.getPageIndex(),
+//				lp.cellX, lp.cellY);
+//	}
 
 	public void onDropOri(CellLayout cellLayout, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
 
-		final View cell = mDragInfo.cell;
-		// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
+		try {
+			final View cell = mDragInfo.cell;
+			// int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
 
-		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
-				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
-		if (mTargetCell==null){
-			dragView.setmCallbackFlag(false);			
-			return;
+			mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+					mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);	
+			
+			if (mTargetCell==null){// || !checkCurrentCellsByChildIndex(getChildIndexByPageIndex(cellLayout.getPageIndex()), mTargetCell)){
+				dragView.setmCallbackFlag(false);			
+				return;
+			} 
+			
+			cellLayout.onDropChild(cell, mTargetCell);
+			
+			final ItemInfo info = (ItemInfo) cell.getTag();
+			CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
+					.getLayoutParams();
+			LauncherModel.moveItemInDatabase(mLauncher, info,
+					Favorites.CONTAINER_DESKTOP, cellLayout.getPageIndex(),
+					lp.cellX, lp.cellY);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		cellLayout.onDropChild(cell, mTargetCell);
 		
-		final ItemInfo info = (ItemInfo) cell.getTag();
-		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-				.getLayoutParams();
-		LauncherModel.moveItemInDatabase(mLauncher, info,
-				Favorites.CONTAINER_DESKTOP, cellLayout.getPageIndex(),
-				lp.cellX, lp.cellY);
 	}
-	
+    
+//	public void onDropOld(DragSource source, int x, int y, int xOffset, int yOffset,
+//            DragView dragView, Object dragInfo) {
+//        final CellLayout cellLayout = getCurrentDropLayout();
+//        if (source != this) {
+//            onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
+//        } else {
+//            // Move internally
+//            if (mDragInfo != null) {
+//                final View cell = mDragInfo.cell;
+//                int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;
+//                if (index != mDragInfo.screen) {
+//                    final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
+//                    originalCellLayout.removeView(cell);
+//                    cellLayout.addView(cell);
+//                }
+//                onDropInternalOld(x, y, xOffset, yOffset, cellLayout, cell,
+//						index);
+//            }
+//        }
+//    }
+
+//	/**
+//	 * @param x
+//	 * @param y
+//	 * @param xOffset
+//	 * @param yOffset
+//	 * @param cellLayout
+//	 * @param cell
+//	 * @param index
+//	 */
+//	public void onDropInternalOld(int x, int y, int xOffset, int yOffset,
+//			final CellLayout cellLayout, final View cell, int index) {
+//		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+//		        mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
+//		cellLayout.onDropChild(cell, mTargetCell);
+//
+//		final ItemInfo info = (ItemInfo) cell.getTag();
+//		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
+//		LauncherModel.moveItemInDatabase(mLauncher, info,
+//		        Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);
+//	}
+    
 	@Override
 	public void onDrop(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
+		
 		int timer = 0;
 		final int TIME_OUT = 10000;
 		
 		while (!mItemAnimate.animateEnd) {
-			//SystemClock.sleep(5);
 			timer++;
 			if (timer > TIME_OUT)
 				break;
-			
-//			try {
-//				this.wait();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		}
-		mItemAnimate.stop();
 		
-		//if(mItemAnimate.isAnimateEnd())
-		{
-			if(oriLayout==null){
-				this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
-			}
-			
-			try {
-				final CellLayout cellLayout = getCurrentDropLayout();
-	
-				if (source != this) {
-					onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
-				} else {
-					// Move internally
-					if (mDragInfo != null && mDragInfo.cell != null) {
-	
-						final View cell = mDragInfo.cell;
-						
-						if (oriLayout != null) {
-							if (cellLayout.getPageIndex() != oriLayout.getPageIndex()) {
-								// final CellLayout originalCellLayout = (CellLayout)
-								// getChildAt(mDragInfo.screen);
-								if (cellLayout.isFull()) {
-									dragView.setmCallbackFlag(false);
-									// invalidate();
-									return;
-								}
-								oriLayout.removeView(cell);
-								cellLayout.addView(cell);
-							}
-						}
-	
-						if(isViewSpan1x1(mDragInfo.cell))
-							onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
-									dragInfo);
-						else
-							onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
-									dragInfo);
-						return;
-	
-	
-					} else {
-						invalidate();
-						Log.d(TAG, "mDragInfo == null");
-					}
-				}
-	
-				Log.d(TAG,
-						"dockbar, mIsEmpty,ondrop workspace from dockbar,current has "
-								+ cellLayout.getChildCount() + " children");
-	
-				// invalidate();
-				// mDragInfo = null;
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		mItemAnimate.stop();
+
+		if(oriLayout==null){
+			this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
 		}
+			
+		try {
+			final CellLayout cellLayout = getCurrentDropLayout();//(CellLayout)getChildAt(mCurrentScreen);//
+
+			if (source != this) {
+				onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
+			} else {
+				// Move internally
+				if (mDragInfo != null && mDragInfo.cell != null) {
+
+					final View cell = mDragInfo.cell;
+					
+					if (oriLayout != null) {
+						if (cellLayout.getPageIndex() != oriLayout.getPageIndex()) {
+							// final CellLayout originalCellLayout = (CellLayout)
+							// getChildAt(mDragInfo.screen);
+							if (cellLayout.isFull()) {
+								dragView.setmCallbackFlag(false);
+								// invalidate();
+								return;
+							}
+							mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+							        mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
+							if ((mTargetCell==null) || !checkCurrentCellsByChildIndex(getChildIndexByPageIndex(cellLayout.getPageIndex()), mTargetCell)){
+								dragView.setmCallbackFlag(false);									
+								return;
+							}
+							oriLayout.removeView(cell);
+							cellLayout.addView(cell);
+						}
+					}
+
+					if(isViewSpan1x1(mDragInfo)){
+						onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
+								dragInfo);
+					}else{
+						onDropOri(cellLayout, x, y, xOffset, yOffset, dragView,
+								dragInfo);
+					
+					}
+					//return;
+				} else {
+					invalidate();
+					Log.d(TAG, "mDragInfo == null");
+				}
+			}
+
+			Log.d(TAG,
+					"dockbar, mIsEmpty,ondrop workspace from dockbar,current has "
+							+ cellLayout.getChildCount() + " children");
+
+			// invalidate();
+			// mDragInfo = null;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 //	void dropAllChilds(CellLayout cellLayout) {
@@ -2666,70 +2727,67 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 //	}
 
 	void updateCellByScreenIndex(View cell, int index) {
-		if (cell == null)
-			return;
-		final ItemInfo info = (ItemInfo) cell.getTag();
-		if (info == null)
-			return;
-		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-				.getLayoutParams();
-		if (lp == null)
-			return;
-		LauncherModel.moveItemInDatabase(mLauncher, info,
-				Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);
-	}
-
-	void onDropInternal2(int x, int y, int xOffset, int yOffset, View cell,
-			CellLayout cellLayout, int index) {
-
-		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
-				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
-
-		cellLayout.onDropChild(cell, mTargetCell);
-
-		// cellLayout.changeCellXY(mDragInfo.cell, mTargetCell[0],
-		// mTargetCell[1]);
-		invalidate();
-
-		updateCellByScreenIndex(cell, cellLayout.getPageIndex()/* index */);
-
-		// dropAllChilds(cellLayout);
-
-	}
-
-	void onDropInternalEx(int x, int y, int xOffset, int yOffset, View cell,
-			CellLayout cellLayout, int index) {
-
-		// cellLayout.pointToCellExact(x-xOffset, y-yOffset, newCell);
-		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-				.getLayoutParams();
-		newCell[0] = lp.cellX;
-		newCell[1] = lp.cellY;
-
-		cellLayout.onDropChild(cell, newCell);
-
-		updateCellByScreenIndex(cell, cellLayout.getPageIndex()/* index */);
-
-	}
-
-	void onDropInternal(int x, int y, int xOffset, int yOffset, View cell,
-			CellLayout cellLayout, int index) {
-		if (index != mDragInfo.screen) {
-			final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
-			originalCellLayout.removeView(cell);
-			cellLayout.addView(cell);
+		try {
+			if (cell == null)
+				return;
+			final ItemInfo info = (ItemInfo) cell.getTag();
+			if (info == null)
+				return;
+			CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
+					.getLayoutParams();
+			if (lp == null)
+				return;
+			LauncherModel.moveItemInDatabase(mLauncher, info,
+					Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
-				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
-		cellLayout.onDropChild(cell, mTargetCell);
-
-		final ItemInfo info = (ItemInfo) cell.getTag();
-		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
-				.getLayoutParams();
-		LauncherModel.moveItemInDatabase(mLauncher, info,
-				Favorites.CONTAINER_DESKTOP, index, lp.cellX, lp.cellY);
 	}
+
+//	void onDropInternal2(int x, int y, int xOffset, int yOffset, View cell,
+//			CellLayout cellLayout, int index) {
+//
+//		mTargetCell = estimateDropCell(x - xOffset, y - yOffset,
+//				mDragInfo.spanX, mDragInfo.spanY, cell, cellLayout, mTargetCell);
+//
+//		cellLayout.onDropChild(cell, mTargetCell);
+//
+//		// cellLayout.changeCellXY(mDragInfo.cell, mTargetCell[0],
+//		// mTargetCell[1]);
+//		invalidate();
+//
+//		updateCellByScreenIndex(cell, cellLayout.getPageIndex()/* index */);
+//
+//		// dropAllChilds(cellLayout);
+//
+//	}
+
+//	void onDropInternalEx(int x, int y, int xOffset, int yOffset, View cell,
+//			CellLayout cellLayout, int index) {
+//
+//		// cellLayout.pointToCellExact(x-xOffset, y-yOffset, newCell);
+//		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell
+//				.getLayoutParams();
+//		newCell[0] = lp.cellX;
+//		newCell[1] = lp.cellY;
+//
+//		cellLayout.onDropChild(cell, newCell);
+//
+//		updateCellByScreenIndex(cell, cellLayout.getPageIndex()/* index */);
+//
+//	}
+
+//	void onDropInternal(int x, int y, int xOffset, int yOffset, View cell,
+//			CellLayout cellLayout, int index) {
+//		if (index != mDragInfo.screen) {
+//			final CellLayout originalCellLayout = (CellLayout) getChildAt(mDragInfo.screen);
+//			originalCellLayout.removeView(cell);
+//			cellLayout.addView(cell);
+//		}
+//
+//		onDropInternalOld(x, y, xOffset, yOffset, cellLayout, cell, index);
+//	}
 
 	private void reGenDragView(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
@@ -3369,19 +3427,22 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		// CellLayout layout = (CellLayout)getChildAt(getCurrentScreen());
 		// layout.requestLayout();
 		// layout.invalidate();
-
-		finishDropCompleted();
 		
+		finishDropCompleted();	
+
 	}
 
 	/**
 	 * 
 	 */
 	public void finishDropCompleted() {
+		
 		cleanAfterDrop();
 
-		checkAllCells();		
-		exchangeAllCells();
+		if (isViewSpan1x1(mDragInfo)){
+			checkAllCells();		
+			exchangeAllCells();
+		}
 		
 //		checkCurrentCellsByChildIndex(mCurrentScreen);
 //		exchangeAllCells(mCurrentScreen);
@@ -4288,7 +4349,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
 				for (int j = 0; j < lp.cellHSpan; j++) {
 					for (int k = 0; k < lp.cellVSpan; k++) {
-						checks[num + ItemInfo.COL * k + j] = i;	
+						//if (checks[num + ItemInfo.COL * k + j]<0){
+							checks[num + ItemInfo.COL * k + j]= i;
+						//} else {
+						//	layout.removeView(child);
+						//}
 					}
 				}				
 			}
@@ -4319,6 +4384,38 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		checks=null;
 	}
 
+	public boolean checkCurrentCellsByChildIndex(int childIndex, int [] newCell) {
+		final CellLayout layout = (CellLayout) getChildAt(childIndex);
+		final int cell_count = layout.getChildCount();
+		int[] checks = new int[ItemInfo.COL*ItemInfo.ROW];
+		for (int i = 0; i < layout.getMaxCount(); i++) {
+			checks[i]=-1;
+		}
+		
+		for (int i=0;i<cell_count;i++){
+			final View child = layout.getChildAt(i);
+			final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();			
+			
+			//if(lp.cellHSpan>1||lp.cellVSpan>1){
+				int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+				for (int j = 0; j < lp.cellHSpan; j++) {
+					for (int k = 0; k < lp.cellVSpan; k++) {
+						checks[num + ItemInfo.COL * k + j] = i;	
+					}
+				}				
+			//}
+		}		
+
+		if (checks[layout.cellToNumber(newCell)]>0){
+			checks=null;
+			return false;
+		} else {
+			checks=null;
+			return true;
+		}
+		
+	}
+	
 	public void printChildCount() {
 //		Log.d(TAG, "printChildCount workspace default screen is " + mDefaultScreen
 //				+ ", current screen is " + mCurrentScreen);
