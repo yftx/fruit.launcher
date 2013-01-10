@@ -1027,6 +1027,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			}
 		}
 
+		Log.d(TAG,"bindAppsAdded, added.cellinfo="+cellInfo.toString());
 		addApplication(context, data, cellInfo);
 	}
 	
@@ -3492,6 +3493,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		//mWorkspace.addItems(apps);//add shortcut here		
 		
 		final int appCount = apps.size();
+		Log.d(TAG,"bindAppsAdded, added.size="+appCount);
 		for (int k = 0; k < appCount; k++) {
 			ApplicationInfo app = apps.get(k);	
 			CellLayout.CellInfo cellInfo = new CellLayout.CellInfo();

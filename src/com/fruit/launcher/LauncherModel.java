@@ -1033,7 +1033,7 @@ public class LauncherModel extends BroadcastReceiver {
 									info.orderId = c.getInt(orderIdIndex);
 
 									// check & update map of what's occupied
-									if (!checkItemPlacement(occupied, info, context)) {
+									if (!checkItemPlacement(occupied, info)) {
 										break;
 									}
 
@@ -1083,7 +1083,7 @@ public class LauncherModel extends BroadcastReceiver {
 								folderInfo.cellY = c.getInt(cellYIndex);
 
 								// check & update map of what's occupied
-								if (!checkItemPlacement(occupied, folderInfo, context)) {
+								if (!checkItemPlacement(occupied, folderInfo)) {
 									break;
 								}
 
@@ -1141,7 +1141,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 									// check & update map of what's occupied
 									if (!checkItemPlacement(occupied,
-											liveFolderInfo, context)) {
+											liveFolderInfo)) {
 										break;
 									}
 
@@ -1230,7 +1230,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 								// check & update map of what's occupied
 								if (!checkItemPlacement(occupied,
-										customAppWidgetInfo, context)) {
+										customAppWidgetInfo)) {
 									break;
 								}
 								mCustomAppWidgets.add(customAppWidgetInfo);

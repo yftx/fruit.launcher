@@ -1854,7 +1854,7 @@ public class CellLayout extends ViewGroup {
 		@Override
 		public String toString() {
 			return "Cell[view=" + (cell == null ? "null" : cell.getClass())
-					+ ", x=" + cellX + ", y=" + cellY + "]";
+					+ ", x=" + cellX + ", y=" + cellY + "],screen="+screen;
 		}
 	}
 
