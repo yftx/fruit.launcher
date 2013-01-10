@@ -156,10 +156,18 @@ class ShortcutInfo extends ItemInfo {
 
 	@Override
 	public String toString() {
-		return "ShortcutInfo(title=" + title.toString() + "),type="+itemType
-				+",screen="+this.screen+",seqno="+this.seqNo
-				+",cell("+this.cellX+","+this.cellY+","+this.spanX+","+this.spanY+"),"
-				+",container="+this.container;
+		String str = null;
+		try {
+			str = "ShortcutInfo(title=" + title.toString() + "),type="+itemType
+					+",screen="+this.screen+",seqno="+this.seqNo
+					+",cell("+this.cellX+","+this.cellY+","+this.spanX+","+this.spanY+"),"
+					+",container="+this.container;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		return str;
 	}
 
 	@Override
