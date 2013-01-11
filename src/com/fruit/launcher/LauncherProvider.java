@@ -423,8 +423,13 @@ public class LauncherProvider extends ContentProvider {
 		}
 	}
 
+	public static int get_put_screen(){
+		return DatabaseHelper.getPUT_SCREEN();
+	}
+	
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
+		private static final int ICON_LOCATING_FROM_PAGE = 5;
 		private static final String TAG_FAVORITES = "favorites";
 		private static final String TAG_FAVORITE = "favorite";
 		private static final String TAG_CLOCK = "clock";
@@ -446,6 +451,7 @@ public class LauncherProvider extends ContentProvider {
 
 		static ArrayList<TopPackage> mTopPackages;
 		//private Logger mLogger;
+		private static int PUT_SCREEN;
 
 		private static class TopPackage {
 			public TopPackage(String packagename, String classname, int order) {
@@ -1005,8 +1011,8 @@ public class LauncherProvider extends ContentProvider {
 					values2.put(BaseLauncherColumns.INTENT, intentInfo);
 					values2.put(Favorites.CONTAINER,
 							Favorites.CONTAINER_DESKTOP);
-					// values2.put(Favorites.POSITION, position);
-					values2.put(Favorites.SCREEN, position2 / 16 + 5);
+					PUT_SCREEN = position2 / 16 + ICON_LOCATING_FROM_PAGE;
+					values2.put(Favorites.SCREEN, PUT_SCREEN);
 					relativePosition = position2 % 16;
 					values2.put(Favorites.CELLX, relativePosition % 4);
 					values2.put(Favorites.CELLY, relativePosition / 4);
@@ -1717,6 +1723,20 @@ public class LauncherProvider extends ContentProvider {
 			db.insert(TABLE_FAVORITES, null, values);
 
 			return true;
+		}
+
+		/**
+		 * @return the pUT_SCREEN
+		 */
+		static int getPUT_SCREEN() {
+			return PUT_SCREEN;
+		}
+
+		/**
+		 * @param pUT_SCREEN the pUT_SCREEN to set
+		 */
+		static void setPUT_SCREEN(int pUT_SCREEN) {
+			PUT_SCREEN = pUT_SCREEN;
 		}
 	}
 
