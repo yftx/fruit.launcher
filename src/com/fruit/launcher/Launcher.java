@@ -692,8 +692,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		if (mRestoring) {//??
-			//mWorkspaceLoading = true;
-			//mModel.startLoader(this, true);
+			Log.d(TAG, "onResume,mRestoring="+mRestoring);
+			mWorkspaceLoading = true;
+			mModel.startLoader(this, true);
 			mRestoring = false;
 		}
 	}
@@ -1799,7 +1800,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private boolean findSingleSlotEx(CellLayout.CellInfo cellInfo) {
 		final int[] xy = new int[2];
 		CellLayout layout = (CellLayout)mWorkspace.getChildAt(cellInfo.screen);
+		Log.d(TAG, "findSingleSlotEx"+layout.toString());
 		int number = layout.findFirstVacantCell();
+		Log.d(TAG, "findSingleSlotEx, find 1st number = "+number);
 		if(number < 0){
 			return false;
 		} else {
@@ -3496,6 +3499,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		Log.d(TAG,"bindAppsAdded, added.size="+appCount);
 		for (int k = 0; k < appCount; k++) {
 			ApplicationInfo app = apps.get(k);	
+			Log.d(TAG, "appInfo="+app.toString());
 			CellLayout.CellInfo cellInfo = new CellLayout.CellInfo();
 			autoAddApplication(this, app.intent, cellInfo);
 			cellInfo = null;
