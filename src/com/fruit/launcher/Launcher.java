@@ -3473,6 +3473,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		 */
 
 		mWorkspaceLoading = false;
+		
+		if(mWorkspace!=null && !isWorkspaceLocked())
+			mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
 	}
 
 	/**
