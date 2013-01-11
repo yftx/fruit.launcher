@@ -104,9 +104,10 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 		Log.d(TAG, "drag sequence,dockbutton onDrop");
 
 		// TODO Auto-generated method stub
-		final int itemType = ((ItemInfo) dragInfo).itemType;
+		final ItemInfo info = (ItemInfo) dragInfo;
+		final int itemType = info.itemType;
 		final int index = ((DockBar.LayoutParams) getLayoutParams()).index;
-
+		
 		final Workspace workspace = mLauncher.getWorkspace();
 
 		CellLayout current = (CellLayout) workspace.getChildAt(workspace
