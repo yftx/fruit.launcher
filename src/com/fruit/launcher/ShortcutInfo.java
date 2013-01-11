@@ -157,6 +157,7 @@ class ShortcutInfo extends ItemInfo {
 	@Override
 	public String toString() {
 		String str = null;
+        
 		try {
 			str = "ShortcutInfo(title=" + title.toString() + "),type="+itemType
 					+",screen="+this.screen+",seqno="+this.seqNo
@@ -167,6 +168,7 @@ class ShortcutInfo extends ItemInfo {
 			e.printStackTrace();
 			
 		}
+        
 		return str;
 	}
 

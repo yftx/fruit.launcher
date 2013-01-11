@@ -158,44 +158,24 @@ public class CellLayout extends ViewGroup {
 			final View v = getChildAt(i);
 			if (v == null)
 				continue;
-
-		    final ItemInfo itemInfo = (ItemInfo) v.getTag();
-			if (itemInfo==null)
-				continue;
 			
 			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
-			if (lp == null || lp.isDragging)
+			final ItemInfo itemInfo = (ItemInfo) v.getTag();
+			
+			if (itemInfo==null && lp==null)
 				continue;
 			
-			try {				
-				if (itemInfo.spanX >= 1 || itemInfo.spanY >= 1) {
-					int num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
-					for (int j = 0; j < itemInfo.spanX; j++) {
-						for (int k = 0; k < itemInfo.spanY; k++) {
-							checks[num + ItemInfo.COL * k + j] = i;
-						}
-					}
-				}				
+			if (lp != null && lp.isDragging)
+				continue;
+			
+			try {	
+				
+				checksByItemInfoOrLP(checks, i, lp, itemInfo);
+			
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			Log.d(TAG,"itemInfo="+itemInfo.toString());
-
-//			try {
-//				if (lp.cellHSpan >= 1 || lp.cellVSpan >= 1) {
-//					int cellNumStart = lp.cellY * (ItemInfo.COL) + lp.cellX;
-//					for (int j = 0; j < lp.cellHSpan; j++) {
-//						for (int k = 0; k < lp.cellVSpan; k++) {
-//							checks[cellNumStart + ItemInfo.COL * k + j] = i;
-//						}
-//					}
-//				}
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 
 			int overNum = cellY * (ItemInfo.COL) + cellX;
 
@@ -209,6 +189,68 @@ public class CellLayout extends ViewGroup {
 
 		checks=null;
 		return result;
+	}
+
+	/**
+	 * @param checks
+	 * @param i
+	 * @param lp
+	 * @param itemInfo
+	 */
+	public void checksByItemInfoOrLP(int[] checks, int i,
+			final LayoutParams lp, final ItemInfo itemInfo) {
+		int num = -1;
+		
+		if ((lp.cellX >= 0 && lp.cellY >= 0) && (lp.cellHSpan >= 1 && lp.cellVSpan >= 1)) {
+			num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+			for (int j = 0; j < lp.cellHSpan; j++) {
+				for (int k = 0; k < lp.cellVSpan; k++) {
+					checks[num + ItemInfo.COL * k + j] = i;
+				}
+			}
+			Log.d(TAG, "lp="+lp.toString());
+		}
+		
+		if((num<0) && ((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX >= 1 || itemInfo.spanY >= 1))){
+			num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
+			for (int j = 0; j < itemInfo.spanX; j++) {
+				for (int k = 0; k < itemInfo.spanY; k++) {
+					checks[num + ItemInfo.COL * k + j] = i;
+				}
+			}
+			Log.d(TAG,"itemInfo="+itemInfo.toString());
+		}
+	}
+	
+	/**
+	 * @param checks
+	 * @param i
+	 * @param lp
+	 * @param itemInfo
+	 */
+	public void checksByItemInfoOrLPNot1x1(int[] checks, int i,
+			final LayoutParams lp, final ItemInfo itemInfo) {
+		int num = -1;
+		
+		if ((lp.cellX >= 0 && lp.cellY >= 0) && (lp.cellHSpan > 1 && lp.cellVSpan > 1)) {
+			num = lp.cellY * (ItemInfo.COL) + lp.cellX;
+			for (int j = 0; j < lp.cellHSpan; j++) {
+				for (int k = 0; k < lp.cellVSpan; k++) {
+					checks[num + ItemInfo.COL * k + j] = i;
+				}
+			}
+			Log.d(TAG, "lp="+lp.toString());
+		}
+		
+		if((num<0) && ((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX > 1 || itemInfo.spanY > 1))){
+			num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
+			for (int j = 0; j < itemInfo.spanX; j++) {
+				for (int k = 0; k < itemInfo.spanY; k++) {
+					checks[num + ItemInfo.COL * k + j] = i;
+				}
+			}
+			Log.d(TAG,"itemInfo="+itemInfo.toString());
+		}
 	}
 
 	int cellToIndex(int[] cellXY) {
@@ -262,47 +304,53 @@ public class CellLayout extends ViewGroup {
 	}
 
 
-	int getCellSpanX(int index) {
-		int result = INVALID_CELL;
-
-		final View v = getChildAt(index);
-		if (v == null)
-			return result;
-
-	    final ItemInfo itemInfo = (ItemInfo) v.getTag();
-		if (itemInfo==null)
-			return result;
-		result = itemInfo.spanX;
-		
-//		LayoutParams lp = (LayoutParams) v.getLayoutParams();
-//		if (lp == null)
+//	int getCellSpanX(int index) {
+//		int result = INVALID_CELL;
+//
+//		final View v = getChildAt(index);
+//		if (v == null)
 //			return result;
 //
-//		result = lp.cellHSpan;
-
-		return result;
-	}
-
-	int getCellSpanY(int index) {
-		int result = INVALID_CELL;
-
-		final View v = getChildAt(index);
-		if (v == null)
-			return result;
-
-	    final ItemInfo itemInfo = (ItemInfo) v.getTag();
-		if (itemInfo==null)
-			return result;
-		result = itemInfo.spanY;
-		
-//		LayoutParams lp = (LayoutParams) v.getLayoutParams();
-//		if (lp == null)
+//	    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+//	    final LayoutParams lp = (LayoutParams) v.getLayoutParams();
+//	    
+//		if (itemInfo==null && lp == null)
+//			return result;
+//		
+//		if (itemInfo!=null && itemInfo.spanX>=1){
+//			result = itemInfo.spanX;
+//		}
+//		
+//		if ((result<0) && (lp!=null && lp.cellHSpan>=1)) {
+//			result = lp.cellHSpan;
+//		}
+//
+//		return result;
+//	}
+//
+//	int getCellSpanY(int index) {
+//		int result = INVALID_CELL;
+//
+//		final View v = getChildAt(index);
+//		if (v == null)
 //			return result;
 //
-//		result = lp.cellVSpan;
-
-		return result;
-	}
+//	    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+//	    final LayoutParams lp = (LayoutParams) v.getLayoutParams();
+//	    
+//		if (itemInfo==null && lp == null)
+//			return result;
+//		
+//		if (itemInfo!=null && itemInfo.spanY>=1){
+//			result = itemInfo.spanY;
+//		}
+//		
+//		if ((result<0) && (lp!=null && lp.cellVSpan>=1)) {
+//			result = lp.cellVSpan;
+//		}
+//
+//		return result;
+//	}
 
 	boolean isFull() {
 		boolean result = false;
@@ -751,18 +799,13 @@ public class CellLayout extends ViewGroup {
 				if (v==null)
 					continue;
 				
-			    final ItemInfo itemInfo = (ItemInfo) v.getTag();
-				if (itemInfo==null)
+				final LayoutParams lp = (LayoutParams) v.getLayoutParams();
+				final ItemInfo itemInfo = (ItemInfo) v.getTag();
+				
+				if (itemInfo==null && lp==null)
 					continue;
 				
-				int num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
-				for (int j = 0; j < itemInfo.spanX; j++) {
-					for (int k = 0; k < itemInfo.spanY; k++) {
-						checks[num + ItemInfo.COL * k + j] = i;
-					}
-				}
-				
-				Log.d(TAG,"itemInfo="+itemInfo.toString());
+				checksByItemInfoOrLP(checks, i, lp, itemInfo);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -796,18 +839,13 @@ public class CellLayout extends ViewGroup {
 				if (v==null)
 					continue;
 				
-			    final ItemInfo itemInfo = (ItemInfo) v.getTag();
-				if (itemInfo==null)
+				final LayoutParams lp = (LayoutParams) v.getLayoutParams();
+				final ItemInfo itemInfo = (ItemInfo) v.getTag();
+				
+				if (itemInfo==null && lp==null)
 					continue;
 				
-				int num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
-				for (int j = 0; j < itemInfo.spanX; j++) {
-					for (int k = 0; k < itemInfo.spanY; k++) {
-						checks[num + ItemInfo.COL * k + j] = i;
-					}
-				}
-				
-				Log.d(TAG,"itemInfo="+itemInfo.toString());	
+				checksByItemInfoOrLP(checks, i, lp, itemInfo);
 
 			}
 		} catch (Exception e) {
@@ -1739,12 +1777,20 @@ public class CellLayout extends ViewGroup {
 		 */
 		@Override
 		public String toString() {
+		    String str = null;
+            
 			// TODO Auto-generated method stub
-			String str = "cell(" + this.cellX + "," + this.cellY + ","
-					+ this.cellHSpan + "," + this.cellVSpan + ")";
-			str += "pos(" + this.x + "," + this.y + "," + this.width + ","
-					+ this.height + ")";
-			str += ", isDragging=" + this.isDragging;
+		    
+			try {
+				str = "cell(" + this.cellX + "," + this.cellY + ","
+						+ this.cellHSpan + "," + this.cellVSpan + ")";
+				str += "pos(" + this.x + "," + this.y + "," + this.width + ","
+						+ this.height + ")";
+				str += ", isDragging=" + this.isDragging;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			return str;// super.toString();
 		}
@@ -1981,6 +2027,15 @@ public class CellLayout extends ViewGroup {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return ("Have item childs="+getChildCount()+",pageIndex="+getPageIndex());
+		String str = null;
+
+        try {
+			str = ("Have item childs="+getChildCount()+",pageIndex="+getPageIndex());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		return str;
 	}
 }
