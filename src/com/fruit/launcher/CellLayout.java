@@ -159,23 +159,43 @@ public class CellLayout extends ViewGroup {
 			if (v == null)
 				continue;
 
+		    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+			if (itemInfo==null)
+				continue;
+			
 			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
 			if (lp == null || lp.isDragging)
 				continue;
-
-			try {
-				if (lp.cellHSpan >= 1 || lp.cellVSpan >= 1) {
-					int cellNumStart = lp.cellY * (ItemInfo.COL) + lp.cellX;
-					for (int j = 0; j < lp.cellHSpan; j++) {
-						for (int k = 0; k < lp.cellVSpan; k++) {
-							checks[cellNumStart + ItemInfo.COL * k + j] = i;
+			
+			try {				
+				if (itemInfo.spanX >= 1 || itemInfo.spanY >= 1) {
+					int num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
+					for (int j = 0; j < itemInfo.spanX; j++) {
+						for (int k = 0; k < itemInfo.spanY; k++) {
+							checks[num + ItemInfo.COL * k + j] = i;
 						}
 					}
-				}
+				}				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			Log.d(TAG,"itemInfo="+itemInfo.toString());
+
+//			try {
+//				if (lp.cellHSpan >= 1 || lp.cellVSpan >= 1) {
+//					int cellNumStart = lp.cellY * (ItemInfo.COL) + lp.cellX;
+//					for (int j = 0; j < lp.cellHSpan; j++) {
+//						for (int k = 0; k < lp.cellVSpan; k++) {
+//							checks[cellNumStart + ItemInfo.COL * k + j] = i;
+//						}
+//					}
+//				}
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
 			int overNum = cellY * (ItemInfo.COL) + cellX;
 
@@ -245,15 +265,20 @@ public class CellLayout extends ViewGroup {
 	int getCellSpanX(int index) {
 		int result = INVALID_CELL;
 
-		View v = getChildAt(index);
+		final View v = getChildAt(index);
 		if (v == null)
 			return result;
 
-		LayoutParams lp = (LayoutParams) v.getLayoutParams();
-		if (lp == null)
+	    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+		if (itemInfo==null)
 			return result;
-
-		result = lp.cellHSpan;
+		result = itemInfo.spanX;
+		
+//		LayoutParams lp = (LayoutParams) v.getLayoutParams();
+//		if (lp == null)
+//			return result;
+//
+//		result = lp.cellHSpan;
 
 		return result;
 	}
@@ -261,15 +286,20 @@ public class CellLayout extends ViewGroup {
 	int getCellSpanY(int index) {
 		int result = INVALID_CELL;
 
-		View v = getChildAt(index);
+		final View v = getChildAt(index);
 		if (v == null)
 			return result;
 
-		LayoutParams lp = (LayoutParams) v.getLayoutParams();
-		if (lp == null)
+	    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+		if (itemInfo==null)
 			return result;
-
-		result = lp.cellVSpan;
+		result = itemInfo.spanY;
+		
+//		LayoutParams lp = (LayoutParams) v.getLayoutParams();
+//		if (lp == null)
+//			return result;
+//
+//		result = lp.cellVSpan;
 
 		return result;
 	}
@@ -322,31 +352,31 @@ public class CellLayout extends ViewGroup {
 		return result;
 	}
 
-	void fixOverlappingCell() {
-		int cellX = -1, cellY = -1;
-
-		int[] temp = new int[getMaxCount()];
-		int j = 0;
-
-		for (int i = 0; i < getChildCount(); i++) {
-			View v = getChildAt(i);
-			if (v == null)
-				continue; // go on
-
-			LayoutParams lp = (LayoutParams) v.getLayoutParams();
-			if (lp == null)
-				continue; // go on
-
-			int number = cellToNumber(lp.cellX, lp.cellY);
-
-			if (hasNumber(temp, number)) {
-
-			} else {
-				temp[j] = number;
-			}
-
-		}
-	}
+//	void fixOverlappingCell() {
+//		int cellX = -1, cellY = -1;
+//
+//		int[] temp = new int[getMaxCount()];
+//		int j = 0;
+//
+//		for (int i = 0; i < getChildCount(); i++) {
+//			View v = getChildAt(i);
+//			if (v == null)
+//				continue; // go on
+//
+//			LayoutParams lp = (LayoutParams) v.getLayoutParams();
+//			if (lp == null)
+//				continue; // go on
+//
+//			int number = cellToNumber(lp.cellX, lp.cellY);
+//
+//			if (hasNumber(temp, number)) {
+//
+//			} else {
+//				temp[j] = number;
+//			}
+//
+//		}
+//	}
 
 	@Override
 	public void dispatchDraw(Canvas canvas) {
@@ -713,23 +743,30 @@ public class CellLayout extends ViewGroup {
 			checks[i]=-1;
 		}
 		
-		final int count = getChildCount();
-		
-		for (int i=0;i<count;i++){
-			final View v = getChildAt(i);
-			if (v==null)
-				continue;
+		try {
+			final int count = getChildCount();
 			
-			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
-			if (lp==null)
-				continue;
-						
-			int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
-			for (int j = 0; j < lp.cellHSpan; j++) {
-				for (int k = 0; k < lp.cellVSpan; k++) {
-					checks[num + ItemInfo.COL * k + j] = i;
+			for (int i=0;i<count;i++){
+				final View v = getChildAt(i);
+				if (v==null)
+					continue;
+				
+			    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+				if (itemInfo==null)
+					continue;
+				
+				int num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
+				for (int j = 0; j < itemInfo.spanX; j++) {
+					for (int k = 0; k < itemInfo.spanY; k++) {
+						checks[num + ItemInfo.COL * k + j] = i;
+					}
 				}
+				
+				Log.d(TAG,"itemInfo="+itemInfo.toString());
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		for (int i = 0; i < getMaxCount(); i++) {
@@ -751,23 +788,31 @@ public class CellLayout extends ViewGroup {
 			checks[i]=-1;
 		}
 		
-		final int count = getChildCount();
-		
-		for (int i=0;i<count;i++){
-			final View v = getChildAt(i);
-			if (v==null)
-				continue;
+		try {
+			final int count = getChildCount();
 			
-			final LayoutParams lp = (LayoutParams) v.getLayoutParams();
-			if (lp==null)
-				continue;
-			
-			int num = lp.cellY * (ItemInfo.COL) + lp.cellX;
-			for (int j = 0; j < lp.cellHSpan; j++) {
-				for (int k = 0; k < lp.cellVSpan; k++) {
-					checks[num + ItemInfo.COL * k + j] = i;
+			for (int i=0;i<count;i++){
+				final View v = getChildAt(i);
+				if (v==null)
+					continue;
+				
+			    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+				if (itemInfo==null)
+					continue;
+				
+				int num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
+				for (int j = 0; j < itemInfo.spanX; j++) {
+					for (int k = 0; k < itemInfo.spanY; k++) {
+						checks[num + ItemInfo.COL * k + j] = i;
+					}
 				}
+				
+				Log.d(TAG,"itemInfo="+itemInfo.toString());	
+
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		for (int i = getMaxCount()-1; i >=0 ; i--) {
@@ -807,29 +852,36 @@ public class CellLayout extends ViewGroup {
 		if (v == null)
 			return;
 
-		//CellInfo info = null;
+	    final ItemInfo itemInfo = (ItemInfo) v.getTag();
+		if (itemInfo==null)
+			return;
 		
-		if (v instanceof LiveFolderIcon) {
-
-		} else if (v instanceof FolderIcon) {
-			UserFolderInfo userFolderInfo = (UserFolderInfo)(((FolderIcon)v).getTag());
-			userFolderInfo.cellX = cellX;
-			userFolderInfo.cellY = cellY;
-		} else if (v instanceof CustomAppWidget) {
-			CustomAppWidget customAppWidget = (CustomAppWidget) v;
-			CustomAppWidgetInfo winfo = (CustomAppWidgetInfo) customAppWidget.getTag();
-			winfo.cellX = cellX;
-			winfo.cellY = cellY;
-		} else if (v instanceof BubbleTextView) {
-			ShortcutInfo shortcutInfo = (ShortcutInfo) (((BubbleTextView) v).getTag());
-			shortcutInfo.cellX = cellX;
-			shortcutInfo.cellY = cellY;
-		} else if (v instanceof LauncherAppWidgetHostView) {
-//			LauncherAppWidgetHostView view = (LauncherAppWidgetHostView) v;
-//			AppWidgetProviderInfo appWidgetInfo = view.getAppWidgetInfo();			
-		} else {
-			Log.e(TAG, "Unknown item type when add in screen");
-		}
+		itemInfo.cellX = cellX;
+		itemInfo.cellY = cellY;
+		
+		Log.d(TAG,"itemInfo="+itemInfo.toString());		
+	
+//		if (v instanceof LiveFolderIcon) {
+//
+//		} else if (v instanceof FolderIcon) {
+//			UserFolderInfo userFolderInfo = (UserFolderInfo)(((FolderIcon)v).getTag());
+//			userFolderInfo.cellX = cellX;
+//			userFolderInfo.cellY = cellY;
+//		} else if (v instanceof CustomAppWidget) {
+//			CustomAppWidget customAppWidget = (CustomAppWidget) v;
+//			CustomAppWidgetInfo winfo = (CustomAppWidgetInfo) customAppWidget.getTag();
+//			winfo.cellX = cellX;
+//			winfo.cellY = cellY;
+//		} else if (v instanceof BubbleTextView) {
+//			ShortcutInfo shortcutInfo = (ShortcutInfo) (((BubbleTextView) v).getTag());
+//			shortcutInfo.cellX = cellX;
+//			shortcutInfo.cellY = cellY;
+//		} else if (v instanceof LauncherAppWidgetHostView) {
+////			LauncherAppWidgetHostView view = (LauncherAppWidgetHostView) v;
+////			AppWidgetProviderInfo appWidgetInfo = view.getAppWidgetInfo();			
+//		} else {
+//			Log.e(TAG, "Unknown item type when add in screen");
+//		}
 		
 		//if (info==null)
 		//	return;
@@ -849,6 +901,20 @@ public class CellLayout extends ViewGroup {
 		Log.d(TAG,"changeCellXY:" + v.toString());
 	}
 
+	public void changeCellXY(View v, int cellX, int cellY) {
+		if (v == null)
+			return;
+		
+		LayoutParams lp = (LayoutParams) v.getLayoutParams();
+		if (lp == null)
+			return;
+
+		changeCellXY(v, cellX, cellY, lp.x, lp.y);
+
+		//Log.d(TAG,"changeCellXY:" + v.toString());
+	}
+
+	
 //	public void changeCellXY(View v, int cellX, int cellY, int x, int y) {
 //		if (v == null)
 //			return;
