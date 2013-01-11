@@ -19,6 +19,7 @@ package com.fruit.launcher;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 import android.content.res.TypedArray;
 import android.content.res.Resources;
 import android.graphics.Camera;
@@ -1562,11 +1563,23 @@ public class CellLayout extends ViewGroup {
 	public int[] rectToCell(int width, int height) {
 		// Always assume we're working with the smallest span to make sure we
 		// reserve enough space in both orientations.
-		final Resources resources = getResources();
-		int actualWidth = resources
-				.getDimensionPixelSize(R.dimen.workspace_cell_width);
-		int actualHeight = resources
-				.getDimensionPixelSize(R.dimen.workspace_cell_height);
+		int actualWidth;
+		int actualHeight;
+		
+		try {
+			final Resources resources = getResources();
+			actualWidth = resources
+					.getDimensionPixelSize(R.dimen.workspace_cell_width);
+			actualHeight = resources
+					.getDimensionPixelSize(R.dimen.workspace_cell_height);
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			actualWidth = 86;
+			actualHeight = 116;
+		}
+		
+		
 		int smallerSize = Math.min(actualWidth, actualHeight);
 
 		// Always round up to next largest cell
