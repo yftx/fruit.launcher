@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Camera;
@@ -744,14 +745,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			// updateCellBackgroundByDrawable(child, screen, x, y); //yfzhao
 		} else if (child instanceof LauncherAppWidgetHostView) {
 			if ((spanX == 1) && (spanY == 1)) {
-				LauncherAppWidgetHostView view = (LauncherAppWidgetHostView) child;
-				AppWidgetProviderInfo info = view.getAppWidgetInfo();
-				int iconId = info.icon;
-				Resources res = this.getResources();
-				Drawable d1 = res.getDrawable(iconId);
-				Bitmap icon = Utilities.drawable2bmp(d1);
-				Bitmap bmp = Utilities.createCompoundBitmapEx(info.label, icon);
-				view.setBackgroundDrawable(Utilities.bmp2drawable(bmp));
+				try {
+					LauncherAppWidgetHostView view = (LauncherAppWidgetHostView) child;
+					AppWidgetProviderInfo info = view.getAppWidgetInfo();
+					int iconId = info.icon;
+				
+					Resources res = this.getResources();
+					Drawable d1 = res.getDrawable(iconId);
+					Bitmap icon = Utilities.drawable2bmp(d1);
+					Bitmap bmp = Utilities.createCompoundBitmapEx(info.label, icon);
+					view.setBackgroundDrawable(Utilities.bmp2drawable(bmp));
+				} catch (NotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		} else {
 			Log.e(TAG, "Unknown item type when add in screen");
@@ -4719,15 +4726,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 				// if ((info.spanX == 1) && (info.spanY == 1)) {
 				if (isItemInfo1x1(winfo)) {
-					LauncherAppWidgetHostView view = (LauncherAppWidgetHostView) winfo.hostView;// (LauncherAppWidgetHostView)child;
-					AppWidgetProviderInfo info = view.getAppWidgetInfo();
-					int iconId = info.icon;
-					Resources res = this.getResources();
-					Drawable d1 = res.getDrawable(iconId);
-					Bitmap icon = Utilities.drawable2bmp(d1);
-					Bitmap bmp = Utilities.createCompoundBitmapEx(info.label,
-							icon);
-					view.setBackgroundDrawable(Utilities.bmp2drawable(bmp));
+					try {
+						LauncherAppWidgetHostView view = (LauncherAppWidgetHostView) winfo.hostView;// (LauncherAppWidgetHostView)child;
+						AppWidgetProviderInfo info = view.getAppWidgetInfo();
+						int iconId = info.icon;
+						Resources res = this.getResources();
+						Drawable d1 = res.getDrawable(iconId);
+						Bitmap icon = Utilities.drawable2bmp(d1);
+						Bitmap bmp = Utilities.createCompoundBitmapEx(info.label,
+								icon);
+						view.setBackgroundDrawable(Utilities.bmp2drawable(bmp));
+					} catch (NotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 
 			} else {
