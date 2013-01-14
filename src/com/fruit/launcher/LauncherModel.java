@@ -573,6 +573,7 @@ public class LauncherModel extends BroadcastReceiver {
 					synchronized (this) {
 						mAllAppsLoaded = mWorkspaceLoaded = false;
 					}
+					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE");
 					startLoader(context, false);
 				} else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE
 						.equals(action)) {
@@ -584,6 +585,7 @@ public class LauncherModel extends BroadcastReceiver {
 					synchronized (this) {
 						mAllAppsLoaded = mWorkspaceLoaded = false;
 					}
+					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE");
 					startLoader(context, false);
 				}
 			}

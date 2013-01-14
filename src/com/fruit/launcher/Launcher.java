@@ -274,6 +274,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		//if (savedInstanceState!=null)
+		//	return;
+		
 		super.onCreate(savedInstanceState);
 
 		mCtx = this;
@@ -326,6 +329,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		if (!mRestoring) {
+			Log.d(TAG, "onCreate:!mRestoring:startLoader,true");
 			mModel.startLoader(this, true);
 		}
 
@@ -646,6 +650,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 						if (mWorkspaceLoading) {
 							lockAllApps();
+							Log.d(TAG, "onActivityResult:REQUEST_NEW_FOLDER(), mWorkspaceLoading,startLoader,false");
 							mModel.startLoader(Launcher.this, false);
 						} else {
 							final FolderIcon folderIcon = (FolderIcon) mWorkspace
@@ -656,6 +661,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 							} else {
 								lockAllApps();
 								mWorkspaceLoading = true;
+								Log.d(TAG, "onActivityResult:REQUEST_NEW_FOLDER(),folderIcon==null, mWorkspaceLoading,startLoader,false");
 								mModel.startLoader(Launcher.this, false);
 							}
 						}
@@ -678,6 +684,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onResume() {
+		Log.d(TAG,"onResume:mRestoring="+mRestoring);
 		super.onResume();
 
 		mPaused = false;
@@ -692,7 +699,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		if (mRestoring) {//??
-			Log.d(TAG, "onResume,mRestoring="+mRestoring);
+			Log.d(TAG, "onResume,startLoader, true, mRestoring="+mRestoring);
 			mWorkspaceLoading = true;
 			mModel.startLoader(this, true);
 			mRestoring = false;
@@ -701,6 +708,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onPause() {
+		Log.d(TAG,"onPause:mRestoring="+mRestoring+",mPaused="+mPaused);
 		super.onPause();
 		mPaused = true;
 
@@ -791,6 +799,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 *            The previous state.
 	 */
 	private void restoreState(Bundle savedState) {
+	    Log.d(TAG, "restoreState:savedState="+savedState);
 		if (savedState == null) {
 			return;
 		}
@@ -804,6 +813,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		final int currentScreen = savedState.getInt(
 				RUNTIME_STATE_CURRENT_SCREEN, -1);
+		Log.d(TAG, "restoreState,currentScreen="+currentScreen);
 		if (currentScreen > -1) {
 			mWorkspace.setCurrentScreen(currentScreen);
 			CellLayout next = (CellLayout) mWorkspace.getChildAt(currentScreen);
@@ -813,6 +823,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		final int addScreen = savedState.getInt(
 				RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
+		Log.d(TAG, "restoreState,addScreen="+addScreen);
 		if (addScreen > -1) {
 			mAddItemCellInfo = new CellLayout.CellInfo();
 			final CellLayout.CellInfo addItemCellInfo = mAddItemCellInfo;
@@ -830,15 +841,18 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					.getBooleanArray(RUNTIME_STATE_PENDING_ADD_OCCUPIED_CELLS),
 					savedState.getInt(RUNTIME_STATE_PENDING_ADD_COUNT_X),
 					savedState.getInt(RUNTIME_STATE_PENDING_ADD_COUNT_Y));
+            Log.d(TAG,"restoreState,mRestoring = true,addScreen="+addScreen);
 			mRestoring = true;
 		}
 
 		boolean renameFolder = savedState.getBoolean(
 				RUNTIME_STATE_PENDING_FOLDER_RENAME, false);
+		Log.d(TAG, "restoreState,renameFolder="+renameFolder);
 		if (renameFolder) {
 			long id = savedState
 					.getLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID);
 			mFolderInfo = mModel.getFolderById(this, mFolders, id);
+            Log.d(TAG,"restoreState,mRestoring = true,renameFolder="+renameFolder);
 			mRestoring = true;
 		}
 	}
@@ -2726,6 +2740,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 				if (mWorkspaceLoading) {
 					lockAllApps();
+					Log.d(TAG, "changeFolderName(), mWorkspaceLoading,startLoader,false");
 					mModel.startLoader(Launcher.this, false);
 				} else {
 					final FolderIcon folderIcon = (FolderIcon) mWorkspace
@@ -2736,6 +2751,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					} else {
 						lockAllApps();
 						mWorkspaceLoading = true;
+                        Log.d(TAG, "changeFolderName(), folderIcon==null, mWorkspaceLoading,startLoader,false");
 						mModel.startLoader(Launcher.this, false);
 					}
 				}
@@ -3476,6 +3492,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		
 		if(mWorkspace!=null && !isWorkspaceLocked())
 			mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
+
+        mRestoring = false;
 	}
 
 	/**

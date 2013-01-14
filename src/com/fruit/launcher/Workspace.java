@@ -985,7 +985,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			mTouchX = mScrollX = mScroller.getCurrX();
 			mSmoothingTime = System.nanoTime() / NANOTIME_DIV;
 			mScrollY = mScroller.getCurrY();		
-			//scrollTo(mScrollX, mScrollY);//??
+			
 			Log.d(TAG,"computeScroll>computeScrollOffset>scrollX="+mScrollX
 					+",mTouchX="+mTouchX+",mSmoothingTime="+mSmoothingTime);
 			
@@ -4065,9 +4065,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 		
 		this.printChildCount();
-		
-		//update db
-		//exchangeDatabase(screenIndex, getChildCount()); //?? necessarily
 		
 		// When current screen be deleted, set new current screen to the first screen
 		if (childIndex == mCurrentScreen) {

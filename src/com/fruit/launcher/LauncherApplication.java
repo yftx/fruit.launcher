@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.util.Log;
 
 //import dalvik.system.VMRuntime;
 
@@ -89,6 +90,7 @@ public class LauncherApplication extends Application {
 
 		@Override
 		public void onChange(boolean selfChange) {
+			Log.d("mFavoritesObserver", "onChange:startLoader,false");
 			mModel.startLoader(LauncherApplication.this, false);
 		}
 	};
