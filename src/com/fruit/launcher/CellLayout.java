@@ -202,7 +202,17 @@ public class CellLayout extends ViewGroup {
 			final LayoutParams lp, final ItemInfo itemInfo) {
 		int num = -1;
 		
-		if ((lp.cellX >= 0 && lp.cellY >= 0) && (lp.cellHSpan >= 1 && lp.cellVSpan >= 1)) {
+		if((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX >= 1 || itemInfo.spanY >= 1)){
+			num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
+			for (int j = 0; j < itemInfo.spanX; j++) {
+				for (int k = 0; k < itemInfo.spanY; k++) {
+					checks[num + ItemInfo.COL * k + j] = i;
+				}
+			}
+			Log.d(TAG,"itemInfo="+itemInfo.toString());
+		}		
+		
+		if ((num<0) && ((lp.cellX >= 0 && lp.cellY >= 0) && (lp.cellHSpan >= 1 && lp.cellVSpan >= 1))) {
 			num = lp.cellY * (ItemInfo.COL) + lp.cellX;
 			for (int j = 0; j < lp.cellHSpan; j++) {
 				for (int k = 0; k < lp.cellVSpan; k++) {
@@ -212,15 +222,7 @@ public class CellLayout extends ViewGroup {
 			Log.d(TAG, "lp="+lp.toString());
 		}
 		
-		if((num<0) && ((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX >= 1 || itemInfo.spanY >= 1))){
-			num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
-			for (int j = 0; j < itemInfo.spanX; j++) {
-				for (int k = 0; k < itemInfo.spanY; k++) {
-					checks[num + ItemInfo.COL * k + j] = i;
-				}
-			}
-			Log.d(TAG,"itemInfo="+itemInfo.toString());
-		}
+
 	}
 	
 	/**
@@ -783,6 +785,11 @@ public class CellLayout extends ViewGroup {
 //		return number;
 //	}
 	
+	//void printChecks(int[] checks){
+		//for (int i = 0; i < getMaxCount(); i++) {
+		//	Log.d(TAG, "checks["+i+"]="+checks[i]);
+		//}
+	//}
 	
 	int findFirstVacantCell() {
 		int number = INVALID_CELL;
@@ -806,8 +813,10 @@ public class CellLayout extends ViewGroup {
 				if (itemInfo==null && lp==null)
 					continue;
 				
-				checksByItemInfoOrLP(checks, i, lp, itemInfo);
+				checksByItemInfoOrLP(checks, i, lp, itemInfo);	
 			}
+			
+			//printChecks(checks);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

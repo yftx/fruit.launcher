@@ -43,6 +43,7 @@ import android.widget.Toast;
 import android.os.Process;
 import android.os.SystemClock;
 import android.provider.BaseColumns;
+import android.provider.LiveFolders;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -929,6 +930,34 @@ public class LauncherModel extends BroadcastReceiver {
 				return true;
 			}
 
+			private void checkScreenCount(ContentResolver cr, Context context){		
+				int screen = SettingUtils.mScreenCount;
+				
+				final Cursor cursor = cr.query(Favorites.CONTENT_URI,
+						new String[] {Favorites.SCREEN}, null, null, Favorites.SCREEN + " DESC");				
+				
+				try {			
+					if (cursor != null && cursor.moveToFirst()) {
+						int maxScreenIndex = cursor.getInt(0);//cursor.getColumnIndexOrThrow(Favorites.SCREEN);
+						
+						if (maxScreenIndex > 8)
+							maxScreenIndex = 8;
+						
+						if (maxScreenIndex>=screen){
+							SettingUtils.mScreenCount=maxScreenIndex+1;
+							SettingUtils.saveScreenSettings(context);
+						}
+					}			
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block					
+					e.printStackTrace();
+					SettingUtils.mScreenCount=screen;					
+				} finally{
+					cursor.close();
+				}
+			}
+			
 			private void loadWorkspace() {
 				final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
@@ -951,6 +980,8 @@ public class LauncherModel extends BroadcastReceiver {
 				final Cursor c = contentResolver.query(Favorites.CONTENT_URI,
 						null, null, null, null);
 
+				checkScreenCount(contentResolver, context);
+				
 				final ItemInfo occupied[][][] = new ItemInfo[SettingUtils.mScreenCount][Launcher.NUMBER_CELLS_X][Launcher.NUMBER_CELLS_Y];
 
 				try {

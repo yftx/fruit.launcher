@@ -116,6 +116,8 @@ class LauncherSettings {
 		 * The default sort order for applications(shortcuts) in folder
 		 */
 		static final String DEFAULT_SORT_ORDER_IN_FOLDER = "orderId ASC";
+		
+		//static final String DESC_SORT_ORDER_IN_FOLDER = "orderId DESC";
 	}
 
 	/**

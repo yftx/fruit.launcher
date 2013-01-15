@@ -169,7 +169,17 @@ class ItemInfo {
 
 	@Override
 	public String toString() {
-		return "Item(id=" + this.id + " type=" + this.itemType + ")";
+	    String str = null;
+	    
+		try {
+			str = "Item(id=" + this.id + " type=" + this.itemType + ")"
+					+",("+","+this.cellX+","+this.cellY+"," +this.spanX+","+this.spanY+")";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return str;
 	}
 
 	/**

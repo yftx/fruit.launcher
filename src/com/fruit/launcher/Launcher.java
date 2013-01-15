@@ -242,7 +242,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private SpannableStringBuilder mDefaultKeySsb = null;
 
 	private boolean mWorkspaceLoading = true;
-
+	private boolean mIsBinding = true;
+	
 	private boolean mPaused = true;
 	private boolean mRestoring;
 	private boolean mWaitingForResult;
@@ -274,8 +275,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		//if (savedInstanceState!=null)
-		//	return;
+		mIsBinding = true;
+		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
+		
+		if (savedInstanceState!=null)
+			return;
 		
 		super.onCreate(savedInstanceState);
 
@@ -684,7 +688,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onResume() {
-		Log.d(TAG,"onResume:mRestoring="+mRestoring);
+		mIsBinding = true;
+		Log.d(TAG,"launcherseq,onResume,mRestoring="+mRestoring+",mIsBinding="+mIsBinding);
 		super.onResume();
 
 		mPaused = false;
@@ -704,11 +709,14 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			mModel.startLoader(this, true);
 			mRestoring = false;
 		}
+		
+		//mIsBinding = false;
 	}
 
 	@Override
 	protected void onPause() {
-		Log.d(TAG,"onPause:mRestoring="+mRestoring+",mPaused="+mPaused);
+		mIsBinding = true;
+		Log.d(TAG,"launcherseq,onPause,mRestoring="+mRestoring+",mPaused="+mPaused+",mIsBinding="+mIsBinding);
 		super.onPause();
 		mPaused = true;
 
@@ -1043,7 +1051,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		Log.d(TAG,"bindAppsAdded, added.cellinfo="+cellInfo.toString());
-		addApplication(context, data, cellInfo);
+		addApplicationEx(context, data, cellInfo);
 	}
 	
 	/**
@@ -1089,6 +1097,31 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 			info.container = ItemInfo.NO_ID;
 			mWorkspace.addApplicationShortcut(info, cellInfo,
+					isWorkspaceLocked());
+		} else {
+			Log.e(TAG, "Couldn't find ActivityInfo for selected application: "
+					+ data);
+		}
+	}
+	
+	/**
+	 * @param context
+	 * @param data
+	 * @param cellInfo
+	 */
+	private void addApplicationEx(Context context, Intent data,
+			CellLayout.CellInfo cellInfo) {
+		final ShortcutInfo info = mModel.getShortcutInfo(
+				context.getPackageManager(), data, context);
+
+		Log.d(TAG,"info="+info);
+		
+		if (info != null) {			
+			info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+			info.container = ItemInfo.NO_ID;
+			Log.d(TAG,"cellInfo="+cellInfo);
+			mWorkspace.addApplicationShortcutEx(info, cellInfo,
 					isWorkspaceLocked());
 		} else {
 			Log.e(TAG, "Couldn't find ActivityInfo for selected application: "
@@ -1430,6 +1463,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onDestroy() {
+		Log.d(TAG,"launcherseq,onDestroy");
 		super.onDestroy();
 
 		try {
@@ -1615,7 +1649,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	}
 
 	public boolean isWorkspaceLocked() {
-		return mWorkspaceLoading || mWaitingForResult;
+		return mWorkspaceLoading || mWaitingForResult || mIsBinding;
 	}
 
 	private void addItems() {
@@ -1814,7 +1848,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private boolean findSingleSlotEx(CellLayout.CellInfo cellInfo) {
 		final int[] xy = new int[2];
 		CellLayout layout = (CellLayout)mWorkspace.getChildAt(cellInfo.screen);
-		Log.d(TAG, "findSingleSlotEx"+layout.toString());
+		Log.d(TAG, "findSingleSlotEx, "+layout.toString());
 		int number = layout.findFirstVacantCell();
 		Log.d(TAG, "findSingleSlotEx, find 1st number = "+number);
 		if(number < 0){
@@ -3198,6 +3232,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 */
 	@Override
 	public void startBinding() {
+		mIsBinding = true;
+		
 		final Workspace workspace = mWorkspace;
 		int count = workspace.getChildCount();
 
@@ -3246,12 +3282,19 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		// [[add by liujian at 2012-6-14
 		// launcher exception
 		if (shortcuts.size() < end) {
-			Log.w(TAG, "Launcher.bindItems exit without bind. because siez is "
+			Log.w(TAG, "Launcher.bindItems exit without bind. because size is "
 					+ shortcuts.size() + ", and end is " + end);
 			return;
 		}
 		// ]]at 2012-6-14
-
+		//if (mWorkspace.getChildCount() < SettingUtils.mScreenCount){
+			final int count = SettingUtils.mScreenCount-mWorkspace.mScreenCount;
+			for (int i=0;i<count;i++){
+				int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.mScreenCount-1)+1; 
+				mWorkspace.addNewScreenByChildIndex(childIndex);
+			}
+		//}
+		
 		for (int i = start; i < end; i++) {
 			final ItemInfo item = shortcuts.get(i);
 			mDesktopItems.add(item);
@@ -3442,6 +3485,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 */
 	@Override
 	public void finishBindingItems() {
+		Log.d(TAG,"finishBindingItems,mSavedState="+mSavedState+",mSavedInstanceState="+mSavedInstanceState);
+		
 		if (mSavedState != null) {
 			if (!mWorkspace.hasFocus()) {
 				mWorkspace.getChildAt(mWorkspace.getCurrentScreen())
@@ -3489,11 +3534,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		 */
 
 		mWorkspaceLoading = false;
+		mIsBinding = false;
 		
 		if(mWorkspace!=null && !isWorkspaceLocked())
 			mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
 
         mRestoring = false;
+        
 	}
 
 	/**
@@ -3794,5 +3841,27 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			mFolders.remove(info.id);
 		}
 		mFolders.put(info.id, info);
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		mIsBinding = true;
+		// TODO Auto-generated method stub
+		super.onStart();
+		Log.d(TAG,"launcherseq,onStart");
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onRestart()
+	 */
+	@Override
+	protected void onRestart() {
+		mIsBinding = true;
+		// TODO Auto-generated method stub
+		super.onRestart();
+		Log.d(TAG,"launcherseq,onRestart");
 	}
 }

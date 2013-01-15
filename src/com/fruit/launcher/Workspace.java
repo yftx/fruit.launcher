@@ -95,7 +95,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	private final WallpaperManager mWallpaperManager;
 
 	private int mDefaultScreen;
-	private int mScreenCount;
+	public int mScreenCount;
 
 	private LayoutInflater mInflater;
 
@@ -2497,6 +2497,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		onDropExternal(result[0], result[1], info, layout, insertAtFirst);
 	}
 
+	void addApplicationShortcutEx(ShortcutInfo info,
+			CellLayout.CellInfo cellInfo, boolean insertAtFirst) {
+		//final CellLayout layout = (CellLayout) getChildAt(cellInfo.screen);
+		//final int[] result = new int[2];
+
+		//layout.cellToPoint(cellInfo.cellX, cellInfo.cellY, result);
+		onDropExternalEx(info, cellInfo, insertAtFirst);
+	}
+	
 
 	boolean isViewSpan1x1(View v) {
 		if (v == null)
@@ -3285,6 +3294,122 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
+	
+	private void onDropExternalEx(ShortcutInfo info,
+			CellLayout.CellInfo cellInfo, boolean insertAtFirst) {
+		// Drag from somewhere else
+		//ItemInfo info = (ItemInfo) dragInfo;
+		View view;
+		final CellLayout cellLayout = (CellLayout) getChildAt(cellInfo.screen);
+		
+		view = mLauncher.createShortcut(R.layout.application, cellLayout, info);
+		if (view == null) {
+			return;
+		}
+		
+//		switch (info.itemType) {
+//		case BaseLauncherColumns.ITEM_TYPE_APPLICATION:
+//		case BaseLauncherColumns.ITEM_TYPE_SHORTCUT:
+//			if (info.container == NO_ID && info instanceof ApplicationInfo) {
+//				// Came from all apps -- make a copy
+//				info = new ShortcutInfo((ApplicationInfo) info);
+//			}
+//			view = mLauncher.createShortcut(R.layout.application, cellLayout,
+//					(ShortcutInfo) info);
+//			if (view == null) {
+//				return;
+//			}
+//			if (info.container >= 0) {
+//				mLauncher.removeItemFromFolder((ShortcutInfo) info);
+//			}
+//			break;
+//		case Favorites.ITEM_TYPE_USER_FOLDER:
+//			view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
+//					(ViewGroup) getChildAt(mCurrentScreen),
+//					((UserFolderInfo) info));
+//			break;
+//		case Applications.APPS_TYPE_APP:
+//		case Applications.APPS_TYPE_FOLDERAPP:
+//			ApplicationInfoEx infoEx = (ApplicationInfoEx) dragInfo;
+//
+//			info = mLauncher.getLauncherModel().getShortcutInfo(
+//					getContext().getPackageManager(), infoEx.intent,
+//					getContext());
+//			((ShortcutInfo) info).setActivity(infoEx.intent.getComponent(),
+//					Intent.FLAG_ACTIVITY_NEW_TASK
+//							| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//			info.container = ItemInfo.NO_ID;
+//			view = mLauncher.createShortcut(R.layout.application, cellLayout,
+//					(ShortcutInfo) info);
+//			if (view == null) {
+//				return;
+//			}
+//			break;
+//		case Applications.APPS_TYPE_FOLDER:
+//			ApplicationFolderInfo folderInfo = (ApplicationFolderInfo) dragInfo;
+//			info = new UserFolderInfo();
+//
+//			((UserFolderInfo) info).title = folderInfo.title;
+//			((UserFolderInfo) info).itemType = Favorites.ITEM_TYPE_USER_FOLDER;
+//			view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher,
+//					(ViewGroup) getChildAt(mCurrentScreen),
+//					(UserFolderInfo) info);
+//			break;
+//		default:
+//			throw new IllegalStateException("Unknown item type: "
+//					+ info.itemType);
+//		}
+
+		cellLayout.addView(view, insertAtFirst ? 0 : -1);
+		view.setHapticFeedbackEnabled(false);
+		view.setOnLongClickListener(mLongClickListener);
+		if (view instanceof DropTarget) {
+			mDragController.addDropTarget((DropTarget) view);
+		}
+
+//		mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout,
+//				mTargetCell);
+		int[] xy = new int[2];
+		xy[0]=cellInfo.cellX;
+		xy[1]=cellInfo.cellY;
+		cellLayout.onDropChild(view, xy);
+//		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view
+//				.getLayoutParams();
+
+		LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
+				Favorites.CONTAINER_DESKTOP,
+				cellLayout.getPageIndex()/* mCurrentScreen */, cellInfo.cellX,
+				cellInfo.cellY);
+
+//		if (((ItemInfo) dragInfo).itemType == Applications.APPS_TYPE_FOLDER) {
+//			ApplicationFolderInfo folderInfo = (ApplicationFolderInfo) dragInfo;
+//
+//			for (int i = 0; i < folderInfo.getSize(); i++) {
+//				ApplicationInfoEx appInfoEx = folderInfo.contents.get(i);
+//				ShortcutInfo item;
+//
+//				item = mLauncher.getLauncherModel().getShortcutInfo(
+//						getContext().getPackageManager(), appInfoEx.intent,
+//						getContext());
+//				item.setActivity(appInfoEx.intent.getComponent(),
+//						Intent.FLAG_ACTIVITY_NEW_TASK
+//								| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+//				item.container = ((UserFolderInfo) info).id;
+//				item.orderId = i;
+//				((UserFolderInfo) info).add(item);
+//
+//				LauncherModel.addItemToDatabase(mLauncher, item, info.id, 0, 0,
+//						0, false);
+//			}
+//			// If the folder has sub items, refresh folder's icon
+//			if (((UserFolderInfo) info).getSize() > 0) {
+//				((FolderIcon) ((UserFolderInfo) info).folderIcon)
+//						.refreshFolderIcon();
+//			}
+//			// Add folder to folder collection
+//			mLauncher.addFolder((FolderInfo) info);
+//		}
+	}
 	/**
 	 * Return the current {@link CellLayout}, correctly picking the destination
 	 * screen while a scroll is in progress.
