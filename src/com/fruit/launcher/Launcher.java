@@ -276,12 +276,15 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		mIsBinding = true;
+		
 		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
 		
-		if (savedInstanceState!=null)
-			return;
+//		if (savedInstanceState!=null){
+//			finish();
+//			return;
+//		}
 		
+		mIsBinding = true;
 		mIsCreate = true;
 		
 		super.onCreate(savedInstanceState);
