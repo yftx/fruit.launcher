@@ -335,7 +335,8 @@ public class LauncherModel extends BroadcastReceiver {
 	}
 
 	public void startLoader(Context context, boolean isLaunching) {
-		mLoader.startLoader(context, isLaunching);
+		if (!mWorkspaceLoaded)
+			mLoader.startLoader(context, isLaunching);
 	}
 
 	public void stopLoader() {
@@ -571,11 +572,11 @@ public class LauncherModel extends BroadcastReceiver {
 							Log.d(TAG, "package:" + app);
 						}
 					}
-					synchronized (this) {
-						mAllAppsLoaded = mWorkspaceLoaded = false;
-					}
-					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE");
-					startLoader(context, false);
+//					synchronized (this) {
+//						mAllAppsLoaded = mWorkspaceLoaded = false;
+//					}
+//					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE");
+//					startLoader(context, false);
 				} else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE
 						.equals(action)) {
 					String packages[] = intent
@@ -583,11 +584,11 @@ public class LauncherModel extends BroadcastReceiver {
 					if (packages == null || packages.length == 0) {
 						return;
 					}
-					synchronized (this) {
-						mAllAppsLoaded = mWorkspaceLoaded = false;
-					}
-					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE");
-					startLoader(context, false);
+//					synchronized (this) {
+//						mAllAppsLoaded = mWorkspaceLoaded = false;
+//					}
+//					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE");
+//					startLoader(context, false);
 				}
 			}
 		}

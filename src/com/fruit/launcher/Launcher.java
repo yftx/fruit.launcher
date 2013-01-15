@@ -243,6 +243,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	private boolean mWorkspaceLoading = true;
 	private boolean mIsBinding = true;
+	private boolean mIsCreate = false;
 	
 	private boolean mPaused = true;
 	private boolean mRestoring;
@@ -280,6 +281,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		
 		if (savedInstanceState!=null)
 			return;
+		
+		mIsCreate = true;
 		
 		super.onCreate(savedInstanceState);
 
@@ -688,7 +691,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onResume() {
-		//mIsBinding = true;
 		Log.d(TAG,"launcherseq,onResume,mRestoring="+mRestoring+",mIsBinding="+mIsBinding);
 		super.onResume();
 
@@ -710,7 +712,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			mRestoring = false;
 		}
 		
-		//mIsBinding = false;
+		if (!mWorkspaceLoading && mIsBinding)
+			mIsBinding = false;
+		//if (!mWorkspaceLoading)
+		//	mIsBinding = false;
 	}
 
 	@Override
@@ -3233,7 +3238,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@Override
 	public void startBinding() {
 		mIsBinding = true;
-		
+		mWorkspaceLoading = true;
+        
 		final Workspace workspace = mWorkspace;
 		int count = workspace.getChildCount();
 
@@ -3534,13 +3540,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		 */
 
 		mWorkspaceLoading = false;
-		mIsBinding = false;
-		
-		if(mWorkspace!=null && !isWorkspaceLocked())
-			mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
-
-        mRestoring = false;
-        
 	}
 
 	/**
@@ -3771,6 +3770,16 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			mDragController.cancelDrag();
 		}
 		mAllAppsGrid.updateAllData();
+		
+		mIsBinding = false;
+		
+		if(mWorkspace!=null && !isWorkspaceLocked() && mIsCreate){
+			mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
+			mIsCreate = false;
+		}
+
+        mRestoring = false;
+        
 	}
 
 	public DockButton getHomeButton() {
