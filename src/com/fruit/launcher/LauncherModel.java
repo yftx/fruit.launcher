@@ -335,7 +335,7 @@ public class LauncherModel extends BroadcastReceiver {
 	}
 
 	public void startLoader(Context context, boolean isLaunching) {
-		if (!mWorkspaceLoaded)
+		//if (!mWorkspaceLoaded)
 			mLoader.startLoader(context, isLaunching);
 	}
 
