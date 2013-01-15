@@ -688,7 +688,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onResume() {
-		mIsBinding = true;
+		//mIsBinding = true;
 		Log.d(TAG,"launcherseq,onResume,mRestoring="+mRestoring+",mIsBinding="+mIsBinding);
 		super.onResume();
 
@@ -715,7 +715,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onPause() {
-		mIsBinding = true;
+		mIsBinding = false;
 		Log.d(TAG,"launcherseq,onPause,mRestoring="+mRestoring+",mPaused="+mPaused+",mIsBinding="+mIsBinding);
 		super.onPause();
 		mPaused = true;
