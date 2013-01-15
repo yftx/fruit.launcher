@@ -1048,14 +1048,22 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		//cellInfo.screen = layout.getPageIndex();//SettingUtils.MIN_SCREEN_COUNT-1;//mWorkspace.getCurrentScreen();
 		cellInfo.screen = mWorkspace.getCurrentScreen();
 		while (!findSingleSlotEx(cellInfo)) {
-			cellInfo.screen++;	
-			if (cellInfo.screen>mWorkspace.getChildCount()-1){
-				cellInfo.screen=0;
-			} else if (cellInfo.screen==mWorkspace.getCurrentScreen()){
-				Toast.makeText(this, getString(R.string.out_of_space),
-						Toast.LENGTH_SHORT).show();
-				return;
-			}
+			final int pageIndex = ((CellLayout)mWorkspace.getChildAt(cellInfo.screen)).getPageIndex();
+			cellInfo.screen++;				
+			if (pageIndex==mWorkspace.getChildCount()-1) {
+				if (pageIndex<SettingUtils.MAX_SCREEN_COUNT){
+					final int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.mScreenCount-1)+1; 
+					mWorkspace.addNewScreenByChildIndex(childIndex);
+				} else {				
+					cellInfo.screen=0;
+				}
+			} 
+//			else if (cellInfo.screen==mWorkspace.getCurrentScreen()){
+//				
+//				Toast.makeText(this, getString(R.string.out_of_space),
+//						Toast.LENGTH_SHORT).show();
+//				return;
+//			}
 		}
 
 		Log.d(TAG,"bindAppsAdded, added.cellinfo="+cellInfo.toString());

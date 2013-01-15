@@ -22,6 +22,7 @@ public class SettingUtils {
 	public static boolean mPermanentMemory;
 
 	public static final int MIN_SCREEN_COUNT = 5;
+	public static final int MAX_SCREEN_COUNT = 16;
 	public static final int DEFAULT_SCREEN_COUNT = 7;
 	public static final int DEFAULT_HOME_SCREEN_INDEX = 2;
 

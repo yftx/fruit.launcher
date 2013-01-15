@@ -941,8 +941,8 @@ public class LauncherModel extends BroadcastReceiver {
 					if (cursor != null && cursor.moveToFirst()) {
 						int maxScreenIndex = cursor.getInt(0);//cursor.getColumnIndexOrThrow(Favorites.SCREEN);
 						
-						if (maxScreenIndex > 8)
-							maxScreenIndex = 8;
+						if (maxScreenIndex > SettingUtils.MAX_SCREEN_COUNT)
+							maxScreenIndex = SettingUtils.MAX_SCREEN_COUNT;
 						
 						if (maxScreenIndex>=screen){
 							SettingUtils.mScreenCount=maxScreenIndex+1;
