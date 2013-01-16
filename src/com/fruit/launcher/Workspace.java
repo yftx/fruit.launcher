@@ -4591,7 +4591,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 					Log.d(TAG, "lp="+lp.toString());
 				} 
 				
-				if((num<0) && ((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX == 1 || itemInfo.spanY == 1))){
+				if((num<0) && ((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX == 1 && itemInfo.spanY == 1))){
 					num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
 					if (checks[num]<0){
 						checks[num]=i;

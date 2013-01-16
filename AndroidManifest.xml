@@ -20,7 +20,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fruit.launcher"
     android:sharedUserId="@string/sharedUserId"
-    android:versionCode="245"
+    android:versionCode="250"
     android:versionName="2.0.9" >
 
     <original-package android:name="com.fruit.launcher" />
@@ -86,7 +86,7 @@
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:theme="@style/Theme"
