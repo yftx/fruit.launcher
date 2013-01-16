@@ -202,7 +202,7 @@ public class CellLayout extends ViewGroup {
 			final LayoutParams lp, final ItemInfo itemInfo) {
 		int num = -1;
 		
-		if((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX >= 1 || itemInfo.spanY >= 1)){
+		if((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX >= 1 && itemInfo.spanY >= 1)){
 			num =itemInfo.cellY * (ItemInfo.COL) + itemInfo.cellX;
 			for (int j = 0; j < itemInfo.spanX; j++) {
 				for (int k = 0; k < itemInfo.spanY; k++) {
