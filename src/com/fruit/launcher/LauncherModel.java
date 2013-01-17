@@ -2112,145 +2112,200 @@ public class LauncherModel extends BroadcastReceiver {
 		}
 	}
 
-	//check if shortcut is existed
-	public boolean isDuplicate(Context context, String title, Intent intent) {
-		return isDuplicate(context, title, intent, false);
-	}
-	
-	public boolean isDuplicate(Context context, String title, Intent intent, boolean strict) {
-		if (strict) {
-			return isDuplicateByTitleAndIntent(context, title, intent);
-		} else {		
-			String pkgName = null;
-			
-			try {
-				pkgName = intent.getComponent().getPackageName();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			
-			if (pkgName == null) {
-				return isDuplicateByTitle(context, title);
-			} else {
-				return isDuplicateByTitleAndPkgName(context, title, pkgName);
-			}
-		
-		}
-	}
-	
-	private boolean isDuplicateByTitle(Context context, String title){
-		//local variable
-		final ContentResolver cr = context.getContentResolver();
-		Cursor c = null;
-		boolean result = false;
-		
-		//body
-		c = cr.query(Favorites.CONTENT_URI, new String[] { "title" },
-				"title=?", new String[] { title },	null);
-		
-		try {
-			result = c.moveToFirst();
+//	//check if shortcut is existed
+//	public boolean isDuplicate(Context context, String title, Intent intent) {
+//		return isDuplicate(context, title, intent, false);
+//	}
+//	
+//	public boolean isDuplicate(Context context, String title, Intent intent, boolean strict) {
+//		if (strict) {
+//			return isDuplicateByTitleAndIntent(context, title, intent);
+//		} else {		
+//			String pkgName = null;
+//			
+//			try {
+//				pkgName = intent.getComponent().getPackageName();
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}	
+//			
+//			if (pkgName == null) {
+//				return isDuplicateByTitle(context, title);
+//			} else {
+//				return isDuplicateByTitleAndPkgName(context, title, pkgName);
+//			}
+//		
+//		}
+//	}
+//	
+//	private boolean isDuplicateByTitle(Context context, String title){
+//		//local variable
+//		final ContentResolver cr = context.getContentResolver();
+//		Cursor c = null;
+//		boolean result = false;
+//		
+//		//body
+//		c = cr.query(Favorites.CONTENT_URI, new String[] { "title" },
+//				"title=?", new String[] { title },	null);
+//		
+//		try {
+//			result = c.moveToFirst();
+////			if (c != null && c.getCount() > 0) {
+////				result = true;
+////			}
+//		} finally {
+//			c.close();
+//		}
+//
+//		return result;
+//	}
+//	
+//	/**
+//	 * @param context
+//	 * @param title
+//	 * @param data
+//	 * @return
+//	 */
+//	private boolean isDuplicateByTitleAndPkgName(Context context,
+//			String title, String pkgName) {
+//		
+//		//local variable
+//		final ContentResolver cr = context.getContentResolver();
+//		String intentUri = null;
+//		Cursor c = null;
+//		boolean result = false;
+//		
+//		//body
+//		intentUri = "%" + pkgName + "%";
+//		
+//		c = cr.query(Favorites.CONTENT_URI, new String[] { "title", "intent" },
+//				"title=? and intent like ?", new String[] { title, intentUri },
+//				null);
+//	
+//		try {
+//			//result = c.moveToFirst();
 //			if (c != null && c.getCount() > 0) {
 //				result = true;
 //			}
-		} finally {
-			c.close();
+//		} finally {
+//			c.close();
+//		}
+//
+//		return result;
+//	}
+//
+//
+//
+//
+//	
+//	/**
+//	 * @param context
+//	 * @param title
+//	 * @param data
+//	 * @return
+//	 */
+//	private boolean isDuplicateByTitleAndIntent(Context context,
+//			String title, Intent data) {
+//		final ContentResolver cr = context.getContentResolver();
+//		String intentUri = new String("");
+//		Cursor c = null;
+//		boolean result = false;
+//		Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+////		String shortClassName = data.getComponent().getShortClassName();
+////		String className = data.getComponent().getClassName();
+////		String packageName = data.getComponent().getPackageName();
+//		
+//		if (intent == null) {
+//			intentUri = data.toUri(0);
+//		} else {
+//			intentUri = intent.toUri(0);
+//		}
+//
+//		if (intentUri.indexOf("component=") > 0) {
+//			intentUri = "%"
+//					+ intentUri.substring(intentUri.indexOf("component="));
+//			intentUri = intentUri.substring(0, intentUri.indexOf(";")) + "%";
+//		} else if (intentUri.indexOf("#") > 0) {
+//			intentUri = intentUri.substring(0, intentUri.indexOf("#")) + "%";
+//		} else {
+//			// don't change it.
+//		}
+//
+//		c = cr.query(Favorites.CONTENT_URI, new String[] { "title", "intent" },
+//				"title=? and intent like ?", new String[] { title, intentUri },
+//				null);
+//
+//		try {
+//			//result = c.moveToFirst();
+//			if (c != null && c.getCount() > 0) {
+//				result = true;
+//			}
+//		} finally {
+//			c.close();
+//		}
+//
+//		return result;
+//	}
+	
+	public boolean hasShortcut(Context context, ShortcutInfo info, Intent data) {
+		boolean result = false;		
+		
+		if (info.itemType==Favorites.ITEM_TYPE_APPLICATION){
+				
+			final String title = info.title.toString();
+			final String className = Launcher.getClassName(info, data);
+			final String shortClassName = Launcher.getShortClassName(info, data);
+			final String pkgName = Launcher.getPackageName(info, data);
+			
+			final String intentUri = "%" + className + "%";
+			final String intentUri2 = "%" + pkgName + "/" + shortClassName + "%";
+			
+			if (hasShortcutInDB(context, title, intentUri) || hasShortcutInDB(context, title, intentUri2)) 
+				return true;				
 		}
-
+		
 		return result;
 	}
-	
+
 	/**
 	 * @param context
 	 * @param title
-	 * @param data
+	 * @param intentUri
 	 * @return
 	 */
-	private boolean isDuplicateByTitleAndPkgName(Context context,
-			String title, String pkgName) {
-		
-		//local variable
-		final ContentResolver cr = context.getContentResolver();
-		String intentUri = null;
+	private boolean hasShortcutInDB(Context context, final String title,
+			final String intentUri) {
+		boolean result = false;		
 		Cursor c = null;
-		boolean result = false;
 		
-		//body
-		intentUri = "%" + pkgName + "%";
+		try {			
+			final ContentResolver cr = context.getContentResolver();
+			
+			c = cr.query(Favorites.CONTENT_URI, new String[] { "title", "intent" },
+					"title=? and intent like ?", new String[] { title, intentUri },
+					null);
+			
+			if (c != null && c.getCount() > 0) {
+				result = true;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			result = false;
+		} finally {
+			c.close();
+		}
 		
-		c = cr.query(Favorites.CONTENT_URI, new String[] { "title", "intent" },
-				"title=? and intent like ?", new String[] { title, intentUri },
-				null);
+		return result;
+	}
 	
-		try {
-			//result = c.moveToFirst();
-			if (c != null && c.getCount() > 0) {
-				result = true;
-			}
-		} finally {
-			c.close();
-		}
-
-		return result;
-	}
-
-
-	/**
-	 * @param context
-	 * @param title
-	 * @param data
-	 * @return
-	 */
-	private boolean isDuplicateByTitleAndIntent(Context context,
-			String title, Intent data) {
-		final ContentResolver cr = context.getContentResolver();
-		String intentUri = new String("");
-		Cursor c = null;
-		boolean result = false;
-		Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-//		String shortClassName = data.getComponent().getShortClassName();
-//		String className = data.getComponent().getClassName();
-//		String packageName = data.getComponent().getPackageName();
-		
-		if (intent == null) {
-			intentUri = data.toUri(0);
-		} else {
-			intentUri = intent.toUri(0);
-		}
-
-		if (intentUri.indexOf("component=") > 0) {
-			intentUri = "%"
-					+ intentUri.substring(intentUri.indexOf("component="));
-			intentUri = intentUri.substring(0, intentUri.indexOf(";")) + "%";
-		} else if (intentUri.indexOf("#") > 0) {
-			intentUri = intentUri.substring(0, intentUri.indexOf("#")) + "%";
-		} else {
-			// don't change it.
-		}
-
-		c = cr.query(Favorites.CONTENT_URI, new String[] { "title", "intent" },
-				"title=? and intent like ?", new String[] { title, intentUri },
-				null);
-
-		try {
-			//result = c.moveToFirst();
-			if (c != null && c.getCount() > 0) {
-				result = true;
-			}
-		} finally {
-			c.close();
-		}
-
-		return result;
-	}
-
 	ShortcutInfo addShortcut(Context context, Intent data,
 			CellLayout.CellInfo cellInfo, boolean notify) {
 
 		final ShortcutInfo info = infoFromShortcutIntent(context, data);
 
-		if (isDuplicate(context, info.title.toString(), info.intent)) 
+		if (hasShortcut(context, info, data)) 
 			return null;
 
 		addItemToDatabase(context, info, Favorites.CONTAINER_DESKTOP,
@@ -2266,7 +2321,7 @@ public class LauncherModel extends BroadcastReceiver {
 
 		final ShortcutInfo info = infoFromShortcutIntent(context, data);
 
-		if (isDuplicate(context, info.title.toString(), info.intent)) 
+		if (hasShortcut(context, info, data)) 
 			return null;
 
 		addItemToDatabase(context, info, Favorites.CONTAINER_DOCKBAR,

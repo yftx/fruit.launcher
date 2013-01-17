@@ -312,34 +312,116 @@ public class DockBar extends ViewGroup {
 	// return mAllAppHomeBar.size();
 	// }
 
-	boolean hasShortcut(Intent data) {
-		//local variables
-		//boolean result = false;	
+//	boolean hasShortcut(Intent data) {
+//		try {			
+//			final String className = data.getComponent().getClassName();
+//		
+//			for (int i = 0; i < getChildCount(); i++){
+//				final DockButton button = (DockButton) getChildAt(i);
+//				if (!button.mIsEmpty){
+//					final ShortcutInfo info = (ShortcutInfo) button.getTag();
+//					final Intent eachIntent = info.intent;	
+//					final String eachClassName = eachIntent.getComponent().getClassName();
+//					if (className.equals(eachClassName)) {
+//						return true;
+//					} 
+//				}
+//			}
+//		
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();			
+//		} 
+//		
+//		
+//		return false;
+//
+//	}
+//	
+//	boolean hasShortcut(String title) {
+//		try {	
+//			for (int i = 0; i < getChildCount(); i++){
+//				final DockButton button = (DockButton) getChildAt(i);
+//				if (!button.mIsEmpty){
+//					final ShortcutInfo info = (ShortcutInfo) button.getTag();
+//					if (title.equals(info.title.toString())) {
+//						return true;
+//					} 
+//				}
+//			}		
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();			
+//		} 		
+//		
+//		return false;
+//	}
+	
+	int getShortcutCount(ShortcutInfo info){
+		int counter = 0;
 		
-		//body
 		try {			
-			String className = data.getComponent().getClassName();
-		
-			for (int i = 0; i < getChildCount(); i++){
-				DockButton button = (DockButton) getChildAt(i);
+			final String title = info.title.toString();
+			//final String className = info.intent.getComponent().getClassName();	
+			final String pkgName = Launcher.getPackageName(info);
+			
+		    final int count = getChildCount();
+		    
+			for (int i = 0; i < count; i++){
+				final DockButton button = (DockButton) getChildAt(i);
 				if (!button.mIsEmpty){
-					final ShortcutInfo info = (ShortcutInfo) button.getTag();
-					final Intent eachIntent = info.intent;	
-					String eachClassName = eachIntent.getComponent().getClassName();
-					if (className.equals(eachClassName)) {
-						return true;
-					} 
+					final ShortcutInfo sInfo = (ShortcutInfo) button.getTag();
+					if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION){
+						//final String eachClassName = sInfo.intent.getComponent().getClassName();
+						final String eachPkgName = Launcher.getPackageName(sInfo);
+						if (title.equals(sInfo.title.toString()) && pkgName.equals(eachPkgName)) {
+							counter++;
+						} 
+					}
+				} else {
+					final ShortcutInfo sInfo = button.getDockButtonInfo();
+					if (sInfo != null){
+						final String eachPkgName = Launcher.getPackageName(sInfo);
+						if (title.equals(sInfo.title.toString()) && pkgName.equals(eachPkgName)) {
+							counter++;
+						} 
+					}					
 				}
-			}
-		
+			}			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();			
 		} 
 		
+		return counter;	
+	}
+	
+	boolean hasShortcut(ShortcutInfo info, Intent data){	
 		
-		return false;
-
+		try {			
+			final String title = info.title.toString();
+			final String className = Launcher.getClassName(info, data);		    
+		    final int count = getChildCount();
+		    
+			for (int i = 0; i < count; i++){
+				final DockButton button = (DockButton) getChildAt(i);
+				if (!button.mIsEmpty){
+					final ShortcutInfo sInfo = (ShortcutInfo) button.getTag();
+					if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION){
+						final String eachClassName = Launcher.getClassName(sInfo);
+						if (title.equals(sInfo.title.toString()) && className.equals(eachClassName)) {
+							return true;
+						} 
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		} 
+		
+		return false;		
 	}
 	
 	@Override

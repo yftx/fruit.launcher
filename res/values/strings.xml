@@ -218,4 +218,7 @@
 	<string name="colon">": "</string>
 	<string name="desktopiconnumber">Desktop Items</string>	
     <string name="desktopwidgetnumber">Widget Count</string>
+    <string name="multimedias">Multimedias</string>
+    <string name="tools">Tools</string>
+    <string name="games">Games</string>
 </resources>

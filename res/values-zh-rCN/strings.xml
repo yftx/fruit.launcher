@@ -135,4 +135,7 @@
     <string name="colon">"： "</string>
     <string name="desktopiconnumber">桌面应用数目</string>
     <string name="desktopwidgetnumber">小工具和快捷方式数目</string>
+    <string name="multimedias">多媒体</string>
+    <string name="tools">工具</string>
+    <string name="games">游戏</string>
 </resources>

@@ -17,6 +17,30 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res/com.fruit.launcher" >
 
+    <userfolder    
+        launcher:container="-100"            
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="1"
+        launcher:y="2" />
+        
+    <userfolder    
+        launcher:container="-100"            
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="2"
+        launcher:y="2" />
+        
+    <userfolder    
+        launcher:container="-100"            
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="3"
+        launcher:y="2" />
+    
     <appwidget
         launcher:className="vollo.weatherforcast.widget.Widget_2x4_style1"
         launcher:packageName="vollo.weatherforcast"
@@ -280,9 +304,254 @@
         launcher:x="3"
         launcher:y="3" />
 
-    <!-- Right screen [3] -->
+    <!-- screen [5] -->
+    <!-- row No. 1 -->
+    <favorite
+        launcher:className="com.mapbar.android.mapnavi.MapNaviInputActivity"
+        launcher:container="-100"
+        launcher:packageName="com.mapbar.android.mapbarmap"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="0" />
+        
+    <favorite
+        launcher:className="vollo.space.VolloSplashActivity"
+        launcher:container="-100"
+        launcher:packageName="vollo.space"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="1"
+        launcher:y="0" />
+        
+    <favorite
+        launcher:className="vollo.weatherforcast.AppEntryActivity"
+        launcher:container="-100"
+        launcher:packageName="vollo.weatherforcast"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="2"
+        launcher:y="0" />
+        
+    <favorite
+        launcher:className="com.vollo.Market.welcomeActivity"
+        launcher:container="-100"
+        launcher:packageName="com.vollo.Market"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="3"
+        launcher:y="0" />
 
+    <!-- row No. 2 -->
+    <favorite
+        launcher:className="com.baidu.searchbox.MainActivity"
+        launcher:container="-100"
+        launcher:packageName="com.baidu.searchbox"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="1" />
+        
+    <favorite
+        launcher:className="com.vollo.album.AlbumLoading"
+        launcher:container="-100"
+        launcher:packageName="com.vollo.album"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="1"
+        launcher:y="1" />
+        
+    <favorite
+        launcher:className="com.skymobi.appstore.activity.LogoActivity"
+        launcher:container="-100"
+        launcher:packageName="com.release_ua.appstore"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="2"
+        launcher:y="1" />
+        
+    <favorite
+        launcher:className="com.chaozh.iReader.ui.activity.WelcomeActivity"
+        launcher:container="-100"
+        launcher:packageName="com.chaozh.iReaderFree15"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="3"
+        launcher:y="1" />
 
-    <!-- Far-right screen [4] -->
+    <!-- row No. 3 -->
+    <favorite
+        launcher:className="com.wochacha.zte.scan.BarcodeScanActivity"
+        launcher:container="-100"
+        launcher:packageName="com.wochacha.zte"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="2" />
+    
+
+    <!--     folder 1 -->  
+    
+    <favorite
+        launcher:className="cn.kuwo.player.activities.EntryActivity"
+        launcher:container="1"
+        launcher:packageName="cn.kuwo.player"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="0" />
+        
+    <favorite
+        launcher:className="com.cmcc.mobilevideo.StartActivity"
+        launcher:container="1"
+        launcher:packageName="com.cmcc.mobilevideo"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="1"
+        launcher:y="0" />
+        
+<!--     folder 2 -->    
+
+    <favorite
+        launcher:className="com.android.alarmclock.AlarmClock"
+        launcher:container="2"
+        launcher:packageName="com.android.deskclock"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="0" />
+    
+    <favorite
+        launcher:className="com.sohu.inputmethod.sogou.SogouIMELauncher"
+        launcher:container="2"
+        launcher:packageName="com.sohu.inputmethod.sogou"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="1"
+        launcher:y="0" />    
+        
+    <favorite
+        launcher:className="com.mediatek.backuprestore.BootActivity"
+        launcher:container="2"
+        launcher:packageName="com.mediatek.backuprestore"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="2"
+        launcher:y="0" />   
+            
+    <favorite
+        launcher:className="com.tencent.mtt.SplashActivity"
+        launcher:container="2"
+        launcher:packageName="com.tencent.mtt"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="3"
+        launcher:y="0" />  
+             
+    <favorite
+        launcher:className="com.adups.fota.GoogleOtaClient"
+        launcher:container="2"
+        launcher:packageName="com.adups.fota"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="1" /> 
+        
+    <favorite
+        launcher:className="com.tencent.qqpimsecure.ui.activity.SplashActivity"
+        launcher:container="2"
+        launcher:packageName="com.tencent.qqpimsecure"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="1"
+        launcher:y="1" /> 
+
+    <favorite
+        launcher:className="com.mediatek.todos.TodosActivity"
+        launcher:container="2"
+        launcher:packageName="com.mediatek.todos"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="2"
+        launcher:y="1" /> 
+
+    <favorite
+        launcher:className="com.mediatek.notebook.NotesList"
+        launcher:container="2"
+        launcher:packageName="com.mediatek.notebook"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="3"
+        launcher:y="1" /> 
+    
+    <favorite
+        launcher:className="com.vollo.cloud.vCloudLoadingActivity"
+        launcher:container="2"
+        launcher:packageName="com.vollo.cloud"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="2" /> 
+        
+<!--     folder 3 -->
+    <favorite
+        launcher:className="com.sqage.sanguoage.Splash"
+        launcher:container="3"
+        launcher:packageName="com.sqage.sanguoage"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="0" /> 
+        
+    <favorite
+        launcher:className="com.ifreyrgames.starwarfarechinese.OurDownloaderActivity"
+        launcher:container="3"
+        launcher:packageName="com.ifreyrgames.starwarfarechinese"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="1"
+        launcher:y="0" /> 
+            
+    <favorite
+        launcher:className="com.mas.wawapak.activity.LaunchActivity"
+        launcher:container="3"
+        launcher:packageName="com.mas.wawagame.Kuwalord"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="2"
+        launcher:y="0" />     
+
+    <favorite
+        launcher:className="com.tencent.qqgame.client.QQGameHallActivity"
+        launcher:container="3"
+        launcher:packageName="com.tencent.qqgame_buildin"
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
+        launcher:x="3"
+        launcher:y="0" /> 
 
 </favorites>

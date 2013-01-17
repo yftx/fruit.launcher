@@ -487,32 +487,43 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		return folders;
 	}
 	
-	public boolean isDuplicate(String title){
-		final int count = getChildCount();
-		int counter = 0;
-		for(int i=0;i<count;i++){
-			final CellLayout layout = (CellLayout) getChildAt(i);
-			final int cell_count = layout.getChildCount();
-			for(int j=0;j<cell_count;j++){
-				final View view = layout.getChildAt(j);
-				if (view instanceof BubbleTextView) {
-					BubbleTextView btv = (BubbleTextView) view;
-					final String name = btv.getText().toString();
-					Log.d(TAG, "isDuplicated,name="+name);
-					if (title.equals(name)) {
-						counter++;
-					}
-				}
-			}
-		}
-		
-		if (counter>1){
-			return true;
-		} else {
-			return false;
-		}
-		
-	}
+//	public boolean isDuplicate(String title){
+//		final int count = getChildCount();
+//		int counter = 0;
+//		for(int i=0;i<count;i++){
+//			final CellLayout layout = (CellLayout) getChildAt(i);
+//			final int cell_count = layout.getChildCount();
+//			for(int j=0;j<cell_count;j++){
+//				final View view = layout.getChildAt(j);
+//				if (view instanceof FolderIcon){
+//					final FolderIcon fi = (FolderIcon) view;
+//					final UserFolderInfo folderInfo = (UserFolderInfo)fi.getTag();
+//					final int folder_size = folderInfo.getSize();
+//					for (int k = 0;k<folder_size;k++){
+//						final ShortcutInfo sInfo = (ShortcutInfo) folderInfo.contents.get(k);
+//						final String name = sInfo.title.toString();
+//						if (title.equals(name)) {
+//							counter++;
+//						}
+//					}
+//				} else if (view instanceof BubbleTextView) {
+//					final BubbleTextView btv = (BubbleTextView) view;
+//					final String name = btv.getText().toString();
+//					Log.d(TAG, "isDuplicated,name="+name);
+//					if (title.equals(name)) {
+//						counter++;
+//					}
+//				}
+//			}
+//		}
+//		
+//		if (counter>1){
+//			return true;
+//		} else {
+//			return false;
+//		}
+//		
+//	}
 
 	boolean isDefaultScreenShowing() {
 		// return mCurrentScreen == mDefaultScreen;
@@ -927,59 +938,94 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
-	// check if this shortcut is existed in workspace view
-	boolean hasShortcut(Intent data) {
-		//local variables
-		//boolean result = false;	
+//	// check if this shortcut is existed in workspace view
+//	boolean hasShortcut(Intent data) {
+//		//local variables
+//		//boolean result = false;	
+//		
+//		//body
+//		try {
+//			//String shortClassName = data.getComponent().getShortClassName();
+//			final String className = data.getComponent().getClassName();
+//			//String packageName = data.getComponent().getPackageName();
+//		
+//			for (int i = 0; i < getChildCount(); i++){
+//				final CellLayout cellLayout = (CellLayout) getChildAt(i);
+//				for(int j = 0; j < cellLayout.getChildCount(); j++){
+//					final View v = cellLayout.getChildAt(j);
+//					Object tag = v.getTag();
+//					if (tag instanceof UserFolderInfo) {
+//						final UserFolderInfo folderInfo = (UserFolderInfo)tag;
+//						final int folder_size = folderInfo.getSize();
+//						for (int k = 0;k<folder_size;k++){
+//							final ShortcutInfo sInfo = (ShortcutInfo) folderInfo.contents.get(k);
+//							if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION){
+//								final Intent eachIntent = sInfo.intent;
+//								//String eachShortClassName = eachIntent.getComponent().getShortClassName();
+//								String eachClassName = eachIntent.getComponent().getClassName();
+//								//String eachPackageName = eachIntent.getComponent().getPackageName();							
+//								if (className.equals(eachClassName)) {
+//									return true;
+//								} 
+//							} else if (sInfo.itemType == Favorites.ITEM_TYPE_SHORTCUT){
+//								final Intent eachIntent = sInfo.intent;
+//								final String dataString = eachIntent.getDataString();
+//								
+//							}
+//						}
+//					}else if(tag instanceof ShortcutInfo){
+//						final Intent eachIntent = ((ShortcutInfo) tag).intent;
+//						//String eachShortClassName = eachIntent.getComponent().getShortClassName();
+//						String eachClassName = eachIntent.getComponent().getClassName();
+//						//String eachPackageName = eachIntent.getComponent().getPackageName();
+//						
+//						if (className.equals(eachClassName)) {
+//							return true;
+//						} 
+//					} 
+//				}
+//			}
+//		
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();			
+//		} 
+//		
+//		
+//		return false;
+//
+//	}
+	
+	int getShortcutCount(ShortcutInfo info){
+		int counter = 0;
 		
-		//body
 		try {
-			//String shortClassName = data.getComponent().getShortClassName();
-			final String className = data.getComponent().getClassName();
-			//String packageName = data.getComponent().getPackageName();
-		
-			for (int i = 0; i < getChildCount(); i++){
+			final int count = getChildCount();
+			for (int i = 0; i < count; i++){
 				final CellLayout cellLayout = (CellLayout) getChildAt(i);
-				for(int j = 0; j < cellLayout.getChildCount(); j++){
-					final View v = cellLayout.getChildAt(j);
-					Object tag = v.getTag();
-					if (tag instanceof UserFolderInfo) {
-						final UserFolderInfo folderInfo = (UserFolderInfo)tag;
-						final int folder_size = folderInfo.getSize();
-						for (int k = 0;k<folder_size;k++){
-							final ShortcutInfo sInfo = (ShortcutInfo) folderInfo.contents.get(k);
-							if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION){
-								final Intent eachIntent = sInfo.intent;
-								//String eachShortClassName = eachIntent.getComponent().getShortClassName();
-								String eachClassName = eachIntent.getComponent().getClassName();
-								//String eachPackageName = eachIntent.getComponent().getPackageName();							
-								if (className.equals(eachClassName)) {
-									return true;
-								} 
-							} else if (sInfo.itemType == Favorites.ITEM_TYPE_SHORTCUT){
-								final Intent eachIntent = sInfo.intent;
-								final String dataString = eachIntent.getDataString();
-								
-							}
-						}
-					}else if(tag instanceof ShortcutInfo){
-						final Intent eachIntent = ((ShortcutInfo) tag).intent;
-						//String eachShortClassName = eachIntent.getComponent().getShortClassName();
-						String eachClassName = eachIntent.getComponent().getClassName();
-						//String eachPackageName = eachIntent.getComponent().getPackageName();
-						
-						if (className.equals(eachClassName)) {
-							return true;
-						} 
-					} 
-				}
-			}
-		
+				counter += cellLayout.getShortcutCount(info);
+			}			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();			
-		} 
+		} 		
 		
+		return counter;
+		
+	}
+	
+	boolean hasShortcut(ShortcutInfo info, Intent data) {
+		try {
+			final int count = getChildCount();
+			for (int i = 0; i < count; i++){
+				final CellLayout cellLayout = (CellLayout) getChildAt(i);
+				if (cellLayout.hasShortcut(info, data))
+					return true;
+			}			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		} 		
 		
 		return false;
 

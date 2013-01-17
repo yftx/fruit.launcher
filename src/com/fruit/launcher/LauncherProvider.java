@@ -438,7 +438,8 @@ public class LauncherProvider extends ContentProvider {
 		private static final String TAG_LOCKSCREENAPPWIDGET = "lockscreenappwidget";
 		private static final String TAG_CLEANMEMAPPWIDGET = "cleanmemappwidget";
 		private static final String TAG_SHORTCUT = "shortcut";
-
+		private static final String TAG_USERFOLDER = "userfolder";
+		
 		private final Context mContext;
 		private final AppWidgetHost mAppWidgetHost;
 
@@ -941,50 +942,7 @@ public class LauncherProvider extends ContentProvider {
 				// yfzhao.start
 				String actInfoName = info.activityInfo.name;
 
-				if (!(actInfoName
-						.equals("com.android.contacts.activities.DialtactsActivity")
-						|| actInfoName
-								.equals("com.android.contacts.activities.PeopleActivity")
-						|| actInfoName
-								.equals("com.android.mms.ui.BootActivity")
-						|| actInfoName
-								.equals("com.android.browser.BrowserActivity")
-
-						|| actInfoName
-								.equals("com.fruit.thememanager.ThemeSettingActivity")
-						|| actInfoName
-								.equals("com.android.calculator2.Calculator")
-						|| actInfoName
-								.equals("com.android.soundrecorder.SoundRecorder")
-						|| actInfoName
-								.equals("com.mediatek.StkSelection.StkSelection")
-
-						|| actInfoName
-								.equals("com.mediatek.FMRadio.FMRadioActivity")
-						|| actInfoName
-								.equals("com.android.email.activity.Welcome")
-						|| actInfoName
-								.equals("com.android.calendar.AllInOneActivity")
-						|| actInfoName
-								.equals("com.android.deskclock.DeskClock")
-
-						|| actInfoName.equals("com.android.camera.Camera")
-						|| actInfoName.equals("com.mapbar.android.mapbarmap.MapViewActivity")
-						|| actInfoName
-								.equals("com.android.music.MusicBrowserActivity")
-//						|| actInfoName
-//								.equals("com.mediatek.videoplayer.MovieListActivity")
-						|| actInfoName
-								.equals("com.vollo.mwvplayer.MWVPlayerMenulistActivity")								
-								
-						|| actInfoName.equals("com.android.gallery3d.app.Gallery")
-						|| actInfoName.equals("com.mediatek.filemanager.FileManagerOperationActivity")
-						|| actInfoName
-								.equals("com.android.providers.downloads.ui.DownloadList") 
-					    || actInfoName
-							.equals("com.android.settings.Settings")
-
-				)) {
+				if (!checkClassName(actInfoName)) {
 
 					if ((info.activityInfo.name.indexOf(appInfo.packageName)) >= 0) {
 						intentInfo = "#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component="
@@ -1049,6 +1007,110 @@ public class LauncherProvider extends ContentProvider {
 					}
 				}
 			}
+		}
+
+		/**
+		 * @param actInfoName
+		 * @return
+		 */
+		private boolean checkClassName(String actInfoName) {
+			return actInfoName
+					.equals("com.android.contacts.activities.DialtactsActivity")
+					|| actInfoName
+							.equals("com.android.contacts.activities.PeopleActivity")
+					|| actInfoName
+							.equals("com.android.mms.ui.BootActivity")
+					|| actInfoName
+							.equals("com.android.browser.BrowserActivity")
+
+					|| actInfoName
+							.equals("com.fruit.thememanager.ThemeSettingActivity")
+					|| actInfoName
+							.equals("com.android.calculator2.Calculator")
+					|| actInfoName
+							.equals("com.android.soundrecorder.SoundRecorder")
+					|| actInfoName
+							.equals("com.mediatek.StkSelection.StkSelection")
+
+					|| actInfoName
+							.equals("com.mediatek.FMRadio.FMRadioActivity")
+					|| actInfoName
+							.equals("com.android.email.activity.Welcome")
+					|| actInfoName
+							.equals("com.android.calendar.AllInOneActivity")
+					|| actInfoName
+							.equals("com.android.deskclock.DeskClock")
+							
+					//---------
+					
+        || actInfoName.equals("com.mapbar.android.mapnavi.MapNaviInputActivity")
+
+        || actInfoName.equals("vollo.space.VolloSplashActivity")
+
+        || actInfoName.equals("vollo.weatherforcast.AppEntryActivity")
+ 
+        || actInfoName.equals("com.vollo.Market.welcomeActivity")
+
+        || actInfoName.equals("com.baidu.searchbox.MainActivity")
+
+        || actInfoName.equals("com.vollo.album.AlbumLoading")
+
+        || actInfoName.equals("com.skymobi.appstore.activity.LogoActivity")
+
+        || actInfoName.equals("com.chaozh.iReader.ui.activity.WelcomeActivity")
+
+        || actInfoName.equals("com.wochacha.zte.scan.BarcodeScanActivity")
+
+        || actInfoName.equals("cn.kuwo.player.activities.EntryActivity")
+
+        || actInfoName.equals("com.cmcc.mobilevideo.StartActivity")
+
+        || actInfoName.equals("com.android.alarmclock.AlarmClock")
+
+        || actInfoName.equals("com.sohu.inputmethod.sogou.SogouIMELauncher")
+
+        || actInfoName.equals("com.mediatek.backuprestore.BootActivity")
+ 
+        || actInfoName.equals("com.tencent.mtt.SplashActivity")
+ 
+        || actInfoName.equals("com.adups.fota.GoogleOtaClient")
+
+        || actInfoName.equals("com.tencent.qqpimsecure.ui.activity.SplashActivity")
+
+
+        || actInfoName.equals("com.mediatek.todos.TodosActivity")
+
+        || actInfoName.equals("com.mediatek.notebook.NotesList")
+
+        || actInfoName.equals("com.vollo.cloud.vCloudLoadingActivity")
+
+        || actInfoName.equals("com.sqage.sanguoage.Splash")
+
+        || actInfoName.equals("com.ifreyrgames.starwarfarechinese.OurDownloaderActivity")
+
+        || actInfoName.equals("com.mas.wawapak.activity.LaunchActivity")
+  
+
+        || actInfoName.equals("com.tencent.qqgame.client.QQGameHallActivity")
+
+
+							
+					//--------------		
+					|| actInfoName.equals("com.android.camera.Camera")
+					|| actInfoName.equals("com.mapbar.android.mapbarmap.MapViewActivity")
+					|| actInfoName
+							.equals("com.android.music.MusicBrowserActivity")
+//						|| actInfoName
+//								.equals("com.mediatek.videoplayer.MovieListActivity")
+					|| actInfoName
+							.equals("com.vollo.mwvplayer.MWVPlayerMenulistActivity")								
+							
+					|| actInfoName.equals("com.android.gallery3d.app.Gallery")
+					|| actInfoName.equals("com.mediatek.filemanager.FileManagerOperationActivity")
+					|| actInfoName
+							.equals("com.android.providers.downloads.ui.DownloadList") 
+				    || actInfoName
+						.equals("com.android.settings.Settings");
 		}
 
 		@Override
@@ -1445,6 +1507,8 @@ public class LauncherProvider extends ContentProvider {
 						added = addLockScreenAppWidget(db, values);
 					} else if (TAG_CLEANMEMAPPWIDGET.equals(name)) {
 						added = addCleanMemAppWidget(db, values);
+					} else if (TAG_USERFOLDER.equals(name)){
+						added = addUserFolder(db, values);
 					}
 
 					if (added) {
@@ -1549,6 +1613,12 @@ public class LauncherProvider extends ContentProvider {
 							BaseLauncherColumns.ITEM_TYPE_APPLICATION);
 					values.put(Favorites.SPANX, 1);
 					values.put(Favorites.SPANY, 1);
+					
+					if(values.getAsInteger(Favorites.CONTAINER) > 0){
+						final int x = values.getAsInteger(Favorites.CELLX);
+						final int y = values.getAsInteger(Favorites.CELLY);
+						values.put(Favorites.ORDERID, y*4+x);
+					}
 					db.insert(TABLE_FAVORITES, null, values);
 				} catch (PackageManager.NameNotFoundException e) {
 					Log.w(TAG, "Unable to add favorite: " + packageName + "/"
@@ -1621,6 +1691,30 @@ public class LauncherProvider extends ContentProvider {
 			return true;
 		}
 
+		private boolean addUserFolder(SQLiteDatabase db,
+				ContentValues values) {
+			Resources r = mContext.getResources();
+			values.put(BaseLauncherColumns.ITEM_TYPE,
+					Favorites.ITEM_TYPE_USER_FOLDER);
+			values.put(Favorites.SPANX, 1);
+			values.put(Favorites.SPANY, 1);
+			
+			if (values.getAsString(Favorites.CELLX)=="1"){
+				values.put(Favorites._ID, "1");
+				values.put(Favorites.TITLE, r.getString(R.string.multimedias));
+			} else if(values.getAsString(Favorites.CELLX)=="2"){
+				values.put(Favorites._ID, "2");
+				values.put(Favorites.TITLE, r.getString(R.string.tools));
+			} else if(values.getAsString(Favorites.CELLX)=="3"){
+				values.put(Favorites._ID, "3");
+				values.put(Favorites.TITLE, r.getString(R.string.games));
+			}
+			
+			
+			db.insert(TABLE_FAVORITES, null, values);
+			return true;
+		}
+		
 		private boolean addAppWidget(SQLiteDatabase db, ContentValues values,
 				TypedArray a, HashMap<String, Integer> attrMap,
 				PackageManager packageManager) {

@@ -19,6 +19,7 @@ package com.fruit.launcher;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources.NotFoundException;
 import android.content.res.TypedArray;
 import android.content.res.Resources;
@@ -1680,19 +1681,25 @@ public class CellLayout extends ViewGroup {
 		}
 
 		int count = getChildCount();
-		for (int i = 0; i < count; i++) {
-			View child = getChildAt(i);
-			if (child instanceof Folder || child.equals(ignoreView)) {
-				continue;
-			}
-			LayoutParams lp = (LayoutParams) child.getLayoutParams();
+		
+		try {
+			for (int i = 0; i < count; i++) {
+				View child = getChildAt(i);
+				if (child instanceof Folder || child.equals(ignoreView)) {
+					continue;
+				}
+				LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
-			for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan && x < xCount; x++) {
-				for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan
-						&& y < yCount; y++) {
-					occupied[x][y] = true;
+				for (int x = lp.cellX; x < lp.cellX + lp.cellHSpan && x < xCount; x++) {
+					for (int y = lp.cellY; y < lp.cellY + lp.cellVSpan
+							&& y < yCount; y++) {
+						occupied[x][y] = true;
+					}
 				}
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -2059,5 +2066,92 @@ public class CellLayout extends ViewGroup {
 		}
         
 		return str;
+	}
+	
+	int getShortcutCount(ShortcutInfo info){
+		int counter = 0;
+		
+		try {			
+			final String title = info.title.toString();
+			//final String className = info.intent.getComponent().getClassName();			
+			final String pkgName = Launcher.getPackageName(info);
+			final int count = getChildCount();
+			
+			for(int j = 0; j < count; j++){
+				final View v = getChildAt(j);
+				Object tag = v.getTag();
+				if (tag instanceof UserFolderInfo) {
+					final UserFolderInfo folderInfo = (UserFolderInfo)tag;
+					final int folder_size = folderInfo.getSize();
+					for (int k = 0;k<folder_size;k++){
+						final ShortcutInfo sInfo = (ShortcutInfo) folderInfo.contents.get(k);
+						if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION){	
+							//final String eachClassName = sInfo.intent.getComponent().getClassName();
+							final String eachPkgName = Launcher.getPackageName(sInfo);
+							if (title.equals(sInfo.title.toString()) && pkgName.equals(eachPkgName)) {
+								counter++;
+							} 
+						} 
+					}
+				} else if (tag instanceof ShortcutInfo){
+					final ShortcutInfo sInfo = (ShortcutInfo)tag;						
+					if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION) {
+						//final String eachClassName = sInfo.intent.getComponent().getClassName();
+						final String eachPkgName = Launcher.getPackageName(sInfo);
+						if (title.equals(sInfo.title.toString()) && pkgName.equals(eachPkgName)) {
+							counter++;
+						} 
+					}
+				} 
+			}
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		} 		
+			
+		return counter;	
+	}
+	
+	boolean hasShortcut(ShortcutInfo info, Intent data) {
+		try {			
+			final String title = info.title.toString();
+			final String className = Launcher.getClassName(info, data);			
+			final int count = getChildCount();
+			
+			for(int j = 0; j < count; j++){
+				final View v = getChildAt(j);
+				Object tag = v.getTag();
+				if (tag instanceof UserFolderInfo) {
+					final UserFolderInfo folderInfo = (UserFolderInfo)tag;
+					final int folder_size = folderInfo.getSize();
+					for (int k = 0;k<folder_size;k++){
+						final ShortcutInfo sInfo = (ShortcutInfo) folderInfo.contents.get(k);
+						if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION){	
+							final String eachClassName = Launcher.getClassName(sInfo);														
+							if (title.equals(sInfo.title.toString()) && className.equals(eachClassName)) {
+								return true;
+							} 
+						} 
+					}
+				} else if (tag instanceof ShortcutInfo){
+					final ShortcutInfo sInfo = (ShortcutInfo)tag;						
+					if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION) {
+						final String eachClassName = Launcher.getClassName(sInfo);
+						if (title.equals(sInfo.title.toString()) && className.equals(eachClassName)) {
+							return true;
+						} 
+					}
+				} 
+			}
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		} 
+		
+		
+		return false;
+
 	}
 }

@@ -406,6 +406,10 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 			e.printStackTrace();			
 		}
 	}
+	
+	public ShortcutInfo getDockButtonInfo(){
+		return mBackupDockButtonInfo;
+	}
 
 	public void setTag(ShortcutInfo info) {
 		// cancel previous state;

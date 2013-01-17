@@ -141,7 +141,7 @@ public class DeleteZone extends ImageView implements DropTarget,
 			ShortcutInfo info = (ShortcutInfo) item;
 			
 			if ((info.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT) 
-					|| (mLauncher.getWorkspace().isDuplicate(info.title.toString()))) {
+					|| (mLauncher.isDuplicate(info))) {
 				dragView.setmCallbackFlag(true); 
 				deleteFromWorkspace(source, item);
 				return;

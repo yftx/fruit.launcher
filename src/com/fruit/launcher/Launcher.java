@@ -1029,9 +1029,238 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
-
-	boolean hasShortcut(Context context, String title, Intent data) {
-		return (mModel.isDuplicate(context, title, data) && (mWorkspace.hasShortcut(data)||mDockBar.hasShortcut(data)));
+	public boolean isDuplicate(ShortcutInfo info){
+		if (info.itemType == Favorites.ITEM_TYPE_APPLICATION){
+			final int counter = mWorkspace.getShortcutCount(info)
+					+mDockBar.getShortcutCount(info);
+			
+			if (counter>1)
+				return true;
+			else
+				return false;
+		} else {
+			return false;
+		}
+	}
+	
+//	public boolean isDuplicate(String title){
+//		final int count = mWorkspace.getShortcutCount(title)
+//				+mDockBar.getShortcutCount(title);
+//		
+//		if (count>1)
+//			return true;
+//		else
+//			return false;
+//		
+//	}
+	
+//	boolean hasShortcut(Context context, String title, Intent data) {
+//		return (mModel.isDuplicate(context, title, data) && (mWorkspace.hasShortcut(data)||mDockBar.hasShortcut(data)));
+//	}
+	
+	boolean hasShortcut(Context context, ShortcutInfo info, Intent data) {
+		if (info.itemType==Favorites.ITEM_TYPE_APPLICATION)
+			return (mModel.hasShortcut(context, info, data) && (mWorkspace.hasShortcut(info, data)||mDockBar.hasShortcut(info, data)));
+		else 
+			return false;
+	}
+	
+	public static String getShortClassName(ShortcutInfo info, Intent data){
+		
+		String shortClassName = null;
+		
+		try {
+			shortClassName = info.intent.getComponent().getShortClassName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		if (shortClassName==null){
+			try {
+				shortClassName = data.getComponent().getShortClassName();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+		}
+		
+		if (shortClassName == null){
+			try {
+				Intent exIntent  = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);	
+				String uriString = null;
+				if (exIntent == null) {
+					uriString = data.toUri(0);
+				} else {
+					uriString = exIntent.toUri(0);
+				}
+				Intent intent  = Intent.parseUri(uriString, 0);
+				shortClassName = getClassName(intent);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}	
+		}
+		
+		return shortClassName;		
+		
+	}
+	
+	public static String getShortClassName(ShortcutInfo info){
+		String shortClassName = null;
+		
+		try {
+			shortClassName = info.intent.getComponent().getShortClassName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		return shortClassName;
+	}
+	
+	public static String getShortClassName(Intent data){
+		String shortClassName = null;
+		
+		try {
+			shortClassName = data.getComponent().getShortClassName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		return shortClassName;
+	}
+	
+	public static String getClassName(ShortcutInfo info, Intent data){
+		
+		String className = null;
+		
+		try {
+			className = info.intent.getComponent().getClassName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		if (className==null){
+			try {
+				className = data.getComponent().getClassName();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+		}
+		
+		if (className == null){
+			try {
+				Intent exIntent  = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);	
+				String uriString = null;
+				if (exIntent == null) {
+					uriString = data.toUri(0);
+				} else {
+					uriString = exIntent.toUri(0);
+				}
+				Intent intent  = Intent.parseUri(uriString, 0);
+				className = getClassName(intent);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}	
+		}
+		
+		return className;		
+		
+	}
+	
+	public static String getClassName(ShortcutInfo info){
+		String className = null;
+		
+		try {
+			className = info.intent.getComponent().getClassName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		return className;
+	}
+	
+	public static String getClassName(Intent data){
+		String className = null;
+		
+		try {
+			className = data.getComponent().getClassName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		return className;
+	}
+	
+	public static String getPackageName(ShortcutInfo info, Intent data){
+		String pkgName = null;
+		
+		try {
+			pkgName = info.intent.getComponent().getPackageName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		if (pkgName==null){
+			try {			
+				pkgName = data.getComponent().getPackageName();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+		}
+		
+		if (pkgName == null){
+			try {
+				Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);			
+				if (intent == null) {
+					pkgName = data.toUri(0);
+				} else {
+					pkgName = intent.toUri(0);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}	
+		}
+		
+		return pkgName;		
+	}
+	
+	public static String getPackageName(ShortcutInfo info){
+		String pkgName = null;
+		
+		try {
+			pkgName = info.intent.getComponent().getPackageName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		return pkgName;
+	}
+	
+	public static String getPackageName(Intent data){
+		String pkgName = null;
+		
+		try {
+			pkgName = data.getComponent().getPackageName();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		return pkgName;
 	}
 	
 	/**
@@ -1106,7 +1335,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		if (info != null) {
 			
-			if (hasShortcut(context, info.title.toString(), data)) {
+			if (hasShortcut(context, info, data)) {
 				Toast.makeText(this, getString(R.string.duplicate_shortcut),
 						Toast.LENGTH_SHORT).show();
 				return;
@@ -1165,7 +1394,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		if (info != null) {
 
-			if (hasShortcut(context, info.title.toString(), data)) {
+			if (hasShortcut(context, info, data)) {
 				Toast.makeText(this, getString(R.string.duplicate_shortcut),
 						Toast.LENGTH_SHORT).show();
 				return;
