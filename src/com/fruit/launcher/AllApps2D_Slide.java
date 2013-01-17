@@ -90,6 +90,7 @@ import java.util.Arrays;
 
 import com.fruit.launcher.LauncherSettings.Applications;
 import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
+import com.fruit.launcher.setting.SettingUtils;
 import com.fruit.launcher.theme.ThemeManager;
 import com.fruit.launcher.theme.ThemeUtils;
 
@@ -1183,7 +1184,7 @@ public class AllApps2D_Slide extends RelativeLayout implements AllAppsView,
 			if (info.itemType == Applications.APPS_TYPE_FOLDER
 					&& (dragItemInfo.itemType == Applications.APPS_TYPE_APP || dragItemInfo.itemType == Applications.APPS_TYPE_FOLDERAPP)) {
 				ApplicationFolderInfo lastSlideInfo = (ApplicationFolderInfo) info;
-				if (lastSlideInfo.getSize() >= 12
+				if (lastSlideInfo.getSize() >= SettingUtils.MAX_FOLDER_CHILD_COUNT
 						&& !lastSlideInfo.contents.contains(dragItemInfo)) {
 					Toast.makeText(mLauncher, R.string.folder_is_full,
 							Toast.LENGTH_SHORT).show();

@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.fruit.launcher.LauncherSettings.Applications;
 import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
+import com.fruit.launcher.setting.SettingUtils;
 
 /**
  * An icon that can appear on in the workspace representing an
@@ -254,7 +255,7 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 				}
 			}
 
-			if (mUserFolderInfo.getSize() >= 12
+			if (mUserFolderInfo.getSize() >= SettingUtils.MAX_FOLDER_CHILD_COUNT
 					&& !mUserFolderInfo.contents.contains(item)) {
 				Toast.makeText(mContext, R.string.folder_is_full,
 						Toast.LENGTH_SHORT).show();
