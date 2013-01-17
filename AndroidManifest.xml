@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fruit.launcher"
     android:sharedUserId="@string/sharedUserId"
-    android:versionCode="259"
-    android:versionName="2.0.9" >
+    android:versionCode="261"
+    android:versionName="2.1.0" >
 
     <original-package android:name="com.fruit.launcher" />
 

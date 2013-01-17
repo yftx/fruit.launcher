@@ -1699,18 +1699,18 @@ public class LauncherProvider extends ContentProvider {
 			values.put(Favorites.SPANX, 1);
 			values.put(Favorites.SPANY, 1);
 			
-			if (values.getAsString(Favorites.CELLX)=="1"){
+			if (values.getAsString(Favorites.CELLX).equals("1")){
 				values.put(Favorites._ID, "1");
 				values.put(Favorites.TITLE, r.getString(R.string.multimedias));
-			} else if(values.getAsString(Favorites.CELLX)=="2"){
+			} else if(values.getAsString(Favorites.CELLX).equals("2")){
 				values.put(Favorites._ID, "2");
 				values.put(Favorites.TITLE, r.getString(R.string.tools));
-			} else if(values.getAsString(Favorites.CELLX)=="3"){
+			} else if(values.getAsString(Favorites.CELLX).equals("3")){
 				values.put(Favorites._ID, "3");
 				values.put(Favorites.TITLE, r.getString(R.string.games));
 			}
 			
-			
+			//values.put(Favorites.TITLE, r.getString(R.string.folder_name));
 			db.insert(TABLE_FAVORITES, null, values);
 			return true;
 		}
