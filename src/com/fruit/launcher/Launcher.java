@@ -1031,7 +1031,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 
 	boolean hasShortcut(Context context, String title, Intent data) {
-		return (mModel.isDuplicate(context, title, data) && mWorkspace.hasShortcut(data));
+		return (mModel.isDuplicate(context, title, data) && (mWorkspace.hasShortcut(data)||mDockBar.hasShortcut(data)));
 	}
 	
 	/**
@@ -1051,19 +1051,22 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			final int pageIndex = ((CellLayout)mWorkspace.getChildAt(cellInfo.screen)).getPageIndex();
 			cellInfo.screen++;				
 			if (pageIndex==mWorkspace.getChildCount()-1) {
-				if (pageIndex<SettingUtils.MAX_SCREEN_COUNT){
+				if (pageIndex<SettingUtils.MAX_SCREEN_COUNT-1){
 					final int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.mScreenCount-1)+1; 
 					mWorkspace.addNewScreenByChildIndex(childIndex);
-				} else {				
-					cellInfo.screen=0;
+				} else {						
+					cellInfo.screen=mWorkspace.getChildIndexByPageIndex(0);
 				}
 			} 
-//			else if (cellInfo.screen==mWorkspace.getCurrentScreen()){
-//				
-//				Toast.makeText(this, getString(R.string.out_of_space),
-//						Toast.LENGTH_SHORT).show();
-//				return;
-//			}
+			
+			if (cellInfo.screen > mWorkspace.getChildCount()-1){
+				cellInfo.screen = 0;
+			}
+			if (cellInfo.screen==mWorkspace.getCurrentScreen()){
+				Toast.makeText(this, getString(R.string.out_of_space),
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
 		}
 
 		Log.d(TAG,"bindAppsAdded, added.cellinfo="+cellInfo.toString());
@@ -2482,7 +2485,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				return true;
 			} else {
 				// Normal Dock item, treat as normal ShortcutInfo
-				ShortcutInfo cellInfo = (ShortcutInfo) (dockButton).getTag();
+				ShortcutInfo cellInfo = (ShortcutInfo) (dockButton.getTag());
 				dockButton.setDockButtonInfo(cellInfo);
 				mDragController.startDrag(v, dockButton, cellInfo,
 						DragController.DRAG_ACTION_MOVE); // yfzhao,

@@ -935,15 +935,34 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		//body
 		try {
 			//String shortClassName = data.getComponent().getShortClassName();
-			String className = data.getComponent().getClassName();
+			final String className = data.getComponent().getClassName();
 			//String packageName = data.getComponent().getPackageName();
 		
 			for (int i = 0; i < getChildCount(); i++){
-				CellLayout cellLayout = (CellLayout) getChildAt(i);
+				final CellLayout cellLayout = (CellLayout) getChildAt(i);
 				for(int j = 0; j < cellLayout.getChildCount(); j++){
-					View v = cellLayout.getChildAt(j);
+					final View v = cellLayout.getChildAt(j);
 					Object tag = v.getTag();
-					if(tag instanceof ShortcutInfo){
+					if (tag instanceof UserFolderInfo) {
+						final UserFolderInfo folderInfo = (UserFolderInfo)tag;
+						final int folder_size = folderInfo.getSize();
+						for (int k = 0;k<folder_size;k++){
+							final ShortcutInfo sInfo = (ShortcutInfo) folderInfo.contents.get(k);
+							if (sInfo.itemType==Favorites.ITEM_TYPE_APPLICATION){
+								final Intent eachIntent = sInfo.intent;
+								//String eachShortClassName = eachIntent.getComponent().getShortClassName();
+								String eachClassName = eachIntent.getComponent().getClassName();
+								//String eachPackageName = eachIntent.getComponent().getPackageName();							
+								if (className.equals(eachClassName)) {
+									return true;
+								} 
+							} else if (sInfo.itemType == Favorites.ITEM_TYPE_SHORTCUT){
+								final Intent eachIntent = sInfo.intent;
+								final String dataString = eachIntent.getDataString();
+								
+							}
+						}
+					}else if(tag instanceof ShortcutInfo){
 						final Intent eachIntent = ((ShortcutInfo) tag).intent;
 						//String eachShortClassName = eachIntent.getComponent().getShortClassName();
 						String eachClassName = eachIntent.getComponent().getClassName();
@@ -952,7 +971,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 						if (className.equals(eachClassName)) {
 							return true;
 						} 
-					} 			
+					} 
 				}
 			}
 		
@@ -3623,6 +3642,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if (isViewSpan1x1(mDragInfo)){
 			cleanAfterDrop();
 			//checkAllCells();
+			
 			checkCurrentCellsByChildIndex(mCurrentScreen);
 			exchangeAllCells(mCurrentScreen);
 		} else {
@@ -3631,6 +3651,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		
 //		checkCurrentCellsByChildIndex(mCurrentScreen);
 //		exchangeAllCells(mCurrentScreen);
+	}
+	
+	public void finishDropCompletedExternal() {
+			cleanAfterDrop();
+			exchangeAllCells(mCurrentScreen);
 	}
 
 	/**
@@ -4191,6 +4216,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		
 		this.printChildCount();
 		
+		//update db
+		//exchangeDatabase(screenIndex, getChildCount()); //?? necessarily
+		
 		// When current screen be deleted, set new current screen to the first screen
 		if (childIndex == mCurrentScreen) {
 			int childIndex0 = getChildIndexByPageIndex(0);
@@ -4227,6 +4255,44 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		notifyScreenState();
 		
 		this.printChildCount();
+		
+		this.updateItemInfoAfterThumbnail(screenIndex,  getChildCount()-1);
+    }
+    
+    private boolean isPosBetween(int fromPos, int toPos, int pos){
+    	boolean result = true;
+    	
+    	if (fromPos>toPos){
+    		if(pos>=toPos && pos<=fromPos)
+    			result = true;
+    		else 
+    			result = false;
+    	} else if (fromPos<toPos){
+    		if(pos>=fromPos && pos<=toPos)
+    			result = true;
+    		else 
+    			result = false;
+    	} else {
+    		result = false;
+    	}
+    	
+    	return result;
+    }
+    
+    private void updateItemInfoAfterThumbnail(int fromPos, int toPos){
+    	final int count = getChildCount();
+    	for (int i=0;i<count;i++){
+    		final CellLayout layout = (CellLayout) getChildAt(i);
+    		final int pageIndex = layout.getPageIndex();
+    		if (isPosBetween(fromPos, toPos, pageIndex)) {
+        		final int cell_count = layout.getChildCount();
+        		for (int j = 0;j<cell_count;j++){
+        			final View v = layout.getChildAt(j);
+        			ItemInfo info = (ItemInfo) (v.getTag());
+        			info.screen = pageIndex;
+        		}
+    		}
+    	}
     }
     
     
@@ -4321,7 +4387,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 
 		//update db //update here
 		updateDatabaseAfterExchange(fromPos, toPos, child);
-
+		
 		// 3. Process current screen and home screen
 		 if (currentPageIndex == fromPos) {
 			 currentPageIndex = toPos;
@@ -4356,6 +4422,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 
 		this.printChildCount();
+		
+		//update item info
+		updateItemInfoAfterThumbnail(fromPos,toPos);
 	}
 
 	/**

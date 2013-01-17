@@ -312,6 +312,36 @@ public class DockBar extends ViewGroup {
 	// return mAllAppHomeBar.size();
 	// }
 
+	boolean hasShortcut(Intent data) {
+		//local variables
+		//boolean result = false;	
+		
+		//body
+		try {			
+			String className = data.getComponent().getClassName();
+		
+			for (int i = 0; i < getChildCount(); i++){
+				DockButton button = (DockButton) getChildAt(i);
+				if (!button.mIsEmpty){
+					final ShortcutInfo info = (ShortcutInfo) button.getTag();
+					final Intent eachIntent = info.intent;	
+					String eachClassName = eachIntent.getComponent().getClassName();
+					if (className.equals(eachClassName)) {
+						return true;
+					} 
+				}
+			}
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		} 
+		
+		
+		return false;
+
+	}
+	
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		// TODO Auto-generated method stub

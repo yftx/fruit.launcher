@@ -3,6 +3,8 @@ package com.fruit.launcher;
 import com.fruit.launcher.LauncherSettings.Applications;
 import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
+import com.fruit.launcher.setting.SettingUtils;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -55,6 +57,7 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 		mCueNumber = new CueNumber();
 		mCueNumber.mbNumber = false;
 		mCueNumber.mMonitorType = LauncherMonitor.MONITOR_NONE;
+		
 	}
 
 	@Override
@@ -312,14 +315,33 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 
 		// TODO Auto-generated method stub
 		if (!success) {
-			setImageBitmap(((ShortcutInfo) mBackupDockButtonInfo).getIcon(mLauncher.getIconCache()));
-			mIsEmpty = false;
-			setTag(mBackupDockButtonInfo);
-			LauncherModel
-					.updateItemInDatabase(mLauncher, mBackupDockButtonInfo);
+//			if (target instanceof FolderIcon){
+//				FolderIcon fi = (FolderIcon) target;
+//				UserFolderInfo info = (UserFolderInfo) (fi.getTag());
+//				if (info.getSize()>=SettingUtils.MAX_FOLDER_CHILD_COUNT){
+//					onDropCompletedInternal();
+//				} else {
+//					onDropCompletedInternal();
+//				}
+//			} else {
+				onDropCompletedInternal();
+//			}
 		}
 		mBackupDockButtonInfo = null;
 		mLauncher.getWorkspace().finishDropCompleted();
+	}
+
+	/**
+	 * 
+	 */
+	private void onDropCompletedInternal() {
+		mBackupDockButtonInfo.cellY = -1;
+		mBackupDockButtonInfo.screen = -1;
+		setImageBitmap(((ShortcutInfo) mBackupDockButtonInfo).getIcon(mLauncher.getIconCache()));
+		mIsEmpty = false;
+		setTag(mBackupDockButtonInfo);
+		LauncherModel
+				.updateItemInDatabase(mLauncher, mBackupDockButtonInfo);
 	}
 
 	@Override
@@ -376,7 +398,13 @@ public class DockButton extends ImageView implements DropTarget, DragSource,
 	}
 
 	public void setDockButtonInfo(ShortcutInfo info) {
-		mBackupDockButtonInfo = info;
+		try {
+			mBackupDockButtonInfo = (ShortcutInfo) info.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			mBackupDockButtonInfo=info;
+			e.printStackTrace();			
+		}
 	}
 
 	public void setTag(ShortcutInfo info) {
