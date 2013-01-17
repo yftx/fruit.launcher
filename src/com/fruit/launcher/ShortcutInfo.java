@@ -29,7 +29,7 @@ import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-class ShortcutInfo extends ItemInfo {
+class ShortcutInfo extends ItemInfo implements Cloneable {
 
 	/**
 	 * The application name.
@@ -184,5 +184,14 @@ class ShortcutInfo extends ItemInfo {
 			Log.d(tag, "title=\"" + info.title + " icon=" + info.mIcon
 					+ " customIcon=" + info.customIcon);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
 	}
 }
