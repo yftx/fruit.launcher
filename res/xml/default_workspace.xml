@@ -22,8 +22,16 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
+        launcher:x="0"
+        launcher:y="0" />
+        
+    <userfolder    
+        launcher:container="-100"            
+        launcher:screen="5"
+        launcher:spanX="1"
+        launcher:spanY="1"
         launcher:x="1"
-        launcher:y="2" />
+        launcher:y="0" />
         
     <userfolder    
         launcher:container="-100"            
@@ -31,15 +39,7 @@
         launcher:spanX="1"
         launcher:spanY="1"
         launcher:x="2"
-        launcher:y="2" />
-        
-    <userfolder    
-        launcher:container="-100"            
-        launcher:screen="5"
-        launcher:spanX="1"
-        launcher:spanY="1"
-        launcher:x="3"
-        launcher:y="2" />
+        launcher:y="0" />
     
     <appwidget
         launcher:className="vollo.weatherforcast.widget.Widget_2x4_style1"
@@ -313,7 +313,7 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="0"
+        launcher:x="3"
         launcher:y="0" />
         
     <favorite
@@ -323,8 +323,8 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="1"
-        launcher:y="0" />
+        launcher:x="0"
+        launcher:y="1" />
         
     <favorite
         launcher:className="vollo.weatherforcast.AppEntryActivity"
@@ -333,8 +333,8 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="2"
-        launcher:y="0" />
+        launcher:x="1"
+        launcher:y="1" />
         
     <favorite
         launcher:className="com.vollo.Market.welcomeActivity"
@@ -343,8 +343,8 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="3"
-        launcher:y="0" />
+        launcher:x="2"
+        launcher:y="1" />
 
     <!-- row No. 2 -->
     <favorite
@@ -354,7 +354,7 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="0"
+        launcher:x="3"
         launcher:y="1" />
         
     <favorite
@@ -364,8 +364,8 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="1"
-        launcher:y="1" />
+        launcher:x="0"
+        launcher:y="2" />
         
     <favorite
         launcher:className="com.skymobi.appstore.activity.LogoActivity"
@@ -374,8 +374,8 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="2"
-        launcher:y="1" />
+        launcher:x="1"
+        launcher:y="2" />
         
     <favorite
         launcher:className="com.chaozh.iReader.ui.activity.WelcomeActivity"
@@ -384,8 +384,8 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="3"
-        launcher:y="1" />
+        launcher:x="2"
+        launcher:y="2" />
 
     <!-- row No. 3 -->
     <favorite
@@ -395,7 +395,7 @@
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
-        launcher:x="0"
+        launcher:x="3"
         launcher:y="2" />
     
 

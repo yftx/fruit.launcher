@@ -1699,13 +1699,13 @@ public class LauncherProvider extends ContentProvider {
 			values.put(Favorites.SPANX, 1);
 			values.put(Favorites.SPANY, 1);
 			
-			if (values.getAsString(Favorites.CELLX).equals("1")){
+			if (values.getAsString(Favorites.CELLX).equals("0")){
 				values.put(Favorites._ID, "1");
 				values.put(Favorites.TITLE, r.getString(R.string.multimedias));
-			} else if(values.getAsString(Favorites.CELLX).equals("2")){
+			} else if(values.getAsString(Favorites.CELLX).equals("1")){
 				values.put(Favorites._ID, "2");
 				values.put(Favorites.TITLE, r.getString(R.string.tools));
-			} else if(values.getAsString(Favorites.CELLX).equals("3")){
+			} else if(values.getAsString(Favorites.CELLX).equals("2")){
 				values.put(Favorites._ID, "3");
 				values.put(Favorites.TITLE, r.getString(R.string.games));
 			}
