@@ -2961,6 +2961,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		clearVacantCache();
 		
 		if (source instanceof Workspace) {
+			ItemInfo info = (ItemInfo)dragInfo;
+			info.screen = ((CellLayout)getChildAt(mCurrentScreen)).getPageIndex();
 			initOriLayoutAndLastLayout(dragInfo);			
 		} else if (source instanceof DockButton) {
 			ItemInfo info = (ItemInfo)dragInfo;
