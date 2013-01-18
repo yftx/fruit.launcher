@@ -305,6 +305,7 @@ public class FolderIcon extends BubbleTextView implements DropTarget {
 				mLauncher.removeItemFromFolder(item);
 			}
 			item.orderId = mUserFolderInfo.getSize();
+			item.screen = mUserFolderInfo.screen;
 			mUserFolderInfo.add(item);
 			LauncherModel.addOrMoveItemInDatabase(mLauncher, item,
 					mUserFolderInfo.id, 0, 0, 0);

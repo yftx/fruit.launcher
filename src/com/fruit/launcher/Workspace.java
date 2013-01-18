@@ -2755,6 +2755,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			final CellLayout cellLayout = getCurrentDropLayout();//(CellLayout)getChildAt(mCurrentScreen);//
 
 			if (source != this) {
+				if (cellLayout.isFull()){
+					dragView.setmCallbackFlag(false);
+					return;
+				}
 				onDropExternal(x - xOffset, y - yOffset, dragInfo, cellLayout);
 			} else {
 				// Move internally
@@ -2898,15 +2902,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		ShortcutInfo shortcutInfo = (ShortcutInfo) dragInfo;
 
 		View shortcutView = mLauncher.createShortcut(R.layout.application,
-				(ViewGroup) getChildAt(shortcutInfo.screen), shortcutInfo);
+				(ViewGroup) getChildAt(getChildIndexByPageIndex(shortcutInfo.screen)), shortcutInfo);
 		if (shortcutView == null)
 			return;
 
-		int index = mScroller.isFinished() ? mCurrentScreen : mNextScreen;//??
-		CellLayout current = (CellLayout) getChildAt(index);
+		//int childIndex = mScroller.isFinished() ? mCurrentScreen : mNextScreen;//??
+		CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
 		if (current == null)
 			return;
-		shortcutInfo.screen = index;
+		//shortcutInfo.screen = childIndex;
 		current.pointToCellExact(x, y, newCell);
 
 		shortcutInfo.cellX = newCell[0];
@@ -2951,29 +2955,37 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	@Override
 	public void onDragEnter(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
-		Log.d(TAG, "drag sequence,workspace onDragEnter");
-		clearVacantCache();
-
-		if(oriLayout==null){
-			this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
-			lastLayout = oriLayout;
-		}
 		
-		// 1. from workspace, pass
+		Log.d(TAG, "drag sequence,workspace onDragEnter");
+		
+		clearVacantCache();
+		
 		if (source instanceof Workspace) {
-			// if (!isViewSpan1x1(dragInfo))
-			// return;
-			return;
+			initOriLayoutAndLastLayout(dragInfo);			
 		} else if (source instanceof DockButton) {
+			ItemInfo info = (ItemInfo)dragInfo;
+			info.screen = ((CellLayout)getChildAt(mCurrentScreen)).getPageIndex();
+			initOriLayoutAndLastLayout(dragInfo);
 			reGenDragView(source, x, y, xOffset, yOffset, dragView, dragInfo);
-
 		} else if (source instanceof UserFolder) {
+			ItemInfo info = (ItemInfo)dragInfo;
+			info.screen = ((CellLayout)getChildAt(mCurrentScreen)).getPageIndex();
+			initOriLayoutAndLastLayout(dragInfo);
 			reGenDragView(source, x, y, xOffset, yOffset, dragView, dragInfo);
-
 		} else {
 			// tbd
 		}
 
+	}
+
+	/**
+	 * @param dragInfo
+	 */
+	private void initOriLayoutAndLastLayout(Object dragInfo) {
+		if(oriLayout==null){
+			this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
+			lastLayout = oriLayout;
+		}
 	}
 
 	void updateDragInfo(CellLayout.CellInfo cellInfo, final int[] newCell,
@@ -3041,7 +3053,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 						Log.d(TAG, "start2drag,mIsNeedPreMove: from-to="
 								+ mFromPos + "-" + mToPos+",current="+current.toString());
 						
-						if (!isUserFolder(child))
+						//if (!isUserFolder(child))
 							startDragAndUpdate(current, overCell);
 						
 //						newIndex=current.numberToIndex(mToPos);
@@ -3058,7 +3070,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 //							}
 //						}
 					} else {
-						if (!isUserFolder(child))
+						//if (!isUserFolder(child))
 							startDragAndUpdate(current, overCell);
 					}
 				} else {
@@ -3143,11 +3155,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	}
 	
 	private boolean isUserFolder(View child){
-		if (child!=null && child instanceof FolderIcon) {
-			return true;
-		} else {
-			return false;
-		}
+//		if (child!=null && child instanceof FolderIcon) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+		return false;
 	}
 	
 	@Override
@@ -3178,10 +3191,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if (mItemAnimate.animateEnd /*&& isOneSesseion*/) {
 			//isOneSesseion = false;
 			CellLayout current = (CellLayout) getChildAt(mCurrentScreen);
-			if(oriLayout==null){
-				this.setOriLayout((CellLayout)getChildAt(getChildIndexByPageIndex(((ItemInfo) dragInfo).screen)));
-				lastLayout = oriLayout;
-			}
+			initOriLayoutAndLastLayout(dragInfo);
 			if (lastLayout.getPageIndex() != current.getPageIndex()) {
 				final int childIndex = getChildIndexByPageIndex(lastLayout.getPageIndex());
 				checkCurrentCellsByChildIndex(childIndex);
