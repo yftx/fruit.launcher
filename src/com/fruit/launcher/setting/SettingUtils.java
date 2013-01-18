@@ -24,7 +24,7 @@ public class SettingUtils {
     public static final int MAX_FOLDER_CHILD_COUNT = 12;
 	public static final int MIN_SCREEN_COUNT = 5;
 	public static final int MAX_SCREEN_COUNT = 9;
-	public static final int DEFAULT_SCREEN_COUNT = 7;
+	public static final int DEFAULT_SCREEN_COUNT = 6;
 	public static final int DEFAULT_HOME_SCREEN_INDEX = 2;
 
 	public static int mScreenCount = DEFAULT_SCREEN_COUNT;
