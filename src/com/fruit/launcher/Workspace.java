@@ -3657,7 +3657,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			if (mDragInfo != null && mDragInfo.cell != null) {
 				if (oriLayout != null)
 					oriLayout.onDropAborted(mDragInfo.cell);
-			}
+			}			
+				
+			final int oriScreen = (oriLayout!=null)?getChildIndexByPageIndex(oriLayout.getPageIndex()):mCurrentScreen;		
+			 		
+			checkCurrentCellsByChildIndex(oriScreen);
+			exchangeAllCells(oriScreen);
+			
 			// if (target instanceof DeleteZone){
 			// final View cell = mDragInfo.cell;
 			// int newCell[] = new int[2];
