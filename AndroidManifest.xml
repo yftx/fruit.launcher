@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fruit.launcher"
     android:sharedUserId="@string/sharedUserId"
-    android:versionCode="272"
-    android:versionName="2.1.1" >
+    android:versionCode="284"
+    android:versionName="2.1.2" >
 
     <original-package android:name="com.fruit.launcher" />
 
@@ -99,6 +99,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--         <activity -->
+<!--             android:name="com.fruit.launcher.NotificationActivity"             -->
+<!--             android:launchMode="singleInstance" -->
+<!--             <intent-filter> -->
+<!--                 <action android:name="android.intent.action.MAIN" /> -->
+<!--                 <category android:name="android.intent.category.HOME" /> -->
+<!--                 <category android:name="android.intent.category.DEFAULT" /> -->
+<!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
+<!--             </intent-filter> -->
+<!--         </activity> -->
         <activity
             android:name="com.fruit.launcher.WallpaperChooser"
             android:finishOnCloseSystemDialogs="true"

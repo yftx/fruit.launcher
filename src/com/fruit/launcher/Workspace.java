@@ -2735,14 +2735,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	public void onDrop(DragSource source, int x, int y, int xOffset,
 			int yOffset, DragView dragView, Object dragInfo) {
 		
-//		int timer = 0;
-//		final int TIME_OUT = 10000;
-//		
-//		while (!mItemAnimate.animateEnd) {
-//			timer++;
-//			if (timer > TIME_OUT)
-//				break;
-//		}
+		int timer = 0;
+		final int TIME_OUT = 10000;
+		
+		while (!mItemAnimate.animateEnd) {
+			timer++;
+			if (timer > TIME_OUT)
+				break;
+		}
 		
 		if (!mItemAnimate.animateEnd) 
 			mItemAnimate.stop();
@@ -3015,6 +3015,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		if(lp!=null){
 			lp.cellX = newCell[0];
 			lp.cellY = newCell[1];
+			lp.isDragging = true;
 		}
 
 		Log.d(TAG, "914,updateDragInfo,sceen=" + screen + "lp=" + lp);
@@ -3201,7 +3202,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 				
 				lastLayout = current;
 
-				if (current.isFull()) {
+				if (current.isFull()&&current!=oriLayout) {
 					return;
 				} else {
 					mIsNeedPreMove = true;
@@ -3216,7 +3217,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 						}
 					}
 				} else {
-					if (current.isFull()) {						
+					if (current.isFull()&&current!=oriLayout) {						
 						return;
 					} else {
 						//mIsNeedPreMove = false;
@@ -3452,7 +3453,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		cellLayout.onDropChild(view, xy);
 //		CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view
 //				.getLayoutParams();
-
+        xy=null;
 		LauncherModel.addOrMoveItemInDatabase(mLauncher, info,
 				Favorites.CONTAINER_DESKTOP,
 				cellLayout.getPageIndex()/* mCurrentScreen */, cellInfo.cellX,
@@ -4598,13 +4599,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			if (only1x1) {				
 				if (itemInfo!=null) {
 					if((itemInfo.cellX >=0 && itemInfo.cellY >= 0) && (itemInfo.spanX == 1 || itemInfo.spanY == 1)){
-						if (getSeqNo(index, itemInfo.cellX, itemInfo.cellY) != itemInfo
-								.getSeqNo()) {
+						/*if (getSeqNo(index, itemInfo.cellX, itemInfo.cellY) != itemInfo
+								.getSeqNo())*/ {
 							updateCellByScreenIndex(child, current.getPageIndex()/* index */);
 						}
 					} else if ((lp!=null) && ((lp.cellX >= 0 && lp.cellY >= 0) && (lp.cellHSpan == 1 && lp.cellVSpan == 1))) {
-						if (getSeqNo(index, lp.cellX, lp.cellY) != itemInfo
-								.getSeqNo()) {
+						/*if (getSeqNo(index, lp.cellX, lp.cellY) != itemInfo
+								.getSeqNo())*/ {
 							updateCellByScreenIndex(child, current.getPageIndex()/* index */);
 						}
 					}
@@ -4673,6 +4674,26 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		final CellLayout layout = (CellLayout) getChildAt(childIndex);
 		int[] xy = new int[2];
 		final int cell_count = layout.getChildCount();
+//		ArrayList<String> titles = new ArrayList<String>(16);
+//		final int db_count = LauncherModel.queryDBCountByPageIndex(mLauncher, layout.getPageIndex(), titles);
+//		
+//		if (cell_count<db_count){
+//			for (int i=0;i<db_count;i++){
+//				final View v= getChildAt(i);
+//				final ItemInfo info = (ItemInfo)v.getTag();
+//				if(info.itemType==Favorites.ITEM_TYPE_APPLICATION){
+//					final ShortcutInfo sInfo = (ShortcutInfo)info;
+//					LauncherModel.queryDBItemInfo(sInfo.title.toString());
+//					
+//				}
+//					
+//				
+//			}
+//			final View child = this.
+//			layout.addView(child);
+//		} else if (cell_count>db_count){
+//			
+//		}
 		
 		int[] checks = new int[ItemInfo.COL*ItemInfo.ROW];
 		for (int i = 0; i < layout.getMaxCount(); i++) {

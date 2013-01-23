@@ -885,7 +885,7 @@ public class LauncherProvider extends ContentProvider {
 			
 			List<ResolveInfo> data = reorderApplist(apps);
 			int position = 0;
-			int position2 = 0;
+	        int position2 = 12;
 			int relativePosition = 0;
 
 			final String selfPkgName = mContext.getPackageName();
@@ -1005,6 +1005,8 @@ public class LauncherProvider extends ContentProvider {
 					} else {
 						position2++;
 					}
+					
+					values2 = null;
 				}
 			}
 		}

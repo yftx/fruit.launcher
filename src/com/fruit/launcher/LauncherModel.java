@@ -131,6 +131,13 @@ public class LauncherModel extends BroadcastReceiver {
 		public void updateAllApps();
 
 		public void removeThemePackage(ArrayList<String> apps);
+		
+		public int findEmptyCell(int[] xy);
+		
+		public void setWorkspaceLoading(boolean loading);
+
+        public void bindAppsAddedAfterInstall(ArrayList<ApplicationInfo> apps);
+
 	}
 
 	LauncherModel(LauncherApplication app, IconCache iconCache) {
@@ -324,6 +331,34 @@ public class LauncherModel extends BroadcastReceiver {
 		cr.delete(Favorites.CONTENT_URI, Favorites.CONTAINER + "=" + info.id,
 				null);
 	}
+	
+	static int queryDBCountByPageIndex(Context context, int pageIndex, ArrayList<String> titleArray){
+		int result = 0;
+		
+		final ContentResolver cr = context.getContentResolver();
+		
+		final Cursor cursor = cr.query(Favorites.CONTENT_URI,
+				new String[] {Favorites.TITLE, Favorites.SCREEN, Favorites.CONTAINER}, "screen=? and container=?",
+				new String[] {Integer.toString(pageIndex), Integer.toString(Favorites.CONTAINER_DESKTOP)}, null);
+
+		
+		try {
+			if (cursor!=null){
+				result = cursor.getCount();
+				while(cursor.moveToNext()){
+					final String title = cursor.getString(0);
+					titleArray.add(title);
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 
 	/**
 	 * Set this as the current Launcher activity object for the loader.
@@ -516,7 +551,7 @@ public class LauncherModel extends BroadcastReceiver {
 					mHandler.post(new Runnable() {
 						@Override
 						public void run() {
-							callbacks.bindAppsAdded(addedFinal);
+                            callbacks.bindAppsAddedAfterInstall(addedFinal);
 							callbacks.addPackage(addedFinal);
 						}
 					});
@@ -556,6 +591,13 @@ public class LauncherModel extends BroadcastReceiver {
 					});
 				}
 			} else {
+				final Callbacks callbacks = mCallbacks != null ? mCallbacks
+						.get() : null;
+				if (callbacks == null) {
+					Log.w(TAG,
+							"Nobody to tell about the new app.  Launcher is probably loading.");
+					//return;
+				}
 				if (Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE
 						.equals(action)) {
 					String packages[] = intent
@@ -575,7 +617,8 @@ public class LauncherModel extends BroadcastReceiver {
 					synchronized (this) {
 						mAllAppsLoaded = mWorkspaceLoaded = false;
 					}
-					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE");
+					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE");		
+					callbacks.setWorkspaceLoading(true);
 					startLoader(context, false);
 				} else if (Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE
 						.equals(action)) {
@@ -588,6 +631,7 @@ public class LauncherModel extends BroadcastReceiver {
 						mAllAppsLoaded = mWorkspaceLoaded = false;
 					}
 					Log.d(TAG, "onReceive(), startLoader,false, Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE");
+					callbacks.setWorkspaceLoading(true);
 					startLoader(context, false);
 				}
 			}
@@ -1741,11 +1785,13 @@ public class LauncherModel extends BroadcastReceiver {
 
 				final ContentResolver cr = context.getContentResolver();
 				int count = removePackageFromSlideData(context, cr);
-				int addCount = addPackageToSlideData(context, cr, count);
+				
+				final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+				
+				int addCount = addPackageToSlideData(context, cr, count, callbacks);
 				Log.e(TAG, "updateSlideData, count = " + count + ", addCount="
 						+ addCount);
-
-				final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+				
 				mHandler.post(new Runnable() {
 					@Override
 					public void run() {
@@ -1765,7 +1811,7 @@ public class LauncherModel extends BroadcastReceiver {
 			}
 
 			int addPackageToSlideData(Context context, ContentResolver cr,
-					int count) {
+					int count, final Callbacks callbacks) {
 				final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 				int lastPos = 0;
 				int add = 0;
@@ -1838,6 +1884,73 @@ public class LauncherModel extends BroadcastReceiver {
 											+ ", position=" + (lastPos));
 							lastPos++;
 							add++;
+							
+							//add to favor		
+							ArrayList<ApplicationInfo> addedApp = new ArrayList<ApplicationInfo>();
+							//ApplicationInfo aInfo = new ApplicationInfo();
+							addedApp.add(new ApplicationInfo(info, mIconCache));
+							//callbacks.bindAppsAdded(addedApp);							
+							if (addedApp != null && callbacks!=null) {		
+								final ArrayList<ApplicationInfo> addedFinal = addedApp;
+								mHandler.post(new Runnable() {
+									@Override
+									public void run() {
+										callbacks.bindAppsAdded(addedFinal);
+										//callbacks.addPackage(addedApp);
+									}
+								});								
+							}							
+							addedApp=null;
+							
+//							int [] xy = new int[2];
+//							final int screen = callbacks.findEmptyCell(xy);
+//							Log.d(TAG, "addPackageToSlideData, screen="+screen+",xy="+xy[0]+","+xy[1]);
+//							
+//							if (screen>=0){
+//								ContentValues values2 = new ContentValues();
+//								if ((info.activityInfo.name.indexOf(appInfo.packageName)) >= 0) {
+//									intentInfo = "#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component="
+//											+ appInfo.packageName
+//											+ "/"
+//											+ info.activityInfo.name
+//													.substring(info.activityInfo.name
+//															.indexOf(appInfo.packageName)
+//															+ appInfo.packageName.length())
+//											+ ";end";
+//	
+//								} else {
+//									intentInfo = "#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component="
+//											+ appInfo.packageName
+//											+ "/"
+//											+ info.activityInfo.name + ";end";
+//								}
+//								values2.put(BaseLauncherColumns.TITLE,
+//										info.loadLabel(packageManager).toString());
+//	
+//								values2.put(BaseLauncherColumns.INTENT, intentInfo);
+//								values2.put(Favorites.CONTAINER,
+//										Favorites.CONTAINER_DESKTOP);
+//								
+//	
+//								values2.put(Favorites.SCREEN, screen);
+//								values2.put(Favorites.CELLX, xy[0]);
+//								values2.put(Favorites.CELLY, xy[1]);
+//								
+//								values2.put(Favorites.SPANX, 1);
+//								values2.put(Favorites.SPANY, 1);
+//								values2.put(BaseLauncherColumns.ITEM_TYPE,
+//										BaseLauncherColumns.ITEM_TYPE_APPLICATION);							
+//								values2.put(BaseLauncherColumns.ICON_TYPE,
+//										BaseLauncherColumns.ICON_TYPE_RESOURCE);
+//								
+//								cr.insert(Favorites.CONTENT_URI_NO_NOTIFICATION, values2); 								
+//								
+//								values2 = null;									
+//							}
+//							
+//							xy = null;
+							
+							//
 						}
 						c.close();
 					}
@@ -2531,6 +2644,20 @@ public class LauncherModel extends BroadcastReceiver {
 //				mAllAppsList.modified);
 		
 		return str;		
+	}
+
+	/**
+	 * @return the mWorkspaceLoaded
+	 */
+	public boolean ismWorkspaceLoaded() {
+		return mWorkspaceLoaded;
+	}
+
+	/**
+	 * @param mWorkspaceLoaded the mWorkspaceLoaded to set
+	 */
+	public void setmWorkspaceLoaded(boolean mWorkspaceLoaded) {
+		this.mWorkspaceLoaded = mWorkspaceLoaded;
 	}
 	
 }

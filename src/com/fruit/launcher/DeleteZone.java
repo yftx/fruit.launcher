@@ -29,6 +29,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
 import android.view.animation.Animation;
@@ -47,6 +48,8 @@ import com.fruit.launcher.widgets.LockScreenUtil;
 public class DeleteZone extends ImageView implements DropTarget,
 		DragController.DragListener {
 
+	private static final String TAG = "DeleteZone";
+	
 	private static final int ORIENTATION_HORIZONTAL = 1;
 	private static final int TRANSITION_DURATION = 250;
 	private static final int ANIMATION_DURATION = 200;
@@ -113,6 +116,8 @@ public class DeleteZone extends ImageView implements DropTarget,
 			int yOffset, DragView dragView, Object dragInfo) {
 		final ItemInfo item = (ItemInfo) dragInfo;
 
+		Log.d(TAG,"deletezone:ondrop: item="+item);
+		
 		if (item.container == -1) {
 			String string = getContext().getString(R.string.out_of_space);
 			string += String.valueOf(item.container);

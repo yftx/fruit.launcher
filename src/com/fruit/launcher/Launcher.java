@@ -243,7 +243,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	private boolean mWorkspaceLoading = true;
 	private boolean mIsBinding = true;
-	private boolean mIsCreate = false;
+	public boolean mIsCreate = false;
+	//private boolean isFirstTime = false;
 	
 	private boolean mPaused = true;
 	private boolean mRestoring;
@@ -705,7 +706,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		if (mWorkspace != null) {
-			mWorkspace.sendBroadcast4Widget();
+			//mWorkspace.sendBroadcast4Widget();
 		}
 
 		if (mRestoring) {//??
@@ -715,6 +716,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			mRestoring = false;
 		}
 		
+		//syncWorkspaceAndDB();
+		
 		if (!mWorkspaceLoading && mIsBinding)
 			mIsBinding = false;
 		//if (!mWorkspaceLoading)
@@ -723,14 +726,15 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onPause() {
+		
 		mIsBinding = false;
 		Log.d(TAG,"launcherseq,onPause,mRestoring="+mRestoring+",mPaused="+mPaused+",mIsBinding="+mIsBinding);
 		super.onPause();
 		mPaused = true;
 
-		if (mWorkspace != null) {
-			mWorkspace.setCurrentScreen(getCurrentWorkspaceScreen());
-		}
+//		if (mWorkspace != null) {
+//			mWorkspace.setCurrentScreen(getCurrentWorkspaceScreen());
+//		}
 
 		mDragController.cancelDrag();
 	}
@@ -1263,6 +1267,34 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		return pkgName;
 	}
 	
+	@Override
+	public int findEmptyCell(int[] xy){
+		int screen = mWorkspace.getCurrentScreen();
+		while (!findSingleSlotEx2(screen, xy)) {
+			final int pageIndex = ((CellLayout)mWorkspace.getChildAt(screen)).getPageIndex();
+			screen++;				
+			if (pageIndex==mWorkspace.getChildCount()-1) {
+				if (pageIndex<SettingUtils.MAX_SCREEN_COUNT-1){
+					int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.getChildCount()-1)+1; 
+					mWorkspace.addNewScreenByChildIndex(childIndex);
+				} else {						
+					screen=mWorkspace.getChildIndexByPageIndex(0);
+				}
+			} 
+			
+			if (screen > mWorkspace.getChildCount()-1){
+				screen = 0;
+			}
+			if (screen==mWorkspace.getCurrentScreen()){
+				Toast.makeText(this, getString(R.string.out_of_space),
+						Toast.LENGTH_SHORT).show();
+				screen = -1;
+			}
+		}
+		
+		return screen;
+	}
+	
 	/**
 	 * Add an application shortcut to the workspace.
 	 * 
@@ -1275,14 +1307,16 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			CellLayout.CellInfo cellInfo) {
 		//CellLayout layout = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
 		//cellInfo.screen = layout.getPageIndex();//SettingUtils.MIN_SCREEN_COUNT-1;//mWorkspace.getCurrentScreen();
+		boolean checkAgain = false;
 		cellInfo.screen = mWorkspace.getCurrentScreen();
+		
 		while (!findSingleSlotEx(cellInfo)) {
 			final int pageIndex = ((CellLayout)mWorkspace.getChildAt(cellInfo.screen)).getPageIndex();
 			cellInfo.screen++;				
 			if (pageIndex==mWorkspace.getChildCount()-1) {
 				if (pageIndex<SettingUtils.MAX_SCREEN_COUNT-1){
-					final int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.mScreenCount-1)+1; 
-					mWorkspace.addNewScreenByChildIndex(childIndex);
+                    int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.getChildCount()-1)+1; 
+                    mWorkspace.addNewScreenByChildIndex(childIndex);
 				} else {						
 					cellInfo.screen=mWorkspace.getChildIndexByPageIndex(0);
 				}
@@ -1292,9 +1326,34 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				cellInfo.screen = 0;
 			}
 			if (cellInfo.screen==mWorkspace.getCurrentScreen()){
-				Toast.makeText(this, getString(R.string.out_of_space),
-						Toast.LENGTH_SHORT).show();
-				return;
+//				Toast.makeText(this, getString(R.string.out_of_space),
+//						Toast.LENGTH_SHORT).show();
+//				return;
+				checkAgain = true;
+			}
+		}
+		
+		if(checkAgain){
+			while (!findSingleSlotEx(cellInfo)) {
+				final int pageIndex = ((CellLayout)mWorkspace.getChildAt(cellInfo.screen)).getPageIndex();
+				cellInfo.screen++;				
+				if (pageIndex==mWorkspace.getChildCount()-1) {
+					if (pageIndex<SettingUtils.MAX_SCREEN_COUNT-1){
+	                    int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.getChildCount()-1)+1; 
+	                    mWorkspace.addNewScreenByChildIndex(childIndex);
+					} else {						
+						cellInfo.screen=mWorkspace.getChildIndexByPageIndex(0);
+					}
+				} 
+				
+				if (cellInfo.screen > mWorkspace.getChildCount()-1){
+					cellInfo.screen = 0;
+				}
+				if (cellInfo.screen==mWorkspace.getCurrentScreen()){
+					Toast.makeText(this, getString(R.string.out_of_space),
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 			}
 		}
 
@@ -1615,7 +1674,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 
 		super.onNewIntent(intent);
-
+		//setIntent(intent);
+		
 		// Close the menu
 		if (Intent.ACTION_MAIN.equals(intent.getAction())) {
 			// also will cancel mWaitingForResult.
@@ -1632,8 +1692,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 				if (!mWorkspace.isDefaultScreenShowing()) {
 					//mWorkspace.moveToDefaultScreen(false);
 					//mWorkspace.moveToCurrentScreen();
-					//mWorkspace.moveToScreen(mWorkspace.getChildIndexByPageIndex(SettingUtils.mHomeScreenIndex));	
-					mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
+					//mWorkspace.moveToScreen(mWorkspace.getChildIndexByPageIndex(SettingUtils.mHomeScreenIndex));
+				    //if (!isFirstTime){
+				    	mWorkspace.moveToScreenByPageIndex(SettingUtils.mHomeScreenIndex);
+				    //}
+				    //isFirstTime=false;
 					 //CellLayout next = (CellLayout)mWorkspace.getChildAt(mWorkspace.getCurrentScreen());
 					 //mScreenIndicator.setCurrentScreen(next.getPageIndex());
 					// mScreenIndicator.setCurrentScreen(mWorkspace.getCurrentScreen());
@@ -1900,6 +1963,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		return mWorkspaceLoading || mWaitingForResult || mIsBinding;
 	}
 
+	@Override
+	public void setWorkspaceLoading(boolean loading){
+		mWorkspaceLoading = loading;
+	}
+	
 	private void addItems() {
 		closeAllApps(true);
 		showAddDialog(mMenuAddInfo);
@@ -2091,6 +2159,19 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		mFolders.put(info.id, info);
 
 		return info;
+	}
+	
+	boolean findSingleSlotEx2(int screen, int[] xy) {
+		final CellLayout layout = (CellLayout)mWorkspace.getChildAt(screen);
+		Log.d(TAG, "findSingleSlotEx, "+layout.toString());
+		final int number = layout.findFirstVacantCell();
+		Log.d(TAG, "findSingleSlotEx, find 1st number = "+number);
+		if(number < 0){
+			return false;
+		} else {
+			layout.numberToCell(number, xy);
+			return true;
+		}		
 	}
 	
 	private boolean findSingleSlotEx(CellLayout.CellInfo cellInfo) {
@@ -3539,7 +3620,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		//if (mWorkspace.getChildCount() < SettingUtils.mScreenCount){
 			final int count = SettingUtils.mScreenCount-mWorkspace.mScreenCount;
 			for (int i=0;i<count;i++){
-				int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.mScreenCount-1)+1; 
+                int childIndex = mWorkspace.getChildIndexByPageIndex(mWorkspace.getChildCount()-1)+1; 
 				mWorkspace.addNewScreenByChildIndex(childIndex);
 			}
 		//}
@@ -3804,7 +3885,26 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	public void bindAppsAdded(ArrayList<ApplicationInfo> apps) {
 		removeDialog(DIALOG_CREATE_SHORTCUT);
 		//mWorkspace.addItems(apps);//add shortcut here		
+		mAllAppsGrid.addApps(apps);
+	}
 		
+	/**
+	 * A package was installed.
+	 *
+	 * Implementation of the method from LauncherModel.Callbacks.
+	 */
+	@Override
+	public void bindAppsAddedAfterInstall(ArrayList<ApplicationInfo> apps) {
+		removeDialog(DIALOG_CREATE_SHORTCUT);
+		//mWorkspace.addItems(apps);//add shortcut here		
+		autoAddAppAfterNewInstall(apps);		
+		mAllAppsGrid.addApps(apps);
+	}
+
+	/**
+	 * @param apps
+	 */
+	private void autoAddAppAfterNewInstall(ArrayList<ApplicationInfo> apps) {
 		final int appCount = apps.size();
 		Log.d(TAG,"bindAppsAdded, added.size="+appCount);
 		for (int k = 0; k < appCount; k++) {
@@ -3815,8 +3915,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			cellInfo = null;
 			//onActivityResult(REQUEST_PICK_APPLICATION, Activity.RESULT_OK, app.intent);
 		}
-		
-		mAllAppsGrid.addApps(apps);
 	}
 
 	/**
@@ -4115,5 +4213,15 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		// TODO Auto-generated method stub
 		super.onRestart();
 		Log.d(TAG,"launcherseq,onRestart");
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		//isFirstTime = true;
+		// TODO Auto-generated method stub
+		super.onStop();
 	}
 }
