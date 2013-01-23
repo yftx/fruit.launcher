@@ -282,8 +282,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
 		
 //		if (savedInstanceState!=null){
-//			finish();
-//			return;
+//			savedInstanceState=null;
+////			finish();
+////			return;
 //		}
 		
 		mIsBinding = true;
@@ -333,17 +334,17 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		lockAllApps();
 
-		mSavedState = savedInstanceState;
+		mSavedState = null;//savedInstanceState;
 		restoreState(mSavedState);
 
 		if (PROFILE_STARTUP) {
 			android.os.Debug.stopMethodTracing();
 		}
 
-		if (savedInstanceState!=null)
-			isDuplicateCreate++;
+		//if (savedInstanceState!=null)
+		//	isDuplicateCreate++;
 		
-		if (!mRestoring && isDuplicateCreate<2) {
+		if (!mRestoring /*&& isDuplicateCreate<2*/) {
 			Log.d(TAG, "onCreate:!mRestoring:startLoader,true");
 			mModel.startLoader(this, true);
 		}
@@ -1719,7 +1720,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// Do not call super here
-		mSavedInstanceState = savedInstanceState;
+		mSavedInstanceState = null;//savedInstanceState;
 	}
 
 	@Override
