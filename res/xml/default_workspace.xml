@@ -325,17 +325,17 @@
         launcher:spanY="1"
         launcher:x="0"
         launcher:y="1" />
-        
+    
     <favorite
-        launcher:className="vollo.weatherforcast.AppEntryActivity"
+        launcher:className="com.vollo.cloud.vCloudLoadingActivity"
         launcher:container="-100"
-        launcher:packageName="vollo.weatherforcast"
+        launcher:packageName="com.vollo.cloud"
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
         launcher:x="1"
-        launcher:y="1" />
-        
+        launcher:y="1" /> 
+
     <favorite
         launcher:className="com.vollo.Market.welcomeActivity"
         launcher:container="-100"
@@ -502,16 +502,16 @@
         launcher:spanY="1"
         launcher:x="3"
         launcher:y="1" /> 
-    
+        
     <favorite
-        launcher:className="com.vollo.cloud.vCloudLoadingActivity"
+        launcher:className="vollo.weatherforcast.AppEntryActivity"
         launcher:container="2"
-        launcher:packageName="com.vollo.cloud"
+        launcher:packageName="vollo.weatherforcast"
         launcher:screen="5"
         launcher:spanX="1"
         launcher:spanY="1"
         launcher:x="0"
-        launcher:y="2" /> 
+        launcher:y="2" />
         
 <!--     folder 3 -->
     <favorite

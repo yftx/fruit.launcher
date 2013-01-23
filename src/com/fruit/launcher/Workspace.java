@@ -333,13 +333,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 		setStaticTransformationsEnabled(true);
 
-		for (int i = 0; i < mScreenCount; i++) {
-			View cellLayout = mInflater
-					.inflate(R.layout.workspace_screen, null);
-			addView(cellLayout);
-			CellLayout current = (CellLayout) cellLayout;
-			current.setPageIndex(i);
-		}
+		initCellLayout();
 
 		mItemAnimate = new ItemAnimate(context); // yfzhao;
 		mStartDrag = false;
@@ -368,6 +362,28 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		mCueNumber.mMonitorType = LauncherMonitor.MONITOR_NONE;
 	}
 
+	/**
+	 * 
+	 */
+	public void initCellLayout() {	
+		for (int i = 0; i < mScreenCount; i++) {
+			View cellLayout = mInflater
+					.inflate(R.layout.workspace_screen, null);
+			addView(cellLayout);
+			CellLayout current = (CellLayout) cellLayout;
+			current.setPageIndex(i);
+		}
+	}
+
+	public void resetCellLayout() {	
+		Log.d(TAG, "resetCellLayout");
+		for (int i = 0; i < mScreenCount; i++) {
+			CellLayout layout = (CellLayout) getChildAt(i);
+			layout.removeAllViews();
+			layout.setPageIndex(i);
+		}
+	}
+	
 	public void setDrawCueNumberState(boolean draw, int type) {
 		if (draw) {
 			if (mCueBitmap == null) {

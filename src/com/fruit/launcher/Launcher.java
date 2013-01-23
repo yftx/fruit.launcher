@@ -250,7 +250,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	private boolean mRestoring;
 	private boolean mWaitingForResult;
 	private boolean mIsFullScreen = false;
-
+	private int isDuplicateCreate = 0;
+	
 	private Bundle mSavedInstanceState;
 
 	private LauncherModel mModel;
@@ -339,7 +340,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			android.os.Debug.stopMethodTracing();
 		}
 
-		if (!mRestoring) {
+		if (savedInstanceState!=null)
+			isDuplicateCreate++;
+		
+		if (!mRestoring && isDuplicateCreate<2) {
 			Log.d(TAG, "onCreate:!mRestoring:startLoader,true");
 			mModel.startLoader(this, true);
 		}
@@ -3564,9 +3568,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		mIsBinding = true;
 		mWorkspaceLoading = true;
         
-		final Workspace workspace = mWorkspace;
+		mWorkspace.resetCellLayout();
+		
+		final Workspace workspace = mWorkspace;		
 		int count = workspace.getChildCount();
 
+		
 		for (int i = 0; i < count; i++) {
 			// Use removeAllViewsInLayout() to avoid an extra requestLayout()
 			// and invalidate().
