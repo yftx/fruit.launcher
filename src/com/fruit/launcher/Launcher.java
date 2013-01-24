@@ -281,11 +281,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		
 		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
 		
-		//if (savedInstanceState!=null){
-		//	savedInstanceState=null;
-////			finish();
-////			return;
-		//}
+		if (savedInstanceState!=null){
+			savedInstanceState=null;
+			finish();
+			return;
+		}
 		
 		mIsBinding = true;
 		mIsCreate = true;
