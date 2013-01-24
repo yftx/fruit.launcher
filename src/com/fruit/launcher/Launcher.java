@@ -281,12 +281,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		
 		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
 		
-//		if (savedInstanceState!=null){
-//			savedInstanceState=null;
-//			finish();
-//			Process.killProcess(Process.myPid());
-//			return;
-//		}
+		if (savedInstanceState!=null){
+			savedInstanceState=null;
+			finish();
+			Process.killProcess(Process.myPid());
+			return;
+		}
 		
 		mIsBinding = true;
 		mIsCreate = true;
@@ -1675,8 +1675,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			return;
 		
 		// check flag to exit Launcher
-		if (intent.getIntExtra("exitFlag", 0) != 1) {
-			//return;
+		if (intent.getIntExtra("exitFlag", 0) == 1) {
 			finish();
 			Process.killProcess(Process.myPid());
 		}
@@ -1780,46 +1779,46 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
-	@Override
-	public void onDestroy() {
-		Log.d(TAG,"launcherseq,onDestroy");
-		
-		super.onDestroy();
-
-		try {
-			mAppWidgetHost.stopListening();
-		} catch (NullPointerException ex) {
-			Log.w(TAG,
-					"problem while stopping AppWidgetHost during Launcher destruction",
-					ex);
-		}
-
-		TextKeyListener.getInstance().release();
-
-		mThemeMgr.stopListener();
-		mModel.stopLoader();
-
-		mPhoneMonitor.removeAllCallback();
-		mMssMonitor.removeAllCallback();
-
-		unbindDesktopItems();
-
-		getSharedPreferences(SettingUtils.LAUNCHER_SETTINGS_NAME, 0)
-				.unregisterOnSharedPreferenceChangeListener(mSPChangeListener);
-
-		getContentResolver().unregisterContentObserver(mWidgetObserver);
-
-		unregisterReceiver(mCloseSystemDialogsReceiver);
-		unregisterReceiver(mScreenConfigReceiver);
-//		unregisterReceiver(mSCReceiver);
-	}
-
 //	@Override
 //	public void onDestroy() {
 //		Log.d(TAG,"launcherseq,onDestroy");
 //		
 //		super.onDestroy();
+//
+//		try {
+//			mAppWidgetHost.stopListening();
+//		} catch (NullPointerException ex) {
+//			Log.w(TAG,
+//					"problem while stopping AppWidgetHost during Launcher destruction",
+//					ex);
+//		}
+//
+//		TextKeyListener.getInstance().release();
+//
+//		mThemeMgr.stopListener();
+//		mModel.stopLoader();
+//
+//		mPhoneMonitor.removeAllCallback();
+//		mMssMonitor.removeAllCallback();
+//
+//		unbindDesktopItems();
+//
+//		getSharedPreferences(SettingUtils.LAUNCHER_SETTINGS_NAME, 0)
+//				.unregisterOnSharedPreferenceChangeListener(mSPChangeListener);
+//
+//		getContentResolver().unregisterContentObserver(mWidgetObserver);
+//
+//		unregisterReceiver(mCloseSystemDialogsReceiver);
+//		unregisterReceiver(mScreenConfigReceiver);
+////		unregisterReceiver(mSCReceiver);
 //	}
+
+	@Override
+	public void onDestroy() {
+		Log.d(TAG,"launcherseq,onDestroy");
+		
+		super.onDestroy();
+	}
 	
 	@Override
 	public void startActivityForResult(Intent intent, int requestCode) {
