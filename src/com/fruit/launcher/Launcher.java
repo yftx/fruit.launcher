@@ -284,7 +284,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		if (savedInstanceState!=null){
 			savedInstanceState=null;
 			finish();
-			Process.killProcess(Process.myPid());
+			//Process.killProcess(Process.myPid());
 			return;
 		}
 		
