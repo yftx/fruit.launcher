@@ -281,11 +281,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		
 		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
 		
-//		if (savedInstanceState!=null){
-//			savedInstanceState=null;
+		//if (savedInstanceState!=null){
+		//	savedInstanceState=null;
 ////			finish();
 ////			return;
-//		}
+		//}
 		
 		mIsBinding = true;
 		mIsCreate = true;
@@ -334,7 +334,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		lockAllApps();
 
-		mSavedState = null;//savedInstanceState;
+		mSavedState = savedInstanceState;
 		restoreState(mSavedState);
 
 		if (PROFILE_STARTUP) {
@@ -344,7 +344,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		//if (savedInstanceState!=null)
 		//	isDuplicateCreate++;
 		
-		if (!mRestoring /*&& isDuplicateCreate<2*/) {
+		if (!mRestoring && savedInstanceState==null) {
 			Log.d(TAG, "onCreate:!mRestoring:startLoader,true");
 			mModel.startLoader(this, true);
 		}
@@ -1720,7 +1720,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// Do not call super here
-		mSavedInstanceState = null;//savedInstanceState;
+		mSavedInstanceState = savedInstanceState;
 	}
 
 	@Override
@@ -1777,39 +1777,47 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
+//	@Override
+//	public void onDestroy() {
+//		Log.d(TAG,"launcherseq,onDestroy");
+//		
+//		super.onDestroy();
+//
+//		try {
+//			mAppWidgetHost.stopListening();
+//		} catch (NullPointerException ex) {
+//			Log.w(TAG,
+//					"problem while stopping AppWidgetHost during Launcher destruction",
+//					ex);
+//		}
+//
+//		TextKeyListener.getInstance().release();
+//
+//		mThemeMgr.stopListener();
+//		mModel.stopLoader();
+//
+//		mPhoneMonitor.removeAllCallback();
+//		mMssMonitor.removeAllCallback();
+//
+//		unbindDesktopItems();
+//
+//		getSharedPreferences(SettingUtils.LAUNCHER_SETTINGS_NAME, 0)
+//				.unregisterOnSharedPreferenceChangeListener(mSPChangeListener);
+//
+//		getContentResolver().unregisterContentObserver(mWidgetObserver);
+//
+//		unregisterReceiver(mCloseSystemDialogsReceiver);
+//		unregisterReceiver(mScreenConfigReceiver);
+////		unregisterReceiver(mSCReceiver);
+//	}
+
 	@Override
 	public void onDestroy() {
 		Log.d(TAG,"launcherseq,onDestroy");
+		
 		super.onDestroy();
-
-		try {
-			mAppWidgetHost.stopListening();
-		} catch (NullPointerException ex) {
-			Log.w(TAG,
-					"problem while stopping AppWidgetHost during Launcher destruction",
-					ex);
-		}
-
-		TextKeyListener.getInstance().release();
-
-		mThemeMgr.stopListener();
-		mModel.stopLoader();
-
-		mPhoneMonitor.removeAllCallback();
-		mMssMonitor.removeAllCallback();
-
-		unbindDesktopItems();
-
-		getSharedPreferences(SettingUtils.LAUNCHER_SETTINGS_NAME, 0)
-				.unregisterOnSharedPreferenceChangeListener(mSPChangeListener);
-
-		getContentResolver().unregisterContentObserver(mWidgetObserver);
-
-		unregisterReceiver(mCloseSystemDialogsReceiver);
-		unregisterReceiver(mScreenConfigReceiver);
-//		unregisterReceiver(mSCReceiver);
 	}
-
+	
 	@Override
 	public void startActivityForResult(Intent intent, int requestCode) {
 		if (requestCode >= 0) {
