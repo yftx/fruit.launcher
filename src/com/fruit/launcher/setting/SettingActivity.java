@@ -66,16 +66,16 @@ public class SettingActivity extends PreferenceActivity implements
 	}
 
 	private String getVersionName() {
-		String versionName = null;
+		StringBuffer versionName = new StringBuffer();
 		try {
-			versionName = getString(R.string.current_desk_version)
-					+ getPackageManager().getPackageInfo(getPackageName(), 0).versionName 
-					+ "."
-					+ getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-		} catch (NameNotFoundException e) {
+			versionName.append(getString(R.string.current_desk_version));
+			versionName.append(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			versionName.append(".");
+			versionName.append(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return versionName;
+		return versionName.toString();
 	}
 
 	@Override
@@ -88,7 +88,6 @@ public class SettingActivity extends PreferenceActivity implements
 			return false;
 		}
 
-		Intent intent;
 		if (key.equals(KEY_THEME)) {
 			callOtherActivity("com.fruit.action.THEME");
         } else if (key.equals(KEY_MANAGE_APPS)) {        	
@@ -100,9 +99,9 @@ public class SettingActivity extends PreferenceActivity implements
 		} else if (key.equals(KEY_APPS_INFO)) {
 			showAppsInfo();
 		} else if (key.equals(KEY_ABOUT)) {
-
+			//only show summary
 		} else if (key.equals(KEY_EXIT)) {
-			intent = new Intent(this, Launcher.class);
+			Intent intent = new Intent(this, Launcher.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			intent.putExtra("exitFlag", 1);
 			startActivity(intent);
@@ -114,12 +113,12 @@ public class SettingActivity extends PreferenceActivity implements
 	
 	private String getAppsInfoString(){
 
-		String str = new String("");
+		StringBuffer str = new StringBuffer();
+		 
+		str.append(Launcher.mDumpString);
+		str.append("\n");
 		
-		str+=Launcher.mDumpString;
-		str+="\n";
-		
-		return str;
+		return str.toString();
 	}
 	/**
 	 * 
@@ -147,27 +146,27 @@ public class SettingActivity extends PreferenceActivity implements
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 	
-		String str = new String("");
+		StringBuffer str = new StringBuffer();
 		
-		str+=getString(R.string.width)+getString(R.string.colon)+String.valueOf(metrics.widthPixels)+getString(R.string.px)+"\n";
-		str+=getString(R.string.height)+getString(R.string.colon)+String.valueOf(metrics.heightPixels)+getString(R.string.px)+"\n";
-		//str+="------------------------"+"\n";
-		str+=getString(R.string.density)+getString(R.string.colon)+String.valueOf(metrics.density)+"\n";
-		str+=getString(R.string.dpi)+getString(R.string.colon)+String.valueOf(metrics.densityDpi);
+		str.append(getString(R.string.width)+getString(R.string.colon)+String.valueOf(metrics.widthPixels)+getString(R.string.px)+"\n");
+		str.append(getString(R.string.height)+getString(R.string.colon)+String.valueOf(metrics.heightPixels)+getString(R.string.px)+"\n");
+		//str.append("------------------------"+"\n";
+		str.append(getString(R.string.density)+getString(R.string.colon)+String.valueOf(metrics.density)+"\n");
+		str.append(getString(R.string.dpi)+getString(R.string.colon)+String.valueOf(metrics.densityDpi));
 		if(metrics.densityDpi==DisplayMetrics.DENSITY_DEFAULT){
-			str+="("+getString(R.string.medium)+")";			
+			str.append("("+getString(R.string.medium)+")");			
 		}else if(metrics.densityDpi<DisplayMetrics.DENSITY_DEFAULT){
-			str+="("+getString(R.string.low)+")";		
+			str.append("("+getString(R.string.low)+")");		
 		}else {
 			if(metrics.densityDpi<=DisplayMetrics.DENSITY_HIGH){
-				str+="("+getString(R.string.high)+")";		
+				str.append("("+getString(R.string.high)+")");		
 			}else{
-				str+="("+getString(R.string.exhigh)+")";
+				str.append("("+getString(R.string.exhigh)+")");
 			}			
 		}
-		str+="\n";
+		str.append("\n");
 		
-		return str;
+		return str.toString();
 	}
 	
 	/**
@@ -217,8 +216,7 @@ public class SettingActivity extends PreferenceActivity implements
 	 * @throws NotFoundException
 	 */
 	private void callOtherActivity(String action) throws NotFoundException {
-		Intent intent;
-		intent = new Intent();		
+		Intent intent = new Intent();		
 		intent.setAction(action);
 		try {
 			startActivity(intent);

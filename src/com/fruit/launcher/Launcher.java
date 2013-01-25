@@ -4078,15 +4078,15 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	}
 	
 	public String dumpState2String(){
-		String str = new String("");
+		StringBuffer str = new StringBuffer();
 		mWorkspace.setAllCount();
-		str += getString(R.string.desktopiconnumber) + getString(R.string.colon) + (mWorkspace.getBubbleCount() + mDockBar.getDockCount()) +"\n";//mDesktopItems.size()
-		str += getString(R.string.desktopwidgetnumber) + getString(R.string.colon) + mWorkspace.getWidgetCount()+"\n";
-		str += getString(R.string.folder_name) + getString(R.string.colon) + mFolders.size()+"\n";
-		str += getString(R.string.all_apps_button_label) + getString(R.string.colon);
-		str += mModel.dumpState2String(getText(R.string.application_name).toString());
+		str.append(getString(R.string.desktopiconnumber) + getString(R.string.colon) + (mWorkspace.getBubbleCount() + mDockBar.getDockCount()) +"\n");//mDesktopItems.size()
+		str.append(getString(R.string.desktopwidgetnumber) + getString(R.string.colon) + mWorkspace.getWidgetCount()+"\n");
+		str.append(getString(R.string.folder_name) + getString(R.string.colon) + mFolders.size()+"\n");
+		str.append(getString(R.string.all_apps_button_label) + getString(R.string.colon));
+		str.append(mModel.dumpState2String(getText(R.string.application_name).toString()));
 		
-		return str;		
+		return str.toString();		
 	}
 
 	final void switchScreenMode(boolean bIsFullScreen) {

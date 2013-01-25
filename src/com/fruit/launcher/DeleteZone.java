@@ -119,8 +119,10 @@ public class DeleteZone extends ImageView implements DropTarget,
 		Log.d(TAG,"deletezone:ondrop: item="+item);
 		
 		if (item.container == -1) {
-			String string = getContext().getString(R.string.out_of_space);
-			string += String.valueOf(item.container);
+			StringBuffer str = new StringBuffer();
+			str.append(getContext().getString(R.string.out_of_space));
+			str.append(String.valueOf(item.container));
+			String string = str.toString();
 			Toast.makeText(getContext(), string, Toast.LENGTH_SHORT).show();
 			return;
 		}

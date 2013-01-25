@@ -169,17 +169,17 @@ class ItemInfo {
 
 	@Override
 	public String toString() {
-	    String str = null;
+	    StringBuffer str = new StringBuffer();
 	    
 		try {
-			str = "Item(id=" + this.id + ",type=" + this.itemType + ")"
-					+",("+this.cellX+","+this.cellY+"," +this.spanX+","+this.spanY+")";
+			str.append("Item(id=" + this.id + ",type=" + this.itemType + ")"
+					+",("+this.cellX+","+this.cellY+"," +this.spanX+","+this.spanY+")");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return str;
+		return str.toString();
 	}
 
 	/**

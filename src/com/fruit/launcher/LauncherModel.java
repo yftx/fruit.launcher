@@ -2632,18 +2632,18 @@ public class LauncherModel extends BroadcastReceiver {
 	}
 	
 	public String dumpState2String(String appName){
-		String str = new String("");
+		StringBuffer str = new StringBuffer();
 		
-		str+=ApplicationInfo.dumpApplicationInfoList2String(TAG, "All apps: ",
-				mAllAppsList.data, appName);
-//		str+=ApplicationInfo.dumpApplicationInfoList2String(TAG, "Added apps: ",
+		str.append(ApplicationInfo.dumpApplicationInfoList2String(TAG, "All apps: ",
+				mAllAppsList.data, appName));
+//		str.append(ApplicationInfo.dumpApplicationInfoList2String(TAG, "Added apps: ",
 //				mAllAppsList.added);
-//		str+=ApplicationInfo.dumpApplicationInfoList2String(TAG, "Removed apps: ",
+//		str.append(ApplicationInfo.dumpApplicationInfoList2String(TAG, "Removed apps: ",
 //				mAllAppsList.removed);
-//		str+=ApplicationInfo.dumpApplicationInfoList2String(TAG, "Modified apps: ",
+//		str.append(ApplicationInfo.dumpApplicationInfoList2String(TAG, "Modified apps: ",
 //				mAllAppsList.modified);
 		
-		return str;		
+		return str.toString();		
 	}
 
 	/**

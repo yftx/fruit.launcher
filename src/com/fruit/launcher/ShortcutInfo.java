@@ -156,20 +156,20 @@ class ShortcutInfo extends ItemInfo implements Cloneable {
 
 	@Override
 	public String toString() {
-		String str = null;
+		StringBuffer str = new StringBuffer();
         
 		try {
-			str = "ShortcutInfo(title=" + title.toString() + "),type="+itemType
+			str.append("ShortcutInfo(title=" + title.toString() + "),type="+itemType
 					+",screen="+this.screen+",seqno="+this.seqNo
 					+",cell("+this.cellX+","+this.cellY+","+this.spanX+","+this.spanY+"),"
-					+",container="+this.container;
+					+",container="+this.container);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
 		}
         
-		return str;
+		return str.toString();
 	}
 
 	@Override

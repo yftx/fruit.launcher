@@ -48,7 +48,7 @@ public class BubbleTextView extends TextView {
 	private float mPaddingH;
 	private float mPaddingV;
 
-	private Launcher mLauncher;
+	//private Launcher mLauncher;
 
 	private boolean mIsDrawShadow = false;
 
@@ -154,11 +154,11 @@ public class BubbleTextView extends TextView {
 
 		}
 
-		if (false) {
-			Paint debugPaint = new Paint();
-			debugPaint.setColor(0xffcccc00);
-			canvas.drawRect(rect, debugPaint);
-		}
+//		if (false) {
+//			Paint debugPaint = new Paint();
+//			debugPaint.setColor(0xffcccc00);
+//			canvas.drawRect(rect, debugPaint);
+//		}
 
 		super.draw(canvas);
 	}
@@ -201,18 +201,18 @@ public class BubbleTextView extends TextView {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		String str = null;
+		StringBuffer str = new StringBuffer();
 		
 		try {
-			str = super.toString()+":"+this.getText().toString()
+			str.append(super.toString()+":"+this.getText().toString()
 					+","+((ItemInfo)this.getTag()).toString()
-					+","+this.getLayoutParams().toString();
+					+","+this.getLayoutParams().toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return str;
+		return str.toString();
 		
 	}
 }

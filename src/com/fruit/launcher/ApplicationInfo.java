@@ -113,17 +113,17 @@ class ApplicationInfo extends ItemInfo {
 	
 	public static String dumpApplicationInfoList2String(String tag, String label,
 			ArrayList<ApplicationInfo> list, String appName){
-		String str = new String("");
+		StringBuffer str = new StringBuffer();
 		int i = 1;
 				
-		str += (list.size()-1)+"\n";//remove fruit.launcher itself
+		str.append((list.size()-1)+"\n");//remove fruit.launcher itself
 		for (ApplicationInfo info : list) {	
 			if (!info.title.toString().equals(appName)){
-				str += "  " + i +"   "+ info.title  +"\n";
+				str.append("  " + i +"   "+ info.title  +"\n");
 				i++;
 			}
 		}
-		return str;		
+		return str.toString();		
 	}
 
 	public ShortcutInfo makeShortcut() {

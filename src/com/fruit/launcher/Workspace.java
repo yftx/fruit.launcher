@@ -1132,20 +1132,20 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 			return;
 		
 		try {
-			String packageNames = new String("");
+			StringBuffer str = new StringBuffer();
 			Intent intent = new Intent(ACTION_SCROLLER_SCREEN);
 
 			for (int i = 0; i < layout.getChildCount(); i++) {
-				View child = layout.getChildAt(i);
+				final View child = layout.getChildAt(i);
 				if (child instanceof LauncherAppWidgetHostView) {
-					packageNames += ((LauncherAppWidgetHostView) child)
-							.getAppWidgetInfo().provider.getPackageName() + ":";
+					str.append(((LauncherAppWidgetHostView) child)
+							.getAppWidgetInfo().provider.getPackageName() + ":");
 				}
-				// packageNames+=":";
 			}
-
+			
+			String packageNames = str.toString();
+			
 			if (!packageNames.equals(new String(""))) {
-				// intent.putExtra("test", "testValue");
 				intent.putExtra("packageNames", packageNames);
 
 				// this.getContext().sendBroadcast(intent);

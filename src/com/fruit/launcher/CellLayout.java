@@ -1806,22 +1806,21 @@ public class CellLayout extends ViewGroup {
 		 */
 		@Override
 		public String toString() {
-		    String str = null;
+		    StringBuffer str = new StringBuffer();
             
-			// TODO Auto-generated method stub
-		    
+			// TODO Auto-generated method stub		    
 			try {
-				str = "cell(" + this.cellX + "," + this.cellY + ","
-						+ this.cellHSpan + "," + this.cellVSpan + ")";
-				str += "pos(" + this.x + "," + this.y + "," + this.width + ","
-						+ this.height + ")";
-				str += ", isDragging=" + this.isDragging;
+				str.append("cell(" + this.cellX + "," + this.cellY + ","
+						+ this.cellHSpan + "," + this.cellVSpan + ")");
+				str.append("pos(" + this.x + "," + this.y + "," + this.width + ","
+						+ this.height + ")");
+				str.append(", isDragging=" + this.isDragging);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			return str;// super.toString();
+			return str.toString();// super.toString();
 		}
 	}
 
@@ -2056,16 +2055,16 @@ public class CellLayout extends ViewGroup {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		String str = null;
+		StringBuffer str = new StringBuffer();
 
         try {
-			str = ("Have item childs="+getChildCount()+",pageIndex="+getPageIndex());
+			str.append("Have item childs="+getChildCount()+",pageIndex="+getPageIndex());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
-		return str;
+		return str.toString();
 	}
 	
 	int getShortcutCount(ShortcutInfo info){
