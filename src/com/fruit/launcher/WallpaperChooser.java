@@ -41,6 +41,8 @@ import java.util.ArrayList;
 public class WallpaperChooser extends Activity implements
 		AdapterView.OnItemSelectedListener, OnClickListener {
 
+	private static final int MAX_WALLPAPER_COUNT = 24;
+
 	private static final String TAG = "Launcher.WallpaperChooser";
 
 	private Gallery mGallery;
@@ -74,8 +76,8 @@ public class WallpaperChooser extends Activity implements
 	}
 
 	private void findWallpapers() {
-		mThumbs = new ArrayList<Integer>(24);
-		mImages = new ArrayList<Integer>(24);
+		mThumbs = new ArrayList<Integer>(MAX_WALLPAPER_COUNT);
+		mImages = new ArrayList<Integer>(MAX_WALLPAPER_COUNT);
 
 		// Context.getPackageName() may return the "original" package name,
 		// com.fruit.launcher; Resources needs the real package name,
