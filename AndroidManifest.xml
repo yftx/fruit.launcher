@@ -21,7 +21,7 @@
     package="com.fruit.launcher"
     android:sharedUserId="@string/sharedUserId"
     android:versionCode="292"
-    android:versionName="2.1.2" >
+    android:versionName="2.1.3" >
 
     <original-package android:name="com.fruit.launcher" />
 

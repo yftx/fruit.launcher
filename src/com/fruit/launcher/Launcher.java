@@ -278,6 +278,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
 		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
 		
@@ -291,8 +292,6 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		mIsBinding = true;
 		mIsCreate = true;
 		
-		super.onCreate(savedInstanceState);
-
 		mCtx = this;
 
 		LauncherApplication app = ((LauncherApplication) getApplication());
@@ -700,9 +699,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	}
 
 	@Override
-	protected void onResume() {
-		Log.d(TAG,"launcherseq,onResume,mRestoring="+mRestoring+",mIsBinding="+mIsBinding);
+	protected void onResume() {		
 		super.onResume();
+        
+        Log.d(TAG,"launcherseq,onResume,mRestoring="+mRestoring+",mIsBinding="+mIsBinding);
 
 		mPaused = false;
 		mDockBarEnable = true;
@@ -731,11 +731,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	}
 
 	@Override
-	protected void onPause() {
-		
-		mIsBinding = false;
+	protected void onPause() {		
+		super.onPause();        
 		Log.d(TAG,"launcherseq,onPause,mRestoring="+mRestoring+",mPaused="+mPaused+",mIsBinding="+mIsBinding);
-		super.onPause();
+		mIsBinding = false;
 		mPaused = true;
 
 //		if (mWorkspace != null) {
@@ -774,10 +773,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean onKeyDown(int keyCode, KeyEvent event) {		        
 		if (isWorkspaceLocked())
 			return true;
-		
+
 		boolean handled = super.onKeyDown(keyCode, event);
 		if (!handled && acceptFilter() && keyCode != KeyEvent.KEYCODE_ENTER) {
 			boolean gotKey = TextKeyListener.getInstance().onKeyDown(
@@ -1814,10 +1813,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 //	}
 
 	@Override
-	public void onDestroy() {
-		Log.d(TAG,"launcherseq,onDestroy");
-		
+	public void onDestroy() {		
 		super.onDestroy();
+        
+		Log.d(TAG,"launcherseq,onDestroy");
 	}
 	
 	@Override
@@ -1851,12 +1850,12 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
 		if (isWorkspaceLocked()) {
 			return false;
 		}
-
-		super.onCreateOptionsMenu(menu);
-
+        
 		menu.add(MENU_GROUP_ADD, MENU_ADD, 0, R.string.menu_add)
 				.setIcon(R.drawable.ic_menu_add)
 				.setAlphabeticShortcut('A');
@@ -4216,9 +4215,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 */
 	@Override
 	protected void onStart() {
-		mIsBinding = true;
 		// TODO Auto-generated method stub
 		super.onStart();
+        
+		mIsBinding = true;
 		Log.d(TAG,"launcherseq,onStart");
 	}
 
@@ -4227,9 +4227,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 */
 	@Override
 	protected void onRestart() {
-		mIsBinding = true;
 		// TODO Auto-generated method stub
 		super.onRestart();
+        
+		mIsBinding = true;
 		Log.d(TAG,"launcherseq,onRestart");
 	}
 
@@ -4238,8 +4239,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 */
 	@Override
 	protected void onStop() {
-		//isFirstTime = true;
 		// TODO Auto-generated method stub
 		super.onStop();
+        
+		//isFirstTime = true;
 	}
 }
