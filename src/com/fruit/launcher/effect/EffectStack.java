@@ -1,4 +1,4 @@
-package com.fruit.launcher;
+package com.fruit.launcher.effect;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Transformation;
 
-public class EffectFade extends EffectBase {
+public class EffectStack extends EffectBase {
 
-	public EffectFade(int id, int type, String title) {
+	public EffectStack(int id, int type, String title) {
 		super(id, type, title);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,26 +30,36 @@ public class EffectFade extends EffectBase {
 		// TODO Auto-generated method stub
 		float width = 0.0f;
 		float height = 0.0f;
+		float newRadio = 0.0f;
+		float scale = 0.0f;
 		Matrix matrix = transformation.getMatrix();
 
 		if (isPortrait) {
-			width = view.getMeasuredWidth();
-			height = view.getMeasuredHeight() - indicatorOffset;
+			width = view.getWidth();
+			height = view.getHeight() - indicatorOffset;
 		} else {
 			width = view.getMeasuredWidth() - indicatorOffset;
 			height = view.getMeasuredHeight();
 		}
-		transformation.setAlpha(1.0f - Math.abs(ratio));
-		matrix.preScale(1.0f + ratio, 1.0f + ratio);
-		matrix.preTranslate(-width / 2.0f, -height / 2.0f);
 
-		if (isPortrait) {
-			matrix.postTranslate((0.5f + ratio) * width, height / 2.0f);
-		} else {
-			matrix.postTranslate(width / 2.0f, (0.5f + ratio) * height);
+		// Only the left screen will be transformed
+		if (ratio > 0.0f) {
+			newRadio = 1.0f - ratio;
+			transformation.setAlpha(newRadio);
+			scale = (0.4f * newRadio) + 0.6f;
+			matrix.setScale(scale, scale);
+
+			if (isPortrait) {
+				matrix.postTranslate((1.0f - scale) * width * 3.0f,
+						(1.0f - scale) * height * 0.5f);
+			} else {
+				matrix.postTranslate((1.0f - scale) * width * 0.5f,
+						(1.0f - scale) * height * 3.0f);
+			}
+
+			transformation.setTransformationType(Transformation.TYPE_BOTH);
+			return true;
 		}
-
-		transformation.setTransformationType(Transformation.TYPE_BOTH);
-		return true;
+		return false;
 	}
 }

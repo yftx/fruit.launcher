@@ -1,4 +1,4 @@
-package com.fruit.launcher;
+package com.fruit.launcher.effect;
 
 import java.util.ArrayList;
 import java.util.Iterator;

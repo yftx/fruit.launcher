@@ -1,4 +1,6 @@
-package com.fruit.launcher;
+package com.fruit.launcher.effect;
+
+import com.fruit.launcher.ItemInfo;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;

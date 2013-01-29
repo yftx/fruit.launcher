@@ -29,7 +29,7 @@ import android.util.Log;
 /**
  * Represents an item in the launcher.
  */
-class ItemInfo {
+public class ItemInfo {
 
 	public static int ROW = 4;
 	public static int COL = 4;
@@ -60,27 +60,27 @@ class ItemInfo {
 	/**
 	 * Iindicates the screen in which the shortcut appears.
 	 */
-	int screen = -1;
+	public int screen = -1;
 
 	/**
 	 * Indicates the X position of the associated cell.
 	 */
-	int cellX = -1;
+	public int cellX = -1;
 
 	/**
 	 * Indicates the Y position of the associated cell.
 	 */
-	int cellY = -1;
+	public int cellY = -1;
 
 	/**
 	 * Indicates the X cell span.
 	 */
-	int spanX = 1;
+	public int spanX = 1;
 
 	/**
 	 * Indicates the Y cell span.
 	 */
-	int spanY = 1;
+	public int spanY = 1;
 
 	/**
 	 * Indicates whether the item is a gesture.

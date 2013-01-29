@@ -1,4 +1,4 @@
-package com.fruit.launcher;
+package com.fruit.launcher.effect;
 
 public class Effects {
 

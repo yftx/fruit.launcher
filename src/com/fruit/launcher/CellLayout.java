@@ -45,6 +45,9 @@ import java.util.ArrayList;
 
 import com.fruit.launcher.LauncherSettings.BaseLauncherColumns;
 import com.fruit.launcher.LauncherSettings.Favorites;
+import com.fruit.launcher.effect.EffectBase;
+import com.fruit.launcher.effect.Effects;
+import com.fruit.launcher.effect.EffectsFactory;
 import com.fruit.launcher.setting.SettingUtils;
 
 public class CellLayout extends ViewGroup {

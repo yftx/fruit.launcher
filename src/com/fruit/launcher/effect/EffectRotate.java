@@ -1,4 +1,4 @@
-package com.fruit.launcher;
+package com.fruit.launcher.effect;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Transformation;
 
-public class EffectStack extends EffectBase {
+public class EffectRotate extends EffectBase {
 
-	public EffectStack(int id, int type, String title) {
+	public EffectRotate(int id, int type, String title) {
 		super(id, type, title);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,32 +30,32 @@ public class EffectStack extends EffectBase {
 		// TODO Auto-generated method stub
 		float width = 0.0f;
 		float height = 0.0f;
-		float newRadio = 0.0f;
-		float scale = 0.0f;
 		Matrix matrix = transformation.getMatrix();
 
 		if (isPortrait) {
-			width = view.getWidth();
-			height = view.getHeight() - indicatorOffset;
+			width = view.getMeasuredWidth();
+			height = view.getMeasuredHeight() - indicatorOffset;
 		} else {
 			width = view.getMeasuredWidth() - indicatorOffset;
 			height = view.getMeasuredHeight();
 		}
 
-		// Only the left screen will be transformed
-		if (ratio > 0.0f) {
-			newRadio = 1.0f - ratio;
-			transformation.setAlpha(newRadio);
-			scale = (0.4f * newRadio) + 0.6f;
-			matrix.setScale(scale, scale);
+		if (ratio != 0.0f) {
+			transformation.setAlpha(1.0f - Math.abs(ratio));
 
+			camera.save();
 			if (isPortrait) {
-				matrix.postTranslate((1.0f - scale) * width * 3.0f,
-						(1.0f - scale) * height * 0.5f);
+				camera.translate(width * ratio, 0.0f, 0.0f);
+				camera.rotateY(90.0f * ratio);
 			} else {
-				matrix.postTranslate((1.0f - scale) * width * 0.5f,
-						(1.0f - scale) * height * 3.0f);
+				camera.translate(0.0f, -height * ratio, 0.0f);
+				camera.rotateX(-90.0f * ratio);
 			}
+			camera.getMatrix(matrix);
+			camera.restore();
+
+			matrix.preTranslate(-width / 2.0f, -height / 2.0f);
+			matrix.postTranslate(width / 2.0f, height / 2.0f);
 
 			transformation.setTransformationType(Transformation.TYPE_BOTH);
 			return true;

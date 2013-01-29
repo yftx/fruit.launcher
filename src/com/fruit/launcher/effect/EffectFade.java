@@ -1,4 +1,4 @@
-package com.fruit.launcher;
+package com.fruit.launcher.effect;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Transformation;
 
-public class EffectWindmill extends EffectBase {
+public class EffectFade extends EffectBase {
 
-	public EffectWindmill(int id, int type, String title) {
+	public EffectFade(int id, int type, String title) {
 		super(id, type, title);
 		// TODO Auto-generated constructor stub
 	}
@@ -30,24 +30,26 @@ public class EffectWindmill extends EffectBase {
 		// TODO Auto-generated method stub
 		float width = 0.0f;
 		float height = 0.0f;
-		float angle = 0.0f;
 		Matrix matrix = transformation.getMatrix();
 
 		if (isPortrait) {
 			width = view.getMeasuredWidth();
 			height = view.getMeasuredHeight() - indicatorOffset;
-
-			angle = -90.0f * ratio;
-			matrix.setRotate(angle, width / 2.0f, height);
 		} else {
 			width = view.getMeasuredWidth() - indicatorOffset;
 			height = view.getMeasuredHeight();
+		}
+		transformation.setAlpha(1.0f - Math.abs(ratio));
+		matrix.preScale(1.0f + ratio, 1.0f + ratio);
+		matrix.preTranslate(-width / 2.0f, -height / 2.0f);
 
-			angle = 90.0f * ratio;
-			matrix.setRotate(angle, width, height / 2.0f);
+		if (isPortrait) {
+			matrix.postTranslate((0.5f + ratio) * width, height / 2.0f);
+		} else {
+			matrix.postTranslate(width / 2.0f, (0.5f + ratio) * height);
 		}
 
-		transformation.setTransformationType(Transformation.TYPE_MATRIX);
+		transformation.setTransformationType(Transformation.TYPE_BOTH);
 		return true;
 	}
 }
