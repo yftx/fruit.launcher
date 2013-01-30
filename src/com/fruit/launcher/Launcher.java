@@ -283,9 +283,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
 		
 		if (savedInstanceState!=null){
+			Log.d(TAG, "launcherseq, savedInstanceState!=null,pid="+Process.myPid());
 			savedInstanceState=null;
 			finish();
-			//Process.killProcess(Process.myPid());
 			return;
 		}
 		
@@ -1669,12 +1669,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		Log.d(TAG, "onNewIntent,intent="+intent);
+		Log.d(TAG, "launcherseq, onNewIntent,intent="+intent);
 		if (isWorkspaceLocked())
 			return;
 		
 		// check flag to exit Launcher
 		if (intent.getIntExtra("exitFlag", 0) == 1) {
+			Log.d(TAG, "launcherseq, exitFlag,0=1,pid="+Process.myPid());
 			finish();
 			Process.killProcess(Process.myPid());
 		}
@@ -4243,5 +4244,19 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		super.onStop();
         
 		//isFirstTime = true;
+	}
+
+	/**
+	 * @return the mWorkspace
+	 */
+	public Workspace getmWorkspace() {
+		return mWorkspace;
+	}
+
+	/**
+	 * @param mWorkspace the mWorkspace to set
+	 */
+	public void setmWorkspace(Workspace mWorkspace) {
+		this.mWorkspace = mWorkspace;
 	}
 }
