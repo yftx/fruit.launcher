@@ -280,14 +280,14 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Log.d(TAG,"launcherseq.onCreate,savedInstanceState="+savedInstanceState);
+		Log.d(TAG,"launcherseq,onCreate,savedInstanceState="+savedInstanceState);
 		
-		if (savedInstanceState!=null){
-			Log.d(TAG, "launcherseq, savedInstanceState!=null,pid="+Process.myPid());
-			savedInstanceState=null;
-			finish();
-			return;
-		}
+//		if (savedInstanceState!=null){
+//			Log.d(TAG, "launcherseq,savedInstanceState!=null,pid="+Process.myPid());
+//			savedInstanceState=null;
+//			finish();
+//			return;
+//		}
 		
 		mIsBinding = true;
 		mIsCreate = true;
@@ -344,7 +344,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		//if (savedInstanceState!=null)
 		//	isDuplicateCreate++;
 		
-		if (!mRestoring && savedInstanceState==null) {
+		if (!mRestoring /*&& savedInstanceState==null*/) {
 			Log.d(TAG, "onCreate:!mRestoring:startLoader,true");
 			mModel.startLoader(this, true);
 		}
@@ -711,11 +711,11 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			mDockBar.switchDisplay(isAllAppsVisible());
 		}
 
-		if (mWorkspace != null) {
+		//if (mWorkspace != null) {
 			//mWorkspace.sendBroadcast4Widget();
-		}
+		//}
 
-		if (mRestoring) {//??
+		if (mRestoring && mModel!=null) {//??
 			Log.d(TAG, "onResume,startLoader, true, mRestoring="+mRestoring);
 			mWorkspaceLoading = true;
 			mModel.startLoader(this, true);
@@ -741,7 +741,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 //			mWorkspace.setCurrentScreen(getCurrentWorkspaceScreen());
 //		}
 
-		mDragController.cancelDrag();
+		if(mDragController!=null)
+			mDragController.cancelDrag();
 	}
 
 	@Override
@@ -824,7 +825,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 *            The previous state.
 	 */
 	private void restoreState(Bundle savedState) {
-	    Log.d(TAG, "restoreState:savedState="+savedState);
+	    Log.d(TAG, "launcherseq,restoreState,savedState="+savedState);
 		if (savedState == null) {
 			return;
 		}
@@ -838,7 +839,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		final int currentScreen = savedState.getInt(
 				RUNTIME_STATE_CURRENT_SCREEN, -1);
-		Log.d(TAG, "restoreState,currentScreen="+currentScreen);
+		Log.d(TAG, "launcherseq,restoreState,currentScreen="+currentScreen);
 		if (currentScreen > -1) {
 			mWorkspace.setCurrentScreen(currentScreen);
 			CellLayout next = (CellLayout) mWorkspace.getChildAt(currentScreen);
@@ -848,7 +849,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		final int addScreen = savedState.getInt(
 				RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
-		Log.d(TAG, "restoreState,addScreen="+addScreen);
+		Log.d(TAG, "launcherseq,restoreState,addScreen="+addScreen);
 		if (addScreen > -1) {
 			mAddItemCellInfo = new CellLayout.CellInfo();
 			final CellLayout.CellInfo addItemCellInfo = mAddItemCellInfo;
@@ -866,18 +867,18 @@ public final class Launcher extends Activity implements View.OnClickListener,
 					.getBooleanArray(RUNTIME_STATE_PENDING_ADD_OCCUPIED_CELLS),
 					savedState.getInt(RUNTIME_STATE_PENDING_ADD_COUNT_X),
 					savedState.getInt(RUNTIME_STATE_PENDING_ADD_COUNT_Y));
-            Log.d(TAG,"restoreState,mRestoring = true,addScreen="+addScreen);
+            Log.d(TAG,"launcherseq,restoreState,mRestoring = true,addScreen="+addScreen);
 			mRestoring = true;
 		}
 
 		boolean renameFolder = savedState.getBoolean(
 				RUNTIME_STATE_PENDING_FOLDER_RENAME, false);
-		Log.d(TAG, "restoreState,renameFolder="+renameFolder);
+		Log.d(TAG, "launcherseq,restoreState,renameFolder="+renameFolder);
 		if (renameFolder) {
 			long id = savedState
 					.getLong(RUNTIME_STATE_PENDING_FOLDER_RENAME_ID);
 			mFolderInfo = mModel.getFolderById(this, mFolders, id);
-            Log.d(TAG,"restoreState,mRestoring = true,renameFolder="+renameFolder);
+            Log.d(TAG,"launcherseq,restoreState,mRestoring = true,renameFolder="+renameFolder);
 			mRestoring = true;
 		}
 	}
@@ -1669,13 +1670,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		Log.d(TAG, "launcherseq, onNewIntent,intent="+intent);
+		Log.d(TAG, "launcherseq,onNewIntent,intent="+intent);
 		if (isWorkspaceLocked())
 			return;
 		
 		// check flag to exit Launcher
 		if (intent.getIntExtra("exitFlag", 0) == 1) {
-			Log.d(TAG, "launcherseq, exitFlag,0=1,pid="+Process.myPid());
+			Log.d(TAG, "launcherseq,exitFlag-0=1,pid="+Process.myPid());
 			finish();
 			Process.killProcess(Process.myPid());
 		}
@@ -1723,10 +1724,16 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// Do not call super here
 		mSavedInstanceState = savedInstanceState;
+		Log.d(TAG, "launcherseq,onRestoreInstanceState,savedInstanceState="+savedInstanceState);
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		Log.d(TAG, "launcherseq,onSaveInstanceState,outState="+outState+",mWorkspace="+mWorkspace);
+		
+		if (outState==null || mWorkspace==null)
+			return;
+		
 		outState.putInt(RUNTIME_STATE_CURRENT_SCREEN,
 				mWorkspace.getCurrentScreen());
 
@@ -1779,46 +1786,46 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		}
 	}
 
-//	@Override
-//	public void onDestroy() {
-//		Log.d(TAG,"launcherseq,onDestroy");
-//		
-//		super.onDestroy();
-//
-//		try {
-//			mAppWidgetHost.stopListening();
-//		} catch (NullPointerException ex) {
-//			Log.w(TAG,
-//					"problem while stopping AppWidgetHost during Launcher destruction",
-//					ex);
-//		}
-//
-//		TextKeyListener.getInstance().release();
-//
-//		mThemeMgr.stopListener();
-//		mModel.stopLoader();
-//
-//		mPhoneMonitor.removeAllCallback();
-//		mMssMonitor.removeAllCallback();
-//
-//		unbindDesktopItems();
-//
-//		getSharedPreferences(SettingUtils.LAUNCHER_SETTINGS_NAME, 0)
-//				.unregisterOnSharedPreferenceChangeListener(mSPChangeListener);
-//
-//		getContentResolver().unregisterContentObserver(mWidgetObserver);
-//
-//		unregisterReceiver(mCloseSystemDialogsReceiver);
-//		unregisterReceiver(mScreenConfigReceiver);
-////		unregisterReceiver(mSCReceiver);
-//	}
-
 	@Override
-	public void onDestroy() {		
-		super.onDestroy();
-        
+	public void onDestroy() {
 		Log.d(TAG,"launcherseq,onDestroy");
+		
+		super.onDestroy();
+
+		try {
+			mAppWidgetHost.stopListening();
+		} catch (NullPointerException ex) {
+			Log.w(TAG,
+					"problem while stopping AppWidgetHost during Launcher destruction",
+					ex);
+		}
+
+		TextKeyListener.getInstance().release();
+
+		mThemeMgr.stopListener();
+		mModel.stopLoader();
+
+		mPhoneMonitor.removeAllCallback();
+		mMssMonitor.removeAllCallback();
+
+		unbindDesktopItems();
+
+		getSharedPreferences(SettingUtils.LAUNCHER_SETTINGS_NAME, 0)
+				.unregisterOnSharedPreferenceChangeListener(mSPChangeListener);
+
+		getContentResolver().unregisterContentObserver(mWidgetObserver);
+
+		unregisterReceiver(mCloseSystemDialogsReceiver);
+		unregisterReceiver(mScreenConfigReceiver);
+//		unregisterReceiver(mSCReceiver);
 	}
+
+//	@Override
+//	public void onDestroy() {		
+//		super.onDestroy();
+//        
+//		Log.d(TAG,"launcherseq,onDestroy");
+//	}
 	
 	@Override
 	public void startActivityForResult(Intent intent, int requestCode) {
@@ -4242,7 +4249,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-        
+		Log.d(TAG,"launcherseq,onStop");
 		//isFirstTime = true;
 	}
 
