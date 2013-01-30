@@ -4876,7 +4876,30 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 	
 	public void addNewScreenByChildIndex(int pos) {
 		// TODO Auto-generated method stub
-		View cellLayout = mInflater.inflate(R.layout.workspace_screen, null);
+		View cellLayout = null;
+		
+		try {
+			cellLayout = mInflater.inflate(R.layout.workspace_screen, null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			try {
+				cellLayout = (View) ((CellLayout)getChildAt(0)).clone();
+			} catch (CloneNotSupportedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return;
+			}
+
+		}
+		
+		if (cellLayout==null)
+			return;
+		
+		CellLayout newLayout = (CellLayout)cellLayout;
+		if(newLayout.getChildCount()>0)
+			newLayout.removeAllViews();
+		
 		cellLayout.setOnLongClickListener(mLongClickListener);
 		addView(cellLayout, pos);
 

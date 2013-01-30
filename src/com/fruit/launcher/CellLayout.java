@@ -50,7 +50,7 @@ import com.fruit.launcher.effect.Effects;
 import com.fruit.launcher.effect.EffectsFactory;
 import com.fruit.launcher.setting.SettingUtils;
 
-public class CellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup implements Cloneable {
 
 	private static final String TAG = "CellLayout";
 	private static final int INVALID_CELL = -1;
@@ -2155,5 +2155,14 @@ public class CellLayout extends ViewGroup {
 		
 		return false;
 
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
 	}
 }
