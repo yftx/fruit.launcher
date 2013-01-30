@@ -97,6 +97,7 @@ public final class ShareResourceLoader {
 				BitmapFactory.Options option = new BitmapFactory.Options();
 				option.inDither = false;
 				option.inPreferredConfig = Bitmap.Config.ARGB_8888;
+				//option.inSampleSize = 4;
 				try {
 					bitmap = BitmapFactory.decodeResource(res, resId, option);
 				} catch (OutOfMemoryError e) {
