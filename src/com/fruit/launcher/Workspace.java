@@ -3987,11 +3987,19 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		}
 	}
 
-	void updateItems(ArrayList<ApplicationInfo> apps) {
+	void updateItems(ArrayList<ApplicationInfo> apps, ArrayList<ApplicationInfo> apps_missed) {
 		@SuppressWarnings("unused")
 		final PackageManager pm = mLauncher.getPackageManager();
 		final int count = getChildCount();
-
+		
+		final int size = apps.size();
+		if(size<=0)
+			return;
+		
+		boolean[] finded = new boolean[size];
+		for(int m=0;m<size;m++)
+			finded[m]=false;
+		
 		for (int i = 0; i < count; i++) {
 			final CellLayout layout = (CellLayout) getChildAt(i);
 			int childCount = layout.getChildCount();
@@ -4021,11 +4029,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 												new FastBitmapDrawable(info
 														.getIcon(mIconCache)),
 												null, null);
+								finded[k]=true;
 							}
 						}
 					}
 				}
 			}
+		}
+		
+		for(int m=0;m<size;m++){
+			if (!finded[m])
+				apps_missed.add(apps.get(m));
 		}
 	}
 
