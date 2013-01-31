@@ -282,12 +282,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		
 		Log.d(TAG,"launcherseq,onCreate,savedInstanceState="+savedInstanceState);
 		
-//		if (savedInstanceState!=null){
-//			Log.d(TAG, "launcherseq,savedInstanceState!=null,pid="+Process.myPid());
-//			savedInstanceState=null;
+		if (savedInstanceState!=null){
+			Log.d(TAG, "launcherseq,savedInstanceState!=null,pid="+Process.myPid());
+			savedInstanceState=null;
+			Log.d(TAG, "launcherseq,savedInstanceState="+savedInstanceState);
 //			finish();
 //			return;
-//		}
+		}
 		
 		mIsBinding = true;
 		mIsCreate = true;
@@ -705,6 +706,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
         Log.d(TAG,"launcherseq,onResume,mRestoring="+mRestoring+",mIsBinding="+mIsBinding);
 
 		mPaused = false;
+		
 		mDockBarEnable = true;
 		// Refresh dock bar items when launcher resumed
 		if (mDockBar != null) {
@@ -715,6 +717,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 			//mWorkspace.sendBroadcast4Widget();
 		//}
 
+		//
+		//if count isn't match, then sync
+		//
+		
 		if (mRestoring && mModel!=null) {//??
 			Log.d(TAG, "onResume,startLoader, true, mRestoring="+mRestoring);
 			mWorkspaceLoading = true;
@@ -1722,9 +1728,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		// Do not call super here
-		mSavedInstanceState = savedInstanceState;
+		// Do not call super here		
 		Log.d(TAG, "launcherseq,onRestoreInstanceState,savedInstanceState="+savedInstanceState);
+
+		if (savedInstanceState!=null)
+            savedInstanceState=null;
+        
+		mSavedInstanceState = savedInstanceState;
 	}
 
 	@Override
@@ -1788,10 +1798,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onDestroy() {
-		Log.d(TAG,"launcherseq,onDestroy");
-		
 		super.onDestroy();
 
+		Log.d(TAG,"launcherseq,onDestroy");
+		
 		try {
 			mAppWidgetHost.stopListening();
 		} catch (NullPointerException ex) {
@@ -3634,14 +3644,18 @@ public final class Launcher extends Activity implements View.OnClickListener,
 
 		final Workspace workspace = mWorkspace;
 
-		// [[add by liujian at 2012-6-14
+		Log.d(TAG, "Launcher.bindItems: start="+start+",end="+end);		
+		
 		// launcher exception
-		if (shortcuts.size() < end) {
+		if (shortcuts==null)
+			return;
+		
+		if (shortcuts.size() < end || shortcuts.size()==0) {
 			Log.w(TAG, "Launcher.bindItems exit without bind. because size is "
 					+ shortcuts.size() + ", and end is " + end);
 			return;
 		}
-		// ]]at 2012-6-14
+		
 		//if (mWorkspace.getChildCount() < SettingUtils.mScreenCount){
 			final int count = SettingUtils.mScreenCount-mWorkspace.mScreenCount;
 			for (int i=0;i<count;i++){
@@ -3949,9 +3963,18 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	 */
 	@Override
 	public void bindAppsUpdated(ArrayList<ApplicationInfo> apps) {
+		ArrayList<ApplicationInfo> apps_missed = new ArrayList<ApplicationInfo>();
+		
 		removeDialog(DIALOG_CREATE_SHORTCUT);
-		mWorkspace.updateItems(apps);
+		
+		mWorkspace.updateItems(apps, apps_missed);
+		
+		if (apps_missed.size()>0)
+			autoAddAppAfterNewInstall(apps_missed);
+		
 		mAllAppsGrid.updateApps(apps);
+		
+		apps_missed=null;
 	}
 
 	/**
