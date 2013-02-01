@@ -81,7 +81,7 @@
     <string name="settings_about">"关于"</string>
     <string name="settings_desk_version">"版本信息"</string>
     <string name="current_desk_version">"当前版本： "</string>
-    <string name="settings_exit">"退出芒果桌面"</string>
+    <string name="settings_exit">"退出水果桌面"</string>
     <string name="widget_lock_screen">"一键锁屏"</string>
     <string name="widget_lock_screen_tips">"第一次运行的时候请赋予管理权限以便让一键锁屏可以正常工作。"</string>
     <string name="widget_clean_memory">"一键清理"</string>

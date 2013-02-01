@@ -168,7 +168,7 @@
     <string name="settings_about">About</string>
     <string name="current_desk_version">"Current version: "</string>
     <string name="settings_desk_version">"Version information"</string>
-    <string name="settings_exit">Exit Mango Launcher</string>
+    <string name="settings_exit">Exit Fruit Launcher</string>
     <string name="widget_lock_screen">Lock Screen</string>
     <string name="widget_lock_screen_tips">Allow the application with admin permissions to enable screen lock at first run.</string>
     <string name="widget_clean_memory">Clean Memory</string>
