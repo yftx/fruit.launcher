@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SettingUtils {
+	
+	public static final String LAUNCHER_PACKAGE_NAME = "com.fruit.launcher";
 
 	public static final String LAUNCHER_SETTINGS_NAME = "launcher_config";
 	public static final String LAUNCHER_THEME_SETTINGS_NAME = "launcher_theme_config";

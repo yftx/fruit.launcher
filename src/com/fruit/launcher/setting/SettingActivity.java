@@ -5,6 +5,7 @@ import com.fruit.launcher.Launcher;
 import com.fruit.launcher.R;
 import com.fruit.launcher.Utilities;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -40,6 +41,7 @@ public class SettingActivity extends PreferenceActivity implements
 
 	private ListPreference mListPreference;
 //	private Dialog dialog;
+	private ActivityManager activityMgr;
 
 //	static final int DIALOG_SCREEN_INFO_ID = 0;
 //	static final int DIALOG_GAMEOVER_ID = 1;
@@ -101,14 +103,31 @@ public class SettingActivity extends PreferenceActivity implements
 		} else if (key.equals(KEY_ABOUT)) {
 			//only show summary
 		} else if (key.equals(KEY_EXIT)) {
-			Intent intent = new Intent(this, Launcher.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			intent.putExtra("exitFlag", 1);
-			startActivity(intent);
+			exitLauncher();
 		} else {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * 
+	 */
+	public void exitLauncher() {
+		Intent intent = new Intent(this, Launcher.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.putExtra("exitFlag", 1);
+		startActivity(intent);
+	}
+	
+	public void restartLauncher() {
+//		activityMgr = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//		activityMgr.killBackgroundProcesses(SettingUtils.LAUNCHER_PACKAGE_NAME);
+		
+		Intent k = getBaseContext().getPackageManager()
+			      .getLaunchIntentForPackage(getBaseContext().getPackageName());
+		k.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(k); 
 	}
 	
 	private String getAppsInfoString(){

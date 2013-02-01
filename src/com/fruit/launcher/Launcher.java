@@ -282,13 +282,13 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		
 		Log.d(TAG,"launcherseq,onCreate,savedInstanceState="+savedInstanceState);
 		
-		if (savedInstanceState!=null){
-			Log.d(TAG, "launcherseq,savedInstanceState!=null,pid="+Process.myPid());
-			savedInstanceState=null;
-			Log.d(TAG, "launcherseq,savedInstanceState="+savedInstanceState);
-//			finish();
-//			return;
-		}
+//		if (savedInstanceState!=null){
+//			Log.d(TAG, "launcherseq,savedInstanceState!=null,pid="+Process.myPid());
+//			savedInstanceState=null;
+//			Log.d(TAG, "launcherseq,savedInstanceState="+savedInstanceState);
+//			//finish();
+//			//return;
+//		}
 		
 		mIsBinding = true;
 		mIsCreate = true;
@@ -1673,22 +1673,30 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		// Whatever we were doing is hereby canceled.
 		mWaitingForResult = false;
 	}
+	
 
 	@Override
 	protected void onNewIntent(Intent intent) {
 		Log.d(TAG, "launcherseq,onNewIntent,intent="+intent);
-		if (isWorkspaceLocked())
-			return;
 		
 		// check flag to exit Launcher
-		if (intent.getIntExtra("exitFlag", 0) == 1) {
+		final int intExtra = intent.getIntExtra("exitFlag", 0);
+		if (intExtra == 1) {
 			Log.d(TAG, "launcherseq,exitFlag-0=1,pid="+Process.myPid());
 			finish();
 			Process.killProcess(Process.myPid());
-		}
+		} /*else if (intExtra == 2) {
+			Log.d(TAG, "launcherseq,exitFlag-0=1,pid="+Process.myPid());
+			finish();
+			//Process.killProcess(Process.myPid());
+			restartLauncher();
+		}*/
 
 		super.onNewIntent(intent);
 		//setIntent(intent);
+		
+		if (isWorkspaceLocked())
+			return;
 		
 		// Close the menu
 		if (Intent.ACTION_MAIN.equals(intent.getAction())) {
@@ -1731,8 +1739,8 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		// Do not call super here		
 		Log.d(TAG, "launcherseq,onRestoreInstanceState,savedInstanceState="+savedInstanceState);
 
-		if (savedInstanceState!=null)
-            savedInstanceState=null;
+//		if (savedInstanceState!=null)
+//            savedInstanceState=null;
         
 		mSavedInstanceState = savedInstanceState;
 	}
@@ -2938,7 +2946,7 @@ public final class Launcher extends Activity implements View.OnClickListener,
 //		}
 //	}
 
-	Workspace getWorkspace() {
+	public Workspace getWorkspace() {
 		return mWorkspace;
 	}
 
@@ -4276,17 +4284,4 @@ public final class Launcher extends Activity implements View.OnClickListener,
 		//isFirstTime = true;
 	}
 
-	/**
-	 * @return the mWorkspace
-	 */
-	public Workspace getmWorkspace() {
-		return mWorkspace;
-	}
-
-	/**
-	 * @param mWorkspace the mWorkspace to set
-	 */
-	public void setmWorkspace(Workspace mWorkspace) {
-		this.mWorkspace = mWorkspace;
-	}
 }

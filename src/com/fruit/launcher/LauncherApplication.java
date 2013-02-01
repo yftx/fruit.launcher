@@ -90,7 +90,7 @@ public class LauncherApplication extends Application {
 
 		@Override
 		public void onChange(boolean selfChange) {
-			Log.d("mFavoritesObserver", "onChange:startLoader,false");
+			Log.d("mFavoritesObserver", "launcherseq,onChange:startLoader,false");
 			mModel.startLoader(LauncherApplication.this, false);
 		}
 	};
