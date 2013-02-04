@@ -157,7 +157,7 @@ public class Folder extends LinearLayout implements DragSource,
 		} else {
 			mLauncher.closeFolder(this);
 			mDragController.startDrag(view, this, app,
-					DragController.DRAG_ACTION_COPY);
+					DragController.DRAG_ACTION_MOVE);//DRAG_ACTION_COPY
 		}
 		mDragItem = app;
 
