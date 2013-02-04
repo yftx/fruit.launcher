@@ -3602,13 +3602,10 @@ public final class Launcher extends Activity implements View.OnClickListener,
 	@Override
 	public void startBinding() {
 		mIsBinding = true;
-		mWorkspaceLoading = true;
-        
-		mWorkspace.resetCellLayout();
-		
+		mWorkspaceLoading = true;        
+
 		final Workspace workspace = mWorkspace;		
 		int count = workspace.getChildCount();
-
 		
 		for (int i = 0; i < count; i++) {
 			// Use removeAllViewsInLayout() to avoid an extra requestLayout()
@@ -3640,6 +3637,9 @@ public final class Launcher extends Activity implements View.OnClickListener,
 						}
 					});
 		}
+		
+		mWorkspace.resetCellLayout();
+		
 	}
 
 	/**
