@@ -4897,14 +4897,21 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource,
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
+//			try {
+//				cellLayout = (View) ((CellLayout)getChildAt(0)).clone();
+//			} catch (CloneNotSupportedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//				return;
+//			}
+
 			try {
-				cellLayout = (View) ((CellLayout)getChildAt(0)).clone();
-			} catch (CloneNotSupportedException e1) {
+				cellLayout = mInflater.inflate(R.layout.workspace_screen, null);
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 				return;
 			}
-
 		}
 		
 		if (cellLayout==null)
