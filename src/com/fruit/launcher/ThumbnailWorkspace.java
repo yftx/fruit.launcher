@@ -22,8 +22,8 @@ public class ThumbnailWorkspace extends ViewGroup {
 
 	private static final String TAG = "ThumbnailWorkspace";
 
-	private static final int ROW_NUM = 3;
-	private static final int COL_NUM = 3;
+	private static final int ROW_NUM = 4;
+	private static final int COL_NUM = 4;
 	private static final int MAX_COUNT = ROW_NUM * COL_NUM;
 
 	private Context mContext;
